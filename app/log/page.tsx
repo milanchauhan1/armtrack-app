@@ -28,6 +28,13 @@ interface ArmLog extends LogForm {
   intensity: number;
 }
 
+interface PrevLog {
+  date: string;
+  pain_level: number;
+  soreness_level: number;
+  stiffness_level: number;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function getTodayString(): string {
@@ -63,6 +70,11 @@ function sliderLabel(v: number): string {
   if (v <= 6) return "Moderate soreness";
   if (v <= 8) return "Significant pain";
   return "Severe — consider rest";
+}
+
+function formatDateShort(dateStr: string): string {
+  const d = new Date(dateStr + "T12:00:00");
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function computeStreak(dates: string[]): number {
@@ -205,6 +217,7 @@ export default function LogPage() {
   const [userId, setUserId] = useState("");
   const [streak, setStreak] = useState(0);
   const [todayLog, setTodayLog] = useState<ArmLog | null>(null);
+  const [prevLog, setPrevLog] = useState<PrevLog | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState<LogForm>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
@@ -262,6 +275,17 @@ export default function LogPage() {
         .eq("user_id", user.id);
 
       if (logs) setStreak(computeStreak(logs.map((l) => l.date)));
+
+      const { data: prev } = await supabase
+        .from("arm_logs")
+        .select("date, pain_level, soreness_level, stiffness_level")
+        .eq("user_id", user.id)
+        .lt("date", today)
+        .order("date", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (prev) setPrevLog(prev as PrevLog);
 
       setLoading(false);
     }
@@ -529,6 +553,31 @@ export default function LogPage() {
                   </svg>
                   Back to summary
                 </button>
+              )}
+
+              {/* ── Previous session context bar ────────────────────────── */}
+              {prevLog && (
+                <div className="flex items-center gap-2 flex-wrap px-1">
+                  <span className="text-xs text-gray-600">Last session {formatDateShort(prevLog.date)}:</span>
+                  <span
+                    className="rounded px-2 py-0.5 text-xs font-bold"
+                    style={{ backgroundColor: `${sliderColor(prevLog.pain_level)}15`, color: sliderColor(prevLog.pain_level) }}
+                  >
+                    P{prevLog.pain_level}
+                  </span>
+                  <span
+                    className="rounded px-2 py-0.5 text-xs font-bold"
+                    style={{ backgroundColor: `${sliderColor(prevLog.soreness_level)}15`, color: sliderColor(prevLog.soreness_level) }}
+                  >
+                    S{prevLog.soreness_level}
+                  </span>
+                  <span
+                    className="rounded px-2 py-0.5 text-xs font-bold"
+                    style={{ backgroundColor: `${sliderColor(prevLog.stiffness_level)}15`, color: sliderColor(prevLog.stiffness_level) }}
+                  >
+                    St{prevLog.stiffness_level}
+                  </span>
+                </div>
               )}
 
               {/* ── Sliders ─────────────────────────────────────────────── */}

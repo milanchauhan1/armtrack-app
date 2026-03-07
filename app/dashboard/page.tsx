@@ -15,24 +15,22 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import {
+  ArmLog,
+  calculateEstimatedReadiness,
+  getReadinessState,
+  getPrimaryRecommendation,
+  getContextualInsights,
+  getReadinessExplanation,
+  computeLogScore,
+} from "@/lib/readiness";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface Profile {
   first_name: string;
   onboarding_complete: boolean;
-}
-
-interface ArmLog {
-  id: string;
-  date: string;
-  pain_level: number;
-  soreness_level: number;
-  stiffness_level: number;
-  throws_count: number;
-  activity_type: string[] | null;
-  recovery_done: string[] | null;
-  notes: string | null;
+  position: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -68,17 +66,6 @@ function computeStreak(dates: string[]): number {
   return streak;
 }
 
-function computeReadiness(log: ArmLog): number {
-  const avg = (log.pain_level + log.soreness_level + log.stiffness_level) / 3;
-  return Math.round(Math.max(0, Math.min(10, 10 - avg)) * 10) / 10;
-}
-
-function readinessMeta(score: number): { label: string; color: string; bg: string; border: string } {
-  if (score >= 8) return { label: "Ready to Throw", color: "#22c55e", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.2)" };
-  if (score >= 5) return { label: "Take It Easy", color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.2)" };
-  return { label: "Rest Day Recommended", color: "#ef4444", bg: "rgba(239,68,68,0.08)", border: "rgba(239,68,68,0.2)" };
-}
-
 function scoreColor(v: number): string {
   if (v <= 3) return "#22c55e";
   if (v <= 6) return "#f59e0b";
@@ -93,42 +80,6 @@ function formatDateShort(dateStr: string): string {
 function formatDateFull(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");
   return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-}
-
-function daysSince(dateStr: string): number {
-  const today = new Date();
-  const d = new Date(dateStr + "T12:00:00");
-  return Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
-}
-
-function generateInsights(logs: ArmLog[]): string[] {
-  if (!logs.length) return [];
-  const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
-  const last3 = sorted.slice(0, 3);
-  const insights: string[] = [];
-
-  const days = daysSince(sorted[0].date);
-  if (days >= 2) {
-    insights.push(`You haven't logged in ${days} day${days === 1 ? "" : "s"} — stay consistent`);
-  }
-
-  if (last3.length >= 1) {
-    const avgPain = last3.reduce((s, l) => s + l.pain_level, 0) / last3.length;
-    if (avgPain > 6) insights.push("High pain trend detected — consider a rest day");
-  }
-
-  if (last3.length >= 2) {
-    const allLow = last3.every(
-      (l) => l.pain_level < 3 && l.soreness_level < 3 && l.stiffness_level < 3
-    );
-    if (allLow) insights.push("Your arm is feeling great — you're on a roll");
-  }
-
-  if (last3.some((l) => l.throws_count > 100 && l.pain_level > 5)) {
-    insights.push("High workload with elevated pain — monitor closely");
-  }
-
-  return insights.slice(0, 3);
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -168,8 +119,6 @@ function ScoreBadge({ label, value }: { label: string; value: number }) {
   );
 }
 
-// ── Recharts custom tooltip ───────────────────────────────────────────────────
-
 function CustomTooltip({
   active,
   payload,
@@ -188,10 +137,7 @@ function CustomTooltip({
       <p className="mb-2 font-semibold text-gray-400">{label}</p>
       {payload.map((p) => (
         <p key={p.name} className="flex items-center gap-2" style={{ color: p.color }}>
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ backgroundColor: p.color }}
-          />
+          <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: p.color }} />
           <span className="text-gray-300">{p.name}:</span>
           <span className="font-bold">{p.value}</span>
         </p>
@@ -199,8 +145,6 @@ function CustomTooltip({
     </div>
   );
 }
-
-// ── Log row ───────────────────────────────────────────────────────────────────
 
 function LogRow({ log, index }: { log: ArmLog; index: number }) {
   const [open, setOpen] = useState(false);
@@ -217,12 +161,8 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
     >
       <div
         className="rounded-xl p-4 transition-colors duration-150"
-        style={{
-          backgroundColor: open ? "#161616" : "#111111",
-          border: "1px solid #222222",
-        }}
+        style={{ backgroundColor: open ? "#161616" : "#111111", border: "1px solid #222222" }}
       >
-        {/* Row header */}
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex flex-col min-w-0 flex-1">
             <div className="flex items-center gap-2">
@@ -237,13 +177,10 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
               )}
             </div>
             {log.activity_type?.length ? (
-              <span className="mt-0.5 text-xs text-gray-500">
-                {log.activity_type.join(" · ")}
-              </span>
+              <span className="mt-0.5 text-xs text-gray-500">{log.activity_type.join(" · ")}</span>
             ) : null}
           </div>
 
-          {/* Score badges */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <span
               className="rounded-lg px-2.5 py-1 text-xs font-bold tabular-nums"
@@ -264,8 +201,10 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
               St {log.stiffness_level}
             </span>
             {log.throws_count > 0 && (
-              <span className="rounded-lg px-2.5 py-1 text-xs font-semibold text-gray-400"
-                style={{ backgroundColor: "#1a1a1a" }}>
+              <span
+                className="rounded-lg px-2.5 py-1 text-xs font-semibold text-gray-400"
+                style={{ backgroundColor: "#1a1a1a" }}
+              >
                 {log.throws_count} throws
               </span>
             )}
@@ -282,7 +221,6 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
           </div>
         </div>
 
-        {/* Expanded detail */}
         <AnimatePresence>
           {open && (
             <motion.div
@@ -292,10 +230,7 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
               className="overflow-hidden"
             >
-              <div
-                className="mt-4 flex flex-col gap-2 pt-4"
-                style={{ borderTop: "1px solid #1e1e1e" }}
-              >
+              <div className="mt-4 flex flex-col gap-2 pt-4" style={{ borderTop: "1px solid #1e1e1e" }}>
                 {log.recovery_done?.length ? (
                   <div className="flex gap-2 flex-wrap">
                     <span className="text-xs text-gray-500 shrink-0 mt-0.5">Recovery:</span>
@@ -360,7 +295,7 @@ export default function DashboardPage() {
 
       const { data: prof } = await supabase
         .from("profiles")
-        .select("first_name, onboarding_complete")
+        .select("first_name, onboarding_complete, position")
         .eq("id", user.id)
         .single();
 
@@ -371,7 +306,6 @@ export default function DashboardPage() {
 
       setProfile(prof);
 
-      // All log dates for streak
       const { data: allDates } = await supabase
         .from("arm_logs")
         .select("date")
@@ -379,7 +313,6 @@ export default function DashboardPage() {
 
       if (allDates) setStreak(computeStreak(allDates.map((l) => l.date)));
 
-      // Last 14 logs for chart + insights
       const fourteenDaysAgo = new Date();
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
       const cutoff = fourteenDaysAgo.toISOString().split("T")[0];
@@ -412,8 +345,6 @@ export default function DashboardPage() {
     router.replace("/login");
   }
 
-  // ── Loading ─────────────────────────────────────────────────────────────────
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
@@ -422,9 +353,14 @@ export default function DashboardPage() {
     );
   }
 
-  const readiness = recentLog ? computeReadiness(recentLog) : null;
-  const meta = readiness !== null ? readinessMeta(readiness) : null;
-  const insights = generateInsights(logs14);
+  // ── Derived values ───────────────────────────────────────────────────────────
+
+  const readiness = calculateEstimatedReadiness(logs7);
+  const meta = readiness !== null ? getReadinessState(readiness) : null;
+
+  // Per-log base scores (most-recent first) for contextual insight checks
+  const recentScores = logs7.slice(0, 3).map(computeLogScore);
+  const insights = getContextualInsights(logs7, recentScores);
 
   const chartData = logs14.map((l) => ({
     date: formatDateShort(l.date),
@@ -458,9 +394,7 @@ export default function DashboardPage() {
             {getGreeting()}, {profile?.first_name}
           </p>
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-extrabold tracking-tight text-white">
-              Arm Health Dashboard
-            </h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-white">Arm Health Dashboard</h1>
             {streak > 0 && (
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
@@ -476,17 +410,14 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* ── Arm Health Status ───────────────────────────────────────────────── */}
+        {/* ── Arm Health Status ────────────────────────────────────────────────── */}
         <motion.div custom={1} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             {recentLog && meta ? (
               <div className="flex flex-col sm:flex-row sm:items-center gap-5">
                 {/* Big score */}
                 <div className="flex items-baseline gap-3 sm:min-w-[160px]">
-                  <span
-                    className="text-7xl font-black tabular-nums leading-none"
-                    style={{ color: meta.color }}
-                  >
+                  <span className="text-7xl font-black tabular-nums leading-none" style={{ color: meta.color }}>
                     {readiness!.toFixed(1)}
                   </span>
                   <span className="text-lg text-gray-600 font-medium">/10</span>
@@ -494,36 +425,87 @@ export default function DashboardPage() {
 
                 {/* Label + sub-scores */}
                 <div className="flex flex-col gap-3 flex-1">
-                  <div
-                    className="inline-flex self-start items-center rounded-full px-3 py-1.5 text-sm font-bold"
-                    style={{ backgroundColor: meta.bg, border: `1px solid ${meta.border}`, color: meta.color }}
-                  >
-                    {meta.label}
+                  <div className="flex flex-col gap-1">
+                    <div
+                      className="inline-flex self-start items-center rounded-full px-3 py-1.5 text-sm font-bold"
+                      style={{ backgroundColor: meta.bg, border: `1px solid ${meta.border}`, color: meta.color }}
+                    >
+                      {meta.label}
+                    </div>
+                    <p className="text-xs text-gray-500 pl-1">Based on your recent logs</p>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <ScoreBadge label="Pain" value={recentLog.pain_level} />
                     <ScoreBadge label="Soreness" value={recentLog.soreness_level} />
                     <ScoreBadge label="Stiffness" value={recentLog.stiffness_level} />
                   </div>
-                  <p className="text-xs text-gray-500">
-                    Based on your most recent log — {formatDateFull(recentLog.date)}
-                  </p>
+                  <p className="text-xs text-gray-600">{getReadinessExplanation()}</p>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col items-center py-6 gap-3 text-center">
                 <p className="text-4xl">💪</p>
                 <p className="text-base font-bold text-white">No logs yet</p>
-                <p className="text-sm text-gray-400">
-                  Start logging to see your arm health score here.
-                </p>
+                <p className="text-sm text-gray-400">Start logging to see your arm health score here.</p>
               </div>
             )}
           </Card>
         </motion.div>
 
-        {/* ── Quick Actions ────────────────────────────────────────────────────── */}
-        <motion.div custom={2} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
+        {/* ── Daily Recommendation ─────────────────────────────────────────────── */}
+        {recentLog && meta && readiness !== null && (
+          <motion.div custom={2} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+            <div
+              className="rounded-2xl p-5"
+              style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+            >
+              {/* Card header */}
+              <div className="flex items-center gap-2 mb-3">
+                <svg
+                  width="15"
+                  height="16"
+                  viewBox="0 0 15 16"
+                  fill="none"
+                  className="flex-shrink-0"
+                  style={{ color: "#6b7280" }}
+                >
+                  <path
+                    d="M7.5 1L13 3.5V8C13 11.5 10.5 14.5 7.5 15C4.5 14.5 2 11.5 2 8V3.5L7.5 1Z"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <p className="text-sm font-bold text-white">Today&apos;s Recommendation</p>
+              </div>
+
+              {/* Primary recommendation */}
+              <p className="text-sm font-semibold text-white leading-relaxed mb-3">
+                {getPrimaryRecommendation(readiness, profile?.position ?? null)}
+              </p>
+
+              {/* Contextual insights */}
+              {insights.length > 0 && (
+                <div className="flex flex-col gap-1.5 mb-3">
+                  {insights.map((insight, i) => (
+                    <p key={i} className="text-xs leading-relaxed" style={{ color: "#888888" }}>
+                      · {insight}
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {/* Disclaimer */}
+              <p className="text-[10px] leading-relaxed" style={{ color: "#555555" }}>
+                ArmTrack tracks patterns to support your decisions — not to diagnose injuries. Always listen to your body and your coach.
+              </p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Quick Actions ─────────────────────────────────────────────────────── */}
+        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
           <div className="grid grid-cols-2 gap-3">
             {loggedToday ? (
               <button
@@ -545,11 +527,7 @@ export default function DashboardPage() {
             <a
               href="#history"
               className="rounded-xl py-3.5 text-sm font-bold text-center transition-all duration-150"
-              style={{
-                backgroundColor: "#111111",
-                border: "1px solid #222222",
-                color: "#9ca3af",
-              }}
+              style={{ backgroundColor: "#111111", border: "1px solid #222222", color: "#9ca3af" }}
               onMouseOver={(e) => (e.currentTarget.style.color = "#fff")}
               onMouseOut={(e) => (e.currentTarget.style.color = "#9ca3af")}
             >
@@ -559,7 +537,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ── 14-Day Trend Chart ───────────────────────────────────────────────── */}
-        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+        <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
             {chartMounted && chartData.length >= 2 ? (
@@ -586,30 +564,9 @@ export default function DashboardPage() {
                     iconSize={8}
                     wrapperStyle={{ fontSize: 12, color: "#6b7280", paddingTop: "12px" }}
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="Pain"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: "#ef4444" }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Soreness"
-                    stroke="#f59e0b"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: "#f59e0b" }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="Stiffness"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: "#3b82f6" }}
-                  />
+                  <Line type="monotone" dataKey="Pain" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#ef4444" }} />
+                  <Line type="monotone" dataKey="Soreness" stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#f59e0b" }} />
+                  <Line type="monotone" dataKey="Stiffness" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#3b82f6" }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : chartData.length < 2 ? (
@@ -625,32 +582,6 @@ export default function DashboardPage() {
             )}
           </Card>
         </motion.div>
-
-        {/* ── Insights ─────────────────────────────────────────────────────────── */}
-        {insights.length > 0 && (
-          <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
-            <div className="flex flex-col gap-2">
-              {insights.map((insight, i) => {
-                const isPositive = insight.includes("feeling great") || insight.includes("on a roll");
-                const isWarning = insight.includes("Rest Day") || insight.includes("High pain") || insight.includes("monitor");
-                const color = isPositive ? "#22c55e" : isWarning ? "#ef4444" : "#f59e0b";
-                const bg = isPositive ? "rgba(34,197,94,0.06)" : isWarning ? "rgba(239,68,68,0.06)" : "rgba(245,158,11,0.06)";
-                const border = isPositive ? "rgba(34,197,94,0.18)" : isWarning ? "rgba(239,68,68,0.18)" : "rgba(245,158,11,0.18)";
-                const icon = isPositive ? "✦" : isWarning ? "⚠" : "→";
-                return (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 rounded-xl px-4 py-3"
-                    style={{ backgroundColor: bg, border: `1px solid ${border}` }}
-                  >
-                    <span className="text-xs font-bold mt-0.5 flex-shrink-0" style={{ color }}>{icon}</span>
-                    <p className="text-sm font-medium" style={{ color }}>{insight}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
 
         {/* ── Recent Logs ──────────────────────────────────────────────────────── */}
         <motion.div
