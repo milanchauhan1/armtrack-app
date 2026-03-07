@@ -77,13 +77,13 @@ export default function Home() {
         </span>
         <div className="flex items-center gap-3">
           <a
-            href="#"
+            href="/login"
             className="px-4 py-2 text-sm font-semibold text-white/80 transition-colors duration-150 hover:text-white"
           >
             Log in
           </a>
           <a
-            href="#"
+            href="/signup"
             className="inline-flex items-center justify-center rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-blue-500/20 transition-all duration-150 hover:bg-blue-400"
           >
             Sign up
@@ -157,7 +157,7 @@ export default function Home() {
             className="mb-10 flex flex-col gap-4 sm:flex-row"
           >
             <a
-              href="#"
+              href="/signup"
               className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:bg-blue-400 hover:shadow-blue-400/40"
             >
               Get Started Free
@@ -393,7 +393,7 @@ export default function Home() {
             Start protecting your arm today.
           </motion.h2>
           <motion.a
-            href="#"
+            href="/signup"
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
