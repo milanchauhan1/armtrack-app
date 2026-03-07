@@ -33,8 +33,8 @@ export default function SignupPage() {
       if (error) {
         setError(error.message);
       } else if (data.session) {
-        // Email confirmation is disabled — signed in immediately
-        router.push("/dashboard");
+        // Email confirmation is disabled — signed in immediately, go to onboarding
+        router.push("/onboarding");
       } else {
         // Email confirmation required
         setConfirmationSent(true);

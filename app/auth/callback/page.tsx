@@ -4,6 +4,15 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 
+async function getRedirectPath(userId: string): Promise<string> {
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("onboarding_complete")
+    .eq("id", userId)
+    .single();
+  return profile?.onboarding_complete ? "/dashboard" : "/onboarding";
+}
+
 export default function AuthCallback() {
   const router = useRouter();
 
@@ -11,12 +20,22 @@ export default function AuthCallback() {
     const code = new URLSearchParams(window.location.search).get("code");
 
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        router.replace(error ? "/login" : "/dashboard");
+      supabase.auth.exchangeCodeForSession(code).then(async ({ data, error }) => {
+        if (error || !data.session) {
+          router.replace("/login");
+          return;
+        }
+        const path = await getRedirectPath(data.session.user.id);
+        router.replace(path);
       });
     } else {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        router.replace(session ? "/dashboard" : "/login");
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
+        if (!session) {
+          router.replace("/login");
+          return;
+        }
+        const path = await getRedirectPath(session.user.id);
+        router.replace(path);
       });
     }
   }, [router]);

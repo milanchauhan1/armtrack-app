@@ -11,13 +11,22 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
       if (!user) {
         router.replace("/login");
-      } else {
-        setUser(user);
-        setLoading(false);
+        return;
       }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("onboarding_complete")
+        .eq("id", user.id)
+        .single();
+      if (!profile?.onboarding_complete) {
+        router.replace("/onboarding");
+        return;
+      }
+      setUser(user);
+      setLoading(false);
     });
   }, [router]);
 
