@@ -17,3 +17,46 @@ body {
   background-color: #000000;
   color: #ffffff;
 }
+
+/* ── Range slider ──────────────────────────────────────────────────────────── */
+
+.arm-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.arm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.arm-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+.arm-slider::-webkit-slider-thumb:active {
+  transform: scale(1.28);
+}
+
+.arm-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
