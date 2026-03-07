@@ -47,7 +47,7 @@ export default function LoginPage() {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/dashboard` },
+        options: { redirectTo: "https://armtrack.app/auth/callback" },
       });
       if (error) setError(error.message);
     } catch (err) {
