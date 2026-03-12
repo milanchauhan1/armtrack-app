@@ -183,7 +183,8 @@ function MultiCard({
         backgroundColor: selected ? "rgba(59,130,246,0.12)" : "#111",
         border: selected ? "2px solid #3B82F6" : "2px solid #1e1e1e",
         color: selected ? "#93c5fd" : "#6b7280",
-        transition: "background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease",
+        boxShadow: selected ? "0 0 14px rgba(59,130,246,0.22)" : "none",
+        transition: "background-color 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease",
       }}
     >
       {label}
@@ -204,7 +205,7 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function QL({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-sm font-bold text-white mb-5">{children}</p>
+    <p className="text-[10px] font-bold uppercase tracking-[0.18em] mb-4" style={{ color: "#3B82F6" }}>{children}</p>
   );
 }
 
@@ -557,8 +558,8 @@ export default function LogPage() {
 
               {/* ── Previous session context bar ────────────────────────── */}
               {prevLog && (
-                <div className="flex items-center gap-2 flex-wrap px-1">
-                  <span className="text-xs text-gray-600">Last session {formatDateShort(prevLog.date)}:</span>
+                <div className="flex items-center gap-2 flex-wrap px-1 py-2 rounded-xl" style={{ backgroundColor: "rgba(255,255,255,0.02)", border: "1px solid #1a1a1a" }}>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#444" }}>Last · {formatDateShort(prevLog.date)}:</span>
                   <span
                     className="rounded px-2 py-0.5 text-xs font-bold"
                     style={{ backgroundColor: `${sliderColor(prevLog.pain_level)}15`, color: sliderColor(prevLog.pain_level) }}
@@ -714,8 +715,8 @@ export default function LogPage() {
                 onClick={handleSubmit}
                 disabled={submitting}
                 whileTap={submitting ? {} : { scale: 0.98 }}
-                className="w-full rounded-2xl py-4 text-base font-bold text-white shadow-lg shadow-blue-500/20 transition-colors duration-150 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-                style={{ backgroundColor: "#3B82F6" }}
+                className="w-full rounded-2xl text-base font-bold text-white transition-colors duration-150 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                style={{ backgroundColor: "#3B82F6", height: 56, boxShadow: "0 4px 28px rgba(59,130,246,0.4)" }}
               >
                 {submitting
                   ? "Saving…"

@@ -129,7 +129,7 @@ export default function Home() {
             initial="hidden"
             animate="visible"
             variants={fadeUp}
-            className="mb-6 text-5xl font-extrabold leading-[1.06] tracking-tight text-white sm:text-6xl md:text-7xl"
+            className="mb-6 text-6xl font-extrabold leading-[1.06] tracking-tight text-white sm:text-6xl md:text-7xl"
           >
             Protect the arm.
             <br />
@@ -158,7 +158,8 @@ export default function Home() {
           >
             <a
               href="/signup"
-              className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:bg-blue-400 hover:shadow-blue-400/40"
+              className="inline-flex items-center justify-center rounded-xl bg-blue-500 px-8 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-blue-400"
+              style={{ boxShadow: "0 4px 32px rgba(59,130,246,0.45)" }}
             >
               Get Started Free
             </a>
@@ -188,6 +189,7 @@ export default function Home() {
                     border: "1px solid #222222",
                     borderRadius: "12px",
                     padding: "24px",
+                    boxShadow: "0 0 24px rgba(59,130,246,0.1)",
                   }}
                 >
                   <span className="text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
@@ -254,6 +256,7 @@ export default function Home() {
                   borderLeft: "3px solid #3B82F6",
                   borderRadius: "12px",
                   padding: "32px",
+                  boxShadow: "0 0 28px rgba(59,130,246,0.09)",
                 }}
                 className="flex flex-1 flex-col"
               >

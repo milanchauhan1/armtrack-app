@@ -131,35 +131,42 @@ function TapCard({
   subtitle,
   selected,
   onClick,
-  padY = "py-7",
+  padY: _padY,
 }: TapCardProps) {
   return (
     <motion.button
       onClick={onClick}
-      animate={{ scale: selected ? 1.03 : 1 }}
-      whileTap={{ scale: 0.96 }}
+      whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.13, ease: "easeOut" }}
-      className={`relative flex flex-col items-center justify-center gap-2.5 rounded-2xl ${padY} px-4 cursor-pointer text-center outline-none w-full`}
+      className="relative flex items-center gap-4 cursor-pointer outline-none w-full text-left"
       style={{
-        backgroundColor: selected ? "rgba(59,130,246,0.08)" : "#111111",
-        border: selected ? "2px solid #3B82F6" : "2px solid #222222",
-        transition: "background-color 0.15s ease, border-color 0.15s ease",
+        minHeight: 72,
+        paddingLeft: 20,
+        paddingRight: selected ? 48 : 20,
+        paddingTop: 16,
+        paddingBottom: 16,
+        borderRadius: 16,
+        backgroundColor: selected ? "#0f1f30" : "#0d0d0d",
+        border: selected ? "1.5px solid rgba(59,130,246,0.5)" : "1.5px solid #1e1e1e",
+        borderLeft: selected ? "3px solid #3B82F6" : "1.5px solid #1e1e1e",
+        boxShadow: selected ? "0 0 20px rgba(59,130,246,0.15)" : "none",
+        transition: "background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease",
       }}
     >
-      <span className="leading-none" style={{ color: selected ? "#3B82F6" : "#888888" }}>
+      <span className="flex-shrink-0" style={{ color: selected ? "#3B82F6" : "#555555" }}>
         {icon}
       </span>
-      <div>
+      <div className="flex flex-col gap-0.5">
         <p className="text-sm font-bold text-white">{label}</p>
         {subtitle && (
-          <p className="mt-0.5 text-xs" style={{ color: "#666666" }}>
+          <p className="text-xs" style={{ color: "#555555" }}>
             {subtitle}
           </p>
         )}
       </div>
       {selected && (
         <div
-          className="absolute top-2.5 right-2.5 rounded-full bg-blue-500 flex items-center justify-center"
+          className="absolute right-4 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0"
           style={{ width: 18, height: 18 }}
         >
           <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
@@ -229,8 +236,8 @@ function ContinueButton({
       onClick={onClick}
       disabled={disabled}
       whileTap={disabled ? {} : { scale: 0.97 }}
-      className="w-full rounded-xl bg-blue-500 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-colors duration-150 hover:bg-blue-400 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
-      style={{ maxWidth: 340 }}
+      className="w-full rounded-2xl bg-blue-500 text-base font-bold text-white transition-colors duration-150 hover:bg-blue-400 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+      style={{ maxWidth: 340, height: 56, boxShadow: "0 4px 28px rgba(59,130,246,0.38)" }}
     >
       {label}
     </motion.button>
@@ -757,7 +764,7 @@ export default function OnboardingPage() {
             <AnimatedCheckmark />
 
             <div className="space-y-2">
-              <p className="text-white font-bold text-base leading-snug">
+              <p className="text-white font-bold text-xl leading-snug">
                 You&apos;re a{" "}
                 <span style={{ color: "#3B82F6" }}>{levelLabel[data.level] || data.level}</span>{" "}
                 <span style={{ color: "#3B82F6" }}>{data.position}</span> focused on{" "}
@@ -946,7 +953,7 @@ export default function OnboardingPage() {
       <div className="fixed top-0 left-0 right-0 z-50" style={{ height: 3, backgroundColor: "#111111" }}>
         <motion.div
           className="h-full"
-          style={{ backgroundColor: "#3B82F6" }}
+          style={{ backgroundColor: "#3B82F6", boxShadow: "0 0 10px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.4)" }}
           initial={false}
           animate={{ width: `${progressPct}%` }}
           transition={{ duration: 0.5, ease: easing }}

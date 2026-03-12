@@ -96,7 +96,7 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
         }}
       >
         {/* Collapsed row */}
-        <div className="px-4 py-3.5 flex items-start gap-3">
+        <div className="px-4 py-4 flex items-start gap-3">
           {/* Left: date + activity */}
           <div className="flex flex-col min-w-0 flex-1 gap-0.5">
             <div className="flex items-center gap-2 flex-wrap">
@@ -397,15 +397,16 @@ export default function HistoryPage() {
                       width: 40,
                       minWidth: 40,
                       backgroundColor: isSelected
-                        ? "rgba(59,130,246,0.15)"
+                        ? "rgba(59,130,246,0.18)"
                         : isToday
-                        ? "rgba(59,130,246,0.06)"
+                        ? "rgba(59,130,246,0.08)"
                         : "transparent",
                       border: isToday
-                        ? "1.5px solid rgba(59,130,246,0.4)"
+                        ? "1.5px solid rgba(59,130,246,0.45)"
                         : isSelected
-                        ? "1.5px solid rgba(59,130,246,0.5)"
+                        ? "1.5px solid rgba(59,130,246,0.6)"
                         : "1.5px solid transparent",
+                      boxShadow: (isToday || isSelected) ? "0 0 12px rgba(59,130,246,0.2)" : "none",
                     }}
                   >
                     {/* Day letter */}
@@ -448,7 +449,7 @@ export default function HistoryPage() {
               {/* Avg Readiness */}
               <div
                 className="rounded-2xl p-4 flex flex-col gap-1"
-                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e" }}
+                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e", borderTop: "2px solid #22C55E" }}
               >
                 <span
                   className="text-2xl font-black tabular-nums leading-none"
@@ -474,7 +475,7 @@ export default function HistoryPage() {
               {/* Total Throws */}
               <div
                 className="rounded-2xl p-4 flex flex-col gap-1"
-                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e" }}
+                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e", borderTop: "2px solid #3B82F6" }}
               >
                 <span className="text-2xl font-black tabular-nums leading-none text-white">
                   {totalThrows > 0 ? totalThrows.toLocaleString() : "—"}
@@ -488,7 +489,7 @@ export default function HistoryPage() {
               {/* Streak */}
               <div
                 className="rounded-2xl p-4 flex flex-col gap-1"
-                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e" }}
+                style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e", borderTop: "2px solid #F59E0B" }}
               >
                 <span
                   className="text-2xl font-black tabular-nums leading-none"

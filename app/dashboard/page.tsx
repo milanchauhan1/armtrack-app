@@ -97,7 +97,7 @@ function Card({ children, className = "" }: { children: React.ReactNode; classNa
   return (
     <div
       className={`rounded-2xl p-5 ${className}`}
-      style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+      style={{ backgroundColor: "#111111", border: "1px solid #222222", boxShadow: "0 0 24px rgba(59,130,246,0.07)" }}
     >
       {children}
     </div>
@@ -416,11 +416,26 @@ export default function DashboardPage() {
             {recentLog && meta ? (
               <div className="flex flex-col sm:flex-row sm:items-center gap-5">
                 {/* Big score */}
-                <div className="flex items-baseline gap-3 sm:min-w-[160px]">
-                  <span className="text-7xl font-black tabular-nums leading-none" style={{ color: meta.color }}>
+                <div className="relative flex items-baseline gap-3 sm:min-w-[160px]">
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "40%",
+                      transform: "translate(-50%, -50%)",
+                      width: 160,
+                      height: 160,
+                      borderRadius: "50%",
+                      background: `radial-gradient(circle, ${meta.color}28 0%, transparent 70%)`,
+                      filter: "blur(24px)",
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <span className="relative font-black tabular-nums leading-none" style={{ color: meta.color, fontSize: 88 }}>
                     {readiness!.toFixed(1)}
                   </span>
-                  <span className="text-lg text-gray-600 font-medium">/10</span>
+                  <span className="relative text-lg text-gray-600 font-medium">/10</span>
                 </div>
 
                 {/* Label + sub-scores */}
@@ -457,7 +472,7 @@ export default function DashboardPage() {
           <motion.div custom={2} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
             <div
               className="rounded-2xl p-5"
-              style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+              style={{ backgroundColor: "#111111", border: "1px solid #222222", borderLeft: `3px solid ${meta.color}`, boxShadow: "0 0 24px rgba(59,130,246,0.07)" }}
             >
               {/* Card header */}
               <div className="flex items-center gap-2 mb-3">
@@ -510,7 +525,7 @@ export default function DashboardPage() {
             {loggedToday ? (
               <button
                 disabled
-                className="rounded-xl py-3.5 text-sm font-bold cursor-not-allowed"
+                className="rounded-2xl py-3.5 text-sm font-bold cursor-not-allowed"
                 style={{ backgroundColor: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#4ade80" }}
               >
                 Logged Today ✓
@@ -518,15 +533,15 @@ export default function DashboardPage() {
             ) : (
               <Link
                 href="/log"
-                className="rounded-xl py-3.5 text-sm font-bold text-white text-center transition-all duration-150 hover:opacity-90"
-                style={{ backgroundColor: "#3B82F6" }}
+                className="rounded-2xl py-3.5 text-sm font-bold text-white text-center transition-all duration-150 hover:opacity-90"
+                style={{ backgroundColor: "#3B82F6", boxShadow: "0 4px 20px rgba(59,130,246,0.35)" }}
               >
                 Log Today
               </Link>
             )}
             <a
               href="#history"
-              className="rounded-xl py-3.5 text-sm font-bold text-center transition-all duration-150"
+              className="rounded-2xl py-3.5 text-sm font-bold text-center transition-all duration-150"
               style={{ backgroundColor: "#111111", border: "1px solid #222222", color: "#9ca3af" }}
               onMouseOver={(e) => (e.currentTarget.style.color = "#fff")}
               onMouseOut={(e) => (e.currentTarget.style.color = "#9ca3af")}
