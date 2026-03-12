@@ -68,9 +68,9 @@ function PhoneMockup() {
         height: 508,
         borderRadius: 48,
         backgroundColor: "#060606",
-        border: "1px solid #1e1e1e",
+        border: "1px solid #333333",
         boxShadow:
-          "0 56px 100px rgba(0,0,0,0.95), inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 90px rgba(59,130,246,0.1)",
+          "0 56px 100px rgba(0,0,0,0.95), inset 0 0 0 1px rgba(255,255,255,0.04), 0 0 30px rgba(59,130,246,0.12)",
         padding: "32px 18px 24px",
         display: "flex",
         flexDirection: "column",
@@ -110,7 +110,7 @@ function PhoneMockup() {
         <span
           style={{
             fontSize: 9,
-            color: "#444",
+            color: "#999",
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.1em",
@@ -136,7 +136,7 @@ function PhoneMockup() {
           style={{
             fontSize: 8,
             fontWeight: 700,
-            color: "#3a3a3a",
+            color: "#888",
             textTransform: "uppercase",
             letterSpacing: "0.18em",
             margin: 0,
@@ -178,7 +178,7 @@ function PhoneMockup() {
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <span
-              style={{ fontSize: 11, color: "#2e2e2e", fontWeight: 500, lineHeight: 1 }}
+              style={{ fontSize: 11, color: "#888", fontWeight: 500, lineHeight: 1 }}
             >
               /10
             </span>
@@ -228,7 +228,7 @@ function PhoneMockup() {
             <span
               style={{
                 fontSize: 7,
-                color: "#383838",
+                color: "#888",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
               }}
@@ -249,7 +249,7 @@ function PhoneMockup() {
           padding: "9px 11px",
         }}
       >
-        <p style={{ fontSize: 10, color: "#666", lineHeight: 1.55, margin: 0 }}>
+        <p style={{ fontSize: 10, color: "#aaaaaa", lineHeight: 1.55, margin: 0 }}>
           You&rsquo;re good to throw today. Normal intensity.
         </p>
       </div>
@@ -379,8 +379,11 @@ export default function Home() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.85, delay: 0.2, ease }}
               className="flex justify-center md:hidden"
+              style={{ marginBottom: 8 }}
             >
-              <PhoneMockup />
+              <div style={{ zoom: 0.63 }}>
+                <PhoneMockup />
+              </div>
             </motion.div>
 
             {/* Subheadline */}
@@ -454,7 +457,7 @@ export default function Home() {
                     strokeWidth={2.5}
                     style={{ color: "#3B82F6", flexShrink: 0 }}
                   />
-                  <span className="text-sm" style={{ color: "#555" }}>
+                  <span className="text-sm" style={{ color: "#aaaaaa" }}>
                     {bullet}
                   </span>
                 </div>
@@ -502,7 +505,7 @@ export default function Home() {
                   )}
                   <span
                     className="text-xs font-semibold uppercase tracking-widest"
-                    style={{ color: "#555" }}
+                    style={{ color: "#aaaaaa" }}
                   >
                     {item}
                   </span>
@@ -529,7 +532,7 @@ export default function Home() {
           <ScrollFade delay={0.08}>
             <p
               className="text-center text-lg mb-12 mt-4"
-              style={{ color: "#555" }}
+              style={{ color: "#aaaaaa" }}
             >
               The problem is players don&rsquo;t have a system to catch them.
             </p>
@@ -627,7 +630,7 @@ export default function Home() {
                     >
                       {step.title}
                     </h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "#555" }}>
+                    <p className="text-sm leading-relaxed" style={{ color: "#aaaaaa" }}>
                       {step.desc}
                     </p>
                   </div>
@@ -693,7 +696,7 @@ export default function Home() {
                   >
                     {item.stat}
                   </p>
-                  <p className="text-sm leading-relaxed" style={{ color: "#555" }}>
+                  <p className="text-sm leading-relaxed" style={{ color: "#aaaaaa" }}>
                     {item.label}
                   </p>
                 </div>
@@ -749,7 +752,7 @@ export default function Home() {
                   <br />
                   Track it like one.
                 </h2>
-                <p className="text-base" style={{ color: "#555" }}>
+                <p className="text-base" style={{ color: "#aaaaaa" }}>
                   Free for every athlete. 30 seconds a day. No guessing.
                 </p>
                 <a
@@ -776,12 +779,12 @@ export default function Home() {
         style={{ borderTop: "1px solid #222" }}
       >
         <div className="mx-auto max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span className="text-sm" style={{ color: "#3a3a3a" }}>
-            ArmTrack © 2025
+          <span className="text-sm" style={{ color: "#aaaaaa" }}>
+            ArmTrack © 2026
           </span>
           <span
             className="text-sm text-center sm:text-right"
-            style={{ color: "#333" }}
+            style={{ color: "#aaaaaa" }}
           >
             Built for players who take their arm seriously.
           </span>
