@@ -315,7 +315,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-24 pb-16 sm:px-10">
+      <section className="relative flex min-h-screen flex-col justify-start md:justify-center overflow-hidden px-6 pt-20 pb-8 md:pt-24 md:pb-16 sm:px-10">
 
         {/* Background radial glow */}
         <div
@@ -347,17 +347,17 @@ export default function Home() {
               transition={{ duration: 0.5, ease }}
             >
               <span
-                className="inline-flex items-center text-[10px] md:text-xs font-semibold"
+                className="inline-flex items-center text-[9px] md:text-xs font-semibold whitespace-nowrap"
                 style={{
                   border: "1px solid #222",
                   color: "#888",
-                  padding: "4px 10px",
+                  padding: "4px 8px",
                   borderRadius: 6,
-                  letterSpacing: "0.10em",
+                  letterSpacing: "0.08em",
                   textTransform: "uppercase",
                 }}
               >
-                Baseball &amp; Softball Arm Care
+                Arm Care · Baseball &amp; Softball
               </span>
             </motion.div>
 
@@ -455,7 +455,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 28, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.2, ease }}
-            className="flex-shrink-0 flex items-center justify-center w-[140px] md:w-auto md:justify-end"
+            className="flex-shrink-0 flex items-center justify-center w-[130px] md:w-auto md:justify-end mr-3 md:mr-0"
           >
             {/* Mobile: scaled to fit 140px column */}
             <div className="md:hidden" style={{ zoom: 0.53 }}>
