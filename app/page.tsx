@@ -46,10 +46,10 @@ function PhoneMockup() {
         border: "1px solid #2a2a2a",
         boxShadow:
           "0 32px 64px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(59,130,246,0.08)",
-        padding: "6% 5% 5%",
+        padding: 12,
         display: "flex",
         flexDirection: "column",
-        gap: 9,
+        gap: 6,
         width: "100%",
         aspectRatio: "9 / 19.5",
         boxSizing: "border-box",
@@ -98,10 +98,10 @@ function PhoneMockup() {
           backgroundColor: "#0d0d0d",
           border: "1px solid #1e1e1e",
           borderRadius: 14,
-          padding: "14px 14px 12px",
+          padding: "8px 10px 6px",
           display: "flex",
           flexDirection: "column",
-          gap: 8,
+          gap: 4,
         }}
       >
         <span
@@ -123,7 +123,7 @@ function PhoneMockup() {
               aria-hidden="true"
               style={{
                 position: "absolute",
-                inset: -8,
+                inset: -4,
                 borderRadius: "50%",
                 background: "radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 70%)",
                 filter: "blur(12px)",
@@ -132,7 +132,7 @@ function PhoneMockup() {
             />
             <span
               style={{
-                fontSize: 64,
+                fontSize: 44,
                 fontWeight: 900,
                 color: "#22C55E",
                 lineHeight: 1,
@@ -166,7 +166,7 @@ function PhoneMockup() {
       </div>
 
       {/* Stat boxes */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
         {(
           [
             ["Pain", "1"],
@@ -180,19 +180,19 @@ function PhoneMockup() {
               backgroundColor: "#111",
               border: "1px solid #222",
               borderRadius: 10,
-              padding: "8px 4px",
+              padding: "4px 8px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              gap: 3,
+              gap: 2,
             }}
           >
-            <span style={{ fontSize: 18, fontWeight: 900, color: "#22C55E", lineHeight: 1 }}>
+            <span style={{ fontSize: 13, fontWeight: 900, color: "#22C55E", lineHeight: 1 }}>
               {val}
             </span>
             <span
               style={{
-                fontSize: 7,
+                fontSize: 10,
                 color: "#555",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
@@ -214,7 +214,7 @@ function PhoneMockup() {
           padding: "8px 10px",
         }}
       >
-        <p style={{ fontSize: 10, color: "#999", lineHeight: 1.5, margin: 0 }}>
+        <p style={{ fontSize: 11, color: "#999", lineHeight: 1.5, margin: 0 }}>
           You&rsquo;re good to throw today. Normal intensity.
         </p>
       </div>
@@ -224,12 +224,12 @@ function PhoneMockup() {
         style={{
           backgroundColor: "#3B82F6",
           borderRadius: 12,
-          padding: "10px",
+          padding: "6px",
           textAlign: "center",
           boxShadow: "0 4px 16px rgba(59,130,246,0.4)",
         }}
       >
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>Log Today →</span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: "#fff" }}>Log Today →</span>
       </div>
     </div>
   );
@@ -356,7 +356,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.24, ease }}
-              className="mt-5 md:mt-0 flex flex-col md:flex-row gap-3"
+              className="hidden md:flex md:flex-row gap-3"
             >
               <a
                 href="/signup"
@@ -426,11 +426,23 @@ export default function Home() {
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.18, ease }}
-            className="flex justify-center md:flex-1 md:justify-end mt-6 md:mt-0"
+            className="flex flex-col items-center md:flex-1 md:items-end mt-6 md:mt-0"
           >
             <div style={{ width: "min(72vw, 300px)" }} className="md:max-w-[280px]">
               <PhoneMockup />
             </div>
+            {/* Mobile-only CTA — sits directly below mockup */}
+            <a
+              href="/signup"
+              className="md:hidden mt-4 inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full py-4 transition-all duration-150"
+              style={{
+                width: "min(72vw, 300px)",
+                backgroundColor: "#3B82F6",
+                boxShadow: "0 4px 28px rgba(59,130,246,0.4)",
+              }}
+            >
+              Start Free
+            </a>
           </motion.div>
         </div>
       </section>
