@@ -335,10 +335,10 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-16 gap-12">
+        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-16 gap-8">
 
           {/* Left: text */}
-          <div className="flex flex-col gap-6 md:flex-1">
+          <div className="flex flex-col gap-5 md:flex-1">
 
             {/* Badge */}
             <motion.div
@@ -347,13 +347,13 @@ export default function Home() {
               transition={{ duration: 0.5, ease }}
             >
               <span
-                className="inline-flex items-center text-xs font-semibold"
+                className="inline-flex items-center text-[10px] md:text-xs font-semibold"
                 style={{
                   border: "1px solid #222",
-                  color: "#666",
-                  padding: "5px 12px",
+                  color: "#888",
+                  padding: "4px 10px",
                   borderRadius: 6,
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.10em",
                   textTransform: "uppercase",
                 }}
               >
@@ -366,20 +366,30 @@ export default function Home() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.08, ease }}
-              className="font-black tracking-tight text-white leading-[1.0]"
-              style={{ fontSize: "clamp(38px, 9vw, 72px)" }}
+              className="font-black tracking-tight text-white leading-[1.05]"
+              style={{ fontSize: "clamp(30px, 9vw, 72px)" }}
             >
               Know if your arm is<br />
               ready to throw today.
             </motion.h1>
+
+            {/* Mobile mockup — between headline and CTA on small screens */}
+            <motion.div
+              initial={{ opacity: 0, y: 28, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.85, delay: 0.2, ease }}
+              className="flex justify-center md:hidden"
+            >
+              <PhoneMockup />
+            </motion.div>
 
             {/* Subheadline */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.18, ease }}
-              className="text-lg leading-relaxed max-w-lg"
-              style={{ color: "#777" }}
+              className="hidden md:block text-lg leading-relaxed max-w-lg"
+              style={{ color: "#aaaaaa" }}
             >
               Log pain, soreness, stiffness, and throwing load in under 30 seconds.
               Get an estimated readiness level and a clear recommendation — every day.
@@ -406,7 +416,7 @@ export default function Home() {
               </a>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-xl text-base font-semibold transition-all duration-200 hover:bg-white/[0.04]"
+                className="hidden md:inline-flex items-center justify-center rounded-xl text-base font-semibold transition-all duration-200 hover:bg-white/[0.04]"
                 style={{
                   border: "1px solid rgba(255,255,255,0.15)",
                   color: "rgba(255,255,255,0.7)",
@@ -431,7 +441,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.38, ease }}
-              className="flex flex-col gap-2"
+              className="hidden md:flex flex-col gap-2"
             >
               {[
                 "Log in under 30 seconds",
@@ -452,12 +462,12 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right: phone mockup */}
+          {/* Right: phone mockup (desktop only — mobile version is inline above) */}
           <motion.div
             initial={{ opacity: 0, y: 28, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.2, ease }}
-            className="flex justify-center md:justify-end md:flex-shrink-0"
+            className="hidden md:flex justify-end flex-shrink-0"
           >
             <PhoneMockup />
           </motion.div>
