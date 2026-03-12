@@ -35,21 +35,21 @@ function ScrollFade({
   );
 }
 
-// ── Phone Mockup ───────────────────────────────────────────────────────────────
+// ── Phone Mockup — replicates the actual dashboard ────────────────────────────
 
 function PhoneMockup() {
   return (
     <div
       style={{
-        backgroundColor: "#111",
+        backgroundColor: "#0a0a0a",
         borderRadius: 36,
         border: "1px solid #2a2a2a",
         boxShadow:
           "0 32px 64px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(59,130,246,0.08)",
-        padding: 12,
+        padding: 14,
         display: "flex",
         flexDirection: "column",
-        gap: 6,
+        gap: 7,
         width: "100%",
         aspectRatio: "9 / 19.5",
         boxSizing: "border-box",
@@ -58,178 +58,144 @@ function PhoneMockup() {
       {/* Camera notch */}
       <div
         className="flex-shrink-0"
-        style={{
-          width: 64,
-          height: 6,
-          backgroundColor: "#222",
-          borderRadius: 999,
-          margin: "0 auto 4px",
-        }}
+        style={{ width: 60, height: 5, backgroundColor: "#1e1e1e", borderRadius: 999, margin: "0 auto 1px" }}
       />
 
-      {/* App header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginTop: 4,
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
+      {/* Nav — matches dashboard nav */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
           Arm<span style={{ color: "#3B82F6" }}>Track</span>
         </span>
-        <span
-          style={{
-            fontSize: 9,
-            color: "#555",
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.14em",
-          }}
-        >
+        <span style={{ fontSize: 8, color: "#555", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em" }}>
           Today
         </span>
       </div>
 
-      {/* Readiness score block */}
+      {/* Dashboard label */}
+      <p style={{ fontSize: 7, fontWeight: 700, color: "#3B82F6", textTransform: "uppercase", letterSpacing: "0.2em", margin: 0 }}>
+        Arm Health Dashboard
+      </p>
+
+      {/* Score card — matches Card component: bg #111, border #222, blue glow */}
       <div
         style={{
-          backgroundColor: "#0d0d0d",
-          border: "1px solid #1e1e1e",
-          borderRadius: 14,
-          padding: "8px 10px 6px",
+          backgroundColor: "#111111",
+          border: "1px solid #222222",
+          borderRadius: 12,
+          padding: "9px 10px 8px",
           display: "flex",
           flexDirection: "column",
-          gap: 4,
+          gap: 6,
+          boxShadow: "0 0 24px rgba(59,130,246,0.07)",
         }}
       >
-        <span
-          style={{
-            fontSize: 9,
-            fontWeight: 700,
-            color: "#666",
-            textTransform: "uppercase",
-            letterSpacing: "0.18em",
-          }}
-        >
-          Estimated Readiness
-        </span>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {/* Score with glow */}
+        {/* Score row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ position: "relative" }}>
             <div
               aria-hidden="true"
               style={{
                 position: "absolute",
-                inset: -4,
+                top: "50%", left: "40%",
+                transform: "translate(-50%,-50%)",
+                width: 60, height: 60,
                 borderRadius: "50%",
                 background: "radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 70%)",
-                filter: "blur(12px)",
+                filter: "blur(10px)",
                 pointerEvents: "none",
               }}
             />
             <span
               style={{
-                fontSize: 44,
-                fontWeight: 900,
-                color: "#22C55E",
-                lineHeight: 1,
-                position: "relative",
-                display: "block",
+                fontSize: 44, fontWeight: 900, color: "#22C55E",
+                lineHeight: 1, position: "relative", display: "block",
+                fontVariantNumeric: "tabular-nums",
               }}
             >
               8.2
             </span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-            <span style={{ fontSize: 11, color: "#444", fontWeight: 500, lineHeight: 1 }}>/10</span>
+          <span style={{ fontSize: 11, color: "#4b5563", fontWeight: 500 }}>/10</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 3, marginLeft: 2 }}>
+            {/* State badge — matches dashboard inline-flex badge */}
             <span
               style={{
-                display: "inline-flex",
-                alignItems: "center",
+                display: "inline-flex", alignItems: "center",
                 backgroundColor: "rgba(34,197,94,0.1)",
                 border: "1px solid rgba(34,197,94,0.2)",
-                color: "#22C55E",
-                fontSize: 10,
-                fontWeight: 700,
-                padding: "3px 9px",
-                borderRadius: 999,
-                whiteSpace: "nowrap",
+                color: "#22C55E", fontSize: 9, fontWeight: 700,
+                padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap",
               }}
             >
-              Ready
+              Good to Go
             </span>
+            <span style={{ fontSize: 7, color: "#6b7280", paddingLeft: 1 }}>Based on your recent logs</span>
           </div>
+        </div>
+
+        {/* ScoreBadges — matches dashboard ScoreBadge: bg #0d0d0d, border #1e1e1e */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
+          {(
+            [["Pain", "1"], ["Soreness", "2"], ["Stiffness", "1"]] as [string, string][]
+          ).map(([label, val]) => (
+            <div
+              key={label}
+              style={{
+                backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
+                borderRadius: 10, padding: "5px 4px",
+                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+              }}
+            >
+              <span style={{ fontSize: 14, fontWeight: 900, color: "#22C55E", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+                {val}
+              </span>
+              <span style={{ fontSize: 8, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                {label}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Stat boxes */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
-        {(
-          [
-            ["Pain", "1"],
-            ["Soreness", "2"],
-            ["Stiffness", "1"],
-          ] as [string, string][]
-        ).map(([label, val]) => (
-          <div
-            key={label}
-            style={{
-              backgroundColor: "#111",
-              border: "1px solid #222",
-              borderRadius: 10,
-              padding: "4px 8px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
-            <span style={{ fontSize: 13, fontWeight: 900, color: "#22C55E", lineHeight: 1 }}>
-              {val}
-            </span>
-            <span
-              style={{
-                fontSize: 10,
-                color: "#555",
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-              }}
-            >
-              {label}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Recommendation */}
+      {/* Recommendation — matches dashboard left-border card */}
       <div
         style={{
-          backgroundColor: "#0d0d0d",
-          border: "1px solid #1e1e1e",
-          borderLeft: "2px solid #22C55E",
-          borderRadius: 10,
-          padding: "8px 10px",
+          backgroundColor: "#111111", border: "1px solid #222222",
+          borderLeft: "2.5px solid #22C55E", borderRadius: 10,
+          padding: "7px 9px",
+          boxShadow: "0 0 24px rgba(59,130,246,0.07)",
         }}
       >
-        <p style={{ fontSize: 11, color: "#999", lineHeight: 1.5, margin: 0 }}>
-          You&rsquo;re good to throw today. Normal intensity.
+        <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: "0 0 3px", lineHeight: 1.3 }}>
+          Today&apos;s Recommendation
+        </p>
+        <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: "0 0 3px", lineHeight: 1.5 }}>
+          Normal session today. Stay within your pitch count plan.
+        </p>
+        <p style={{ fontSize: 7, color: "#555555", margin: 0, lineHeight: 1.4 }}>
+          Tracking patterns to support your decisions, not diagnose injuries.
         </p>
       </div>
 
-      {/* CTA */}
-      <div
-        style={{
-          backgroundColor: "#3B82F6",
-          borderRadius: 12,
-          padding: "6px",
-          textAlign: "center",
-          boxShadow: "0 4px 16px rgba(59,130,246,0.4)",
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 700, color: "#fff" }}>Log Today →</span>
+      {/* Action buttons — matches dashboard grid grid-cols-2 gap-3 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+        <div
+          style={{
+            backgroundColor: "#3B82F6", borderRadius: 10,
+            padding: "8px 6px", textAlign: "center",
+            boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+          }}
+        >
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#fff" }}>Log Today</span>
+        </div>
+        <div
+          style={{
+            backgroundColor: "#111111", border: "1px solid #222222",
+            borderRadius: 10, padding: "8px 6px", textAlign: "center",
+          }}
+        >
+          <span style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af" }}>View History</span>
+        </div>
       </div>
     </div>
   );
@@ -285,7 +251,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-10 md:pt-28 md:pb-20 sm:px-10 min-h-screen">
+      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-6 md:pt-28 md:pb-20 sm:px-10 md:min-h-screen">
 
         {/* Subtle radial glow */}
         <div
@@ -311,12 +277,12 @@ export default function Home() {
               <span
                 className="inline-flex items-center font-semibold whitespace-nowrap"
                 style={{
-                  fontSize: 10,
+                  fontSize: 9,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
                   color: "#888",
                   border: "1px solid #2a2a2a",
-                  padding: "5px 11px",
+                  padding: "4px 9px",
                   borderRadius: 6,
                 }}
               >
@@ -331,7 +297,7 @@ export default function Home() {
               transition={{ duration: 0.55, delay: 0.08, ease }}
               className="mt-3 md:mt-0 font-bold text-white"
               style={{
-                fontSize: "clamp(34px, 8vw, 56px)",
+                fontSize: "clamp(30px, 8vw, 56px)",
                 lineHeight: 1.1,
                 letterSpacing: "-0.02em",
               }}
