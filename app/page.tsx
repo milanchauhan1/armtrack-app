@@ -46,156 +46,127 @@ function PhoneMockup() {
         border: "1px solid #2a2a2a",
         boxShadow:
           "0 32px 64px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(59,130,246,0.08)",
-        padding: 14,
-        display: "flex",
-        flexDirection: "column",
-        gap: 7,
         width: "100%",
         aspectRatio: "9 / 19.5",
         boxSizing: "border-box",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* Camera notch */}
-      <div
-        className="flex-shrink-0"
-        style={{ width: 60, height: 5, backgroundColor: "#1e1e1e", borderRadius: 999, margin: "0 auto 1px" }}
-      />
-
-      {/* Nav — matches dashboard nav */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 11, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
-          Arm<span style={{ color: "#3B82F6" }}>Track</span>
-        </span>
-        <span style={{ fontSize: 8, color: "#555", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.14em" }}>
-          Today
-        </span>
+      <div style={{ display: "flex", justifyContent: "center", paddingTop: 10, paddingBottom: 6, flexShrink: 0 }}>
+        <div style={{ width: 48, height: 4, backgroundColor: "#1e1e1e", borderRadius: 999 }} />
       </div>
 
-      {/* Dashboard label */}
-      <p style={{ fontSize: 7, fontWeight: 700, color: "#3B82F6", textTransform: "uppercase", letterSpacing: "0.2em", margin: 0 }}>
-        Arm Health Dashboard
-      </p>
+      {/* Inner content — fills remaining height */}
+      <div className="flex flex-col h-full" style={{ flex: 1, minHeight: 0 }}>
 
-      {/* Score card — matches Card component: bg #111, border #222, blue glow */}
-      <div
-        style={{
-          backgroundColor: "#111111",
-          border: "1px solid #222222",
-          borderRadius: 12,
-          padding: "9px 10px 8px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 6,
-          boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-        }}
-      >
-        {/* Score row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ position: "relative" }}>
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                top: "50%", left: "40%",
-                transform: "translate(-50%,-50%)",
-                width: 60, height: 60,
-                borderRadius: "50%",
-                background: "radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 70%)",
-                filter: "blur(10px)",
-                pointerEvents: "none",
-              }}
-            />
-            <span
-              style={{
-                fontSize: 44, fontWeight: 900, color: "#22C55E",
-                lineHeight: 1, position: "relative", display: "block",
-                fontVariantNumeric: "tabular-nums",
-              }}
-            >
+        {/* Status bar */}
+        <div
+          className="flex justify-between items-center"
+          style={{ padding: "0 16px 8px", borderBottom: "1px solid #1a1a1a", flexShrink: 0 }}
+        >
+          <span style={{ fontSize: 13, fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>
+            Arm<span style={{ color: "#3B82F6" }}>Track</span>
+          </span>
+          <span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em" }}>
+            Today
+          </span>
+        </div>
+
+        {/* Readiness — flex-1 centered */}
+        <div
+          className="flex flex-col items-center justify-center"
+          style={{ flex: 1, padding: "16px 16px 8px" }}
+        >
+          {/* Label */}
+          <span style={{ fontSize: 9, color: "#555", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
+            Estimated Readiness
+          </span>
+
+          {/* Score */}
+          <div style={{ display: "flex", alignItems: "baseline", gap: 4, lineHeight: 1 }}>
+            <span style={{ fontSize: 52, fontWeight: 700, color: "#22C55E", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
               8.2
             </span>
+            <span style={{ fontSize: 16, color: "#444", fontWeight: 500 }}>/10</span>
           </div>
-          <span style={{ fontSize: 11, color: "#4b5563", fontWeight: 500 }}>/10</span>
-          <div style={{ display: "flex", flexDirection: "column", gap: 3, marginLeft: 2 }}>
-            {/* State badge — matches dashboard inline-flex badge */}
-            <span
-              style={{
-                display: "inline-flex", alignItems: "center",
-                backgroundColor: "rgba(34,197,94,0.1)",
-                border: "1px solid rgba(34,197,94,0.2)",
-                color: "#22C55E", fontSize: 9, fontWeight: 700,
-                padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap",
-              }}
-            >
-              Good to Go
-            </span>
-            <span style={{ fontSize: 7, color: "#6b7280", paddingLeft: 1 }}>Based on your recent logs</span>
+
+          {/* Ready badge */}
+          <span
+            style={{
+              marginTop: 6,
+              fontSize: 11,
+              backgroundColor: "#052e16",
+              color: "#22C55E",
+              padding: "2px 12px",
+              borderRadius: 999,
+            }}
+          >
+            Ready
+          </span>
+
+          {/* Divider */}
+          <div style={{ borderTop: "1px solid #1a1a1a", width: "100%", margin: "12px 0" }} />
+
+          {/* Stat boxes */}
+          <div style={{ display: "flex", gap: 8, width: "100%" }}>
+            {([["Pain", "1"], ["Soreness", "2"], ["Stiffness", "1"]] as [string, string][]).map(([label, val]) => (
+              <div
+                key={label}
+                style={{
+                  flex: 1,
+                  backgroundColor: "#0a0a0a",
+                  border: "1px solid #222",
+                  borderRadius: 8,
+                  padding: "8px 4px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <span style={{ fontSize: 15, fontWeight: 600, color: "#22C55E", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+                  {val}
+                </span>
+                <span style={{ fontSize: 9, color: "#555", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: 2 }}>
+                  {label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ScoreBadges — matches dashboard ScoreBadge: bg #0d0d0d, border #1e1e1e */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
-          {(
-            [["Pain", "1"], ["Soreness", "2"], ["Stiffness", "1"]] as [string, string][]
-          ).map(([label, val]) => (
-            <div
-              key={label}
-              style={{
-                backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
-                borderRadius: 10, padding: "5px 4px",
-                display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-              }}
-            >
-              <span style={{ fontSize: 14, fontWeight: 900, color: "#22C55E", lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-                {val}
-              </span>
-              <span style={{ fontSize: 8, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                {label}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recommendation — matches dashboard left-border card */}
-      <div
-        style={{
-          backgroundColor: "#111111", border: "1px solid #222222",
-          borderLeft: "2.5px solid #22C55E", borderRadius: 10,
-          padding: "7px 9px",
-          boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-        }}
-      >
-        <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: "0 0 3px", lineHeight: 1.3 }}>
-          Today&apos;s Recommendation
-        </p>
-        <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: "0 0 3px", lineHeight: 1.5 }}>
-          Normal session today. Stay within your pitch count plan.
-        </p>
-        <p style={{ fontSize: 7, color: "#555555", margin: 0, lineHeight: 1.4 }}>
-          Tracking patterns to support your decisions, not diagnose injuries.
-        </p>
-      </div>
-
-      {/* Action buttons — matches dashboard grid grid-cols-2 gap-3 */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
+        {/* Recommendation card */}
         <div
           style={{
-            backgroundColor: "#3B82F6", borderRadius: 10,
-            padding: "8px 6px", textAlign: "center",
-            boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+            margin: "0 12px 8px",
+            backgroundColor: "#0a0f0a",
+            border: "1px solid #1a2a1a",
+            borderRadius: 12,
+            padding: "10px 12px",
+            flexShrink: 0,
           }}
         >
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#fff" }}>Log Today</span>
+          <p style={{ fontSize: 11, color: "#aaa", lineHeight: 1.5, margin: 0 }}>
+            You&apos;re good to throw today. Normal intensity.
+          </p>
         </div>
+
+        {/* Log Today button */}
         <div
           style={{
-            backgroundColor: "#111111", border: "1px solid #222222",
-            borderRadius: 10, padding: "8px 6px", textAlign: "center",
+            margin: "0 12px 16px",
+            backgroundColor: "#3B82F6",
+            borderRadius: 12,
+            padding: "10px 0",
+            textAlign: "center",
+            flexShrink: 0,
           }}
         >
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af" }}>View History</span>
+          <span style={{ fontSize: 12, fontWeight: 600, color: "#fff" }}>Log Today →</span>
         </div>
+
       </div>
     </div>
   );
