@@ -35,18 +35,12 @@ function ScrollFade({
   );
 }
 
-// ── Phone Mockup — replicates the actual dashboard ────────────────────────────
+// ── Phone Mockup ──────────────────────────────────────────────────────────────
 
 function PhoneMockup() {
-  // Exact values from readiness.ts + dashboard for score 8.2 → "Good to Go"
-  const metaColor = "#22C55E";
-  const metaBg = "rgba(34,197,94,0.08)";
-  const metaBorder = "rgba(34,197,94,0.2)";
-
   return (
     <div
       style={{
-        backgroundColor: "#0a0a0a",
         borderRadius: 36,
         border: "1px solid #2a2a2a",
         boxShadow:
@@ -55,180 +49,51 @@ function PhoneMockup() {
         aspectRatio: "9 / 19.5",
         boxSizing: "border-box",
         overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
       }}
+      className="bg-[#111] flex flex-col"
     >
       {/* Camera notch */}
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: 10, paddingBottom: 6, flexShrink: 0 }}>
-        <div style={{ width: 48, height: 4, backgroundColor: "#1e1e1e", borderRadius: 999 }} />
+      <div className="flex justify-center pt-3 pb-2 flex-shrink-0">
+        <div className="w-12 h-1 rounded-full bg-[#1e1e1e]" />
       </div>
 
-      {/* Nav — mirrors dashboard sticky nav */}
-      <div
-        style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "5px 14px 6px",
-          borderBottom: "1px solid #111111",
-          flexShrink: 0,
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: "-0.01em", color: "#fff" }}>
-          Arm<span style={{ color: "#3B82F6" }}>Track</span>
+      {/* Top bar */}
+      <div className="flex justify-between px-4 pt-1 pb-3 border-b border-[#1a1a1a] flex-shrink-0">
+        <span className="text-white font-bold text-sm">
+          Arm<span className="text-[#3B82F6]">Track</span>
         </span>
-        <span
-          style={{
-            fontSize: 7, fontWeight: 600, color: "rgba(255,255,255,0.35)",
-            border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4, padding: "2px 5px",
-          }}
-        >
-          Sign out
+        <span className="text-[#555] text-[10px] tracking-widest">TODAY</span>
+      </div>
+
+      {/* Center — score dominates */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4">
+        <span className="text-[9px] tracking-widest text-[#555] uppercase mb-3">
+          Estimated Readiness
+        </span>
+        <div className="flex items-baseline gap-1">
+          <span
+            className="text-6xl font-bold text-[#22C55E]"
+            style={{ filter: "drop-shadow(0 0 12px rgba(34,197,94,0.4))" }}
+          >
+            8.2
+          </span>
+          <span className="text-lg text-[#333]">/10</span>
+        </div>
+        <span className="text-xs bg-[#052e16] text-[#22C55E] px-3 py-1 rounded-full mt-2">
+          Ready
         </span>
       </div>
 
-      {/* Page content — mirrors dashboard max-w-2xl px-5 pt-8 */}
-      <div style={{ padding: "8px 10px 10px", display: "flex", flexDirection: "column", gap: 7, overflowY: "hidden" }}>
-
-        {/* Header — mirrors greeting + h1 */}
-        <div style={{ marginBottom: 2 }}>
-          <p style={{ fontSize: 7, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.2em", color: "#60a5fa", margin: "0 0 2px" }}>
-            Good morning, Alex
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 800, letterSpacing: "-0.01em", color: "#fff", margin: 0 }}>
-            Arm Health Dashboard
-          </p>
+      {/* Bottom section */}
+      <div className="px-4 pb-4 space-y-2 flex-shrink-0">
+        {/* Recommendation card */}
+        <div className="bg-[#0a0a0a] border border-[#1a1a1a] border-l-2 border-l-[#22C55E] rounded-xl p-3">
+          <p className="text-xs text-[#aaa]">You&apos;re good to throw today.</p>
         </div>
-
-        {/* Score Card — exact Card component: bg #111, border #222, shadow, rounded-2xl */}
-        <div
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderRadius: 14,
-            padding: "10px",
-            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          {/* Score row — mirrors flex items-baseline gap-3 + right column */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-
-            {/* Big score with radial glow */}
-            <div style={{ position: "relative", flexShrink: 0 }}>
-              <div
-                aria-hidden="true"
-                style={{
-                  position: "absolute", top: "50%", left: "40%",
-                  transform: "translate(-50%,-50%)",
-                  width: 60, height: 60, borderRadius: "50%",
-                  background: `radial-gradient(circle, ${metaColor}28 0%, transparent 70%)`,
-                  filter: "blur(10px)", pointerEvents: "none",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 42, fontWeight: 900, color: metaColor,
-                  lineHeight: 1, display: "block",
-                  fontVariantNumeric: "tabular-nums", position: "relative",
-                }}
-              >
-                8.2
-              </span>
-            </div>
-            <span style={{ fontSize: 11, color: "#6b7280", fontWeight: 500 }}>/10</span>
-
-            {/* Badge + subtitle — mirrors label + "Based on your recent logs" */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <span
-                style={{
-                  display: "inline-flex", alignItems: "center",
-                  backgroundColor: metaBg,
-                  border: `1px solid ${metaBorder}`,
-                  color: metaColor,
-                  fontSize: 9, fontWeight: 700,
-                  padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap",
-                }}
-              >
-                Good to Go
-              </span>
-              <span style={{ fontSize: 7, color: "#6b7280", paddingLeft: 1 }}>Based on your recent logs</span>
-            </div>
-          </div>
-
-          {/* ScoreBadge grid — exact ScoreBadge: bg #0d0d0d, border #1e1e1e, rounded-xl */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4 }}>
-            {([["Pain", 1], ["Soreness", 2], ["Stiffness", 1]] as [string, number][]).map(([label, val]) => (
-              <div
-                key={label}
-                style={{
-                  backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
-                  borderRadius: 10, padding: "5px 4px",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
-                }}
-              >
-                <span style={{ fontSize: 14, fontWeight: 900, color: metaColor, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-                  {val}
-                </span>
-                <span style={{ fontSize: 7, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Explanation — mirrors text-xs text-gray-600 */}
-          <p style={{ fontSize: 7, color: "#4b5563", margin: 0, lineHeight: 1.4 }}>
-            Estimated from pain, soreness, stiffness, and recent throwing load.
-          </p>
+        {/* Log button */}
+        <div className="bg-[#3B82F6] rounded-xl py-2.5 text-center">
+          <span className="text-xs font-semibold text-white">Log Today →</span>
         </div>
-
-        {/* Recommendation card — exact: bg #111, border #222, borderLeft 3px meta.color, rounded-2xl */}
-        <div
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderLeft: `3px solid ${metaColor}`,
-            borderRadius: 14,
-            padding: "9px 10px",
-            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-            display: "flex", flexDirection: "column", gap: 4,
-          }}
-        >
-          <p style={{ fontSize: 8, fontWeight: 700, color: "#fff", margin: 0 }}>
-            Today&apos;s Recommendation
-          </p>
-          <p style={{ fontSize: 8, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.4 }}>
-            Normal session today — stay within your plan.
-          </p>
-          <p style={{ fontSize: 7, color: "#555555", margin: 0, lineHeight: 1.4 }}>
-            ArmTrack tracks patterns to support your decisions — not to diagnose injuries.
-          </p>
-        </div>
-
-        {/* Action buttons — exact: grid grid-cols-2 gap-3 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 5 }}>
-          <div
-            style={{
-              backgroundColor: "#3B82F6",
-              borderRadius: 10, padding: "8px 0",
-              textAlign: "center",
-              boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
-            }}
-          >
-            <span style={{ fontSize: 9, fontWeight: 700, color: "#fff" }}>Log Today</span>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#111111", border: "1px solid #222222",
-              borderRadius: 10, padding: "8px 0", textAlign: "center",
-            }}
-          >
-            <span style={{ fontSize: 9, fontWeight: 700, color: "#9ca3af" }}>View History</span>
-          </div>
-        </div>
-
       </div>
     </div>
   );
