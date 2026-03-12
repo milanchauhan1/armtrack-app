@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Check } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -338,7 +338,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-6 md:pt-28 md:pb-20 sm:px-10 md:min-h-screen">
+      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-6 md:py-20 sm:px-10">
 
         {/* Subtle radial glow */}
         <div
@@ -489,6 +489,16 @@ export default function Home() {
             </a>
             <PhoneMockup />
           </div>
+        </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+          <span className="text-[#444] text-[10px] tracking-widest uppercase">Scroll</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ChevronDown className="text-[#444] w-5 h-5" />
+          </motion.div>
         </div>
       </section>
 
