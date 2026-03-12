@@ -335,10 +335,10 @@ export default function Home() {
           />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-16 gap-8">
+        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-row items-center gap-3 md:gap-16">
 
           {/* Left: text */}
-          <div className="flex flex-col gap-5 md:flex-1">
+          <div className="flex flex-col gap-3 md:gap-5 flex-1 min-w-0">
 
             {/* Badge */}
             <motion.div
@@ -366,25 +366,10 @@ export default function Home() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.08, ease }}
-              className="font-black tracking-tight text-white leading-[1.05]"
-              style={{ fontSize: "clamp(30px, 9vw, 72px)" }}
+              className="font-black tracking-tight text-white leading-[1.1] text-[26px] md:text-[clamp(30px,9vw,72px)]"
             >
-              Know if your arm is<br />
-              ready to throw today.
+              Know if your arm is ready to throw today.
             </motion.h1>
-
-            {/* Mobile mockup — between headline and CTA on small screens */}
-            <motion.div
-              initial={{ opacity: 0, y: 28, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.85, delay: 0.2, ease }}
-              className="flex justify-center md:hidden"
-              style={{ marginBottom: 8 }}
-            >
-              <div style={{ zoom: 0.63 }}>
-                <PhoneMockup />
-              </div>
-            </motion.div>
 
             {/* Subheadline */}
             <motion.p
@@ -465,14 +450,21 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right: phone mockup (desktop only — mobile version is inline above) */}
+          {/* Right: phone mockup */}
           <motion.div
             initial={{ opacity: 0, y: 28, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.85, delay: 0.2, ease }}
-            className="hidden md:flex justify-end flex-shrink-0"
+            className="flex-shrink-0 flex items-center justify-center w-[140px] md:w-auto md:justify-end"
           >
-            <PhoneMockup />
+            {/* Mobile: scaled to fit 140px column */}
+            <div className="md:hidden" style={{ zoom: 0.53 }}>
+              <PhoneMockup />
+            </div>
+            {/* Desktop: full size */}
+            <div className="hidden md:block">
+              <PhoneMockup />
+            </div>
           </motion.div>
         </div>
       </section>
