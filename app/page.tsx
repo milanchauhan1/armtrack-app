@@ -42,29 +42,28 @@ function PhoneMockup() {
     <div
       style={{
         backgroundColor: "#111",
-        borderRadius: 32,
+        borderRadius: 36,
         border: "1px solid #2a2a2a",
         boxShadow:
           "0 32px 64px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(59,130,246,0.08)",
-        padding: "26px 16px 20px",
+        padding: "6% 5% 5%",
         display: "flex",
         flexDirection: "column",
         gap: 9,
-        position: "relative",
         width: "100%",
+        aspectRatio: "9 / 19.5",
+        boxSizing: "border-box",
       }}
     >
-      {/* Status pill */}
+      {/* Camera notch */}
       <div
+        className="flex-shrink-0"
         style={{
-          position: "absolute",
-          top: 12,
-          left: "50%",
-          transform: "translateX(-50%)",
           width: 64,
-          height: 4,
+          height: 6,
+          backgroundColor: "#222",
           borderRadius: 999,
-          backgroundColor: "#1e1e1e",
+          margin: "0 auto 4px",
         }}
       />
 
@@ -286,7 +285,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-24 pb-12 md:pt-28 md:pb-20 sm:px-10 min-h-screen">
+      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-10 md:pt-28 md:pb-20 sm:px-10 min-h-screen">
 
         {/* Subtle radial glow */}
         <div
@@ -301,7 +300,7 @@ export default function Home() {
         <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-12">
 
           {/* Left: text */}
-          <div className="flex flex-col gap-5 md:w-[55%] md:pr-4">
+          <div className="flex flex-col md:gap-5 md:w-[55%] md:pr-4">
 
             {/* Badge */}
             <motion.div
@@ -330,7 +329,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.08, ease }}
-              className="font-bold text-white"
+              className="mt-3 md:mt-0 font-bold text-white"
               style={{
                 fontSize: "clamp(34px, 8vw, 56px)",
                 lineHeight: 1.1,
@@ -357,15 +356,13 @@ export default function Home() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.24, ease }}
-              className="flex flex-col sm:flex-row gap-3"
+              className="mt-5 md:mt-0 flex flex-col md:flex-row gap-3"
             >
               <a
                 href="/signup"
-                className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full sm:w-auto transition-all duration-150"
+                className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full md:w-auto py-4 px-8 transition-all duration-150"
                 style={{
                   backgroundColor: "#3B82F6",
-                  padding: "0 32px",
-                  height: 56,
                   boxShadow: "0 4px 28px rgba(59,130,246,0.4)",
                   minWidth: 160,
                 }}
@@ -429,9 +426,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.18, ease }}
-            className="flex justify-center md:flex-1 md:justify-end mt-10 md:mt-0"
+            className="flex justify-center md:flex-1 md:justify-end mt-6 md:mt-0"
           >
-            <div style={{ width: "100%", maxWidth: 260, marginRight: 4 }} className="md:max-w-[280px]">
+            <div style={{ width: "min(72vw, 300px)" }} className="md:max-w-[280px]">
               <PhoneMockup />
             </div>
           </motion.div>
@@ -447,7 +444,7 @@ export default function Home() {
         }}
       >
         <ScrollFade>
-          <div className="mx-auto max-w-4xl px-6 sm:px-10 py-4 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0">
+          <div className="mx-auto max-w-4xl px-6 sm:px-10 py-4 md:py-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0">
             {[
               "500+ players tracking their arm",
               "High school to college level",
@@ -484,7 +481,7 @@ export default function Home() {
       </div>
 
       {/* ── Problem Section ─────────────────────────────────────────────────── */}
-      <section id="problem" className="px-6 sm:px-10 py-24">
+      <section id="problem" className="px-6 sm:px-10 py-10 md:py-24">
         <div className="mx-auto max-w-3xl">
           <ScrollFade>
             <h2
@@ -555,7 +552,7 @@ export default function Home() {
       {/* ── How It Works ────────────────────────────────────────────────────── */}
       <section
         id="how-it-works"
-        className="px-6 sm:px-10 py-24"
+        className="px-6 sm:px-10 py-10 md:py-24"
         style={{ borderTop: "1px solid #111" }}
       >
         <div className="mx-auto max-w-4xl">
@@ -588,12 +585,11 @@ export default function Home() {
             ].map((step, i) => (
               <ScrollFade key={step.n} delay={i * 0.1} className="flex-1">
                 <div
-                  className="relative flex flex-col gap-4 h-full"
+                  className="relative flex flex-col gap-4 h-full p-5 md:py-7 md:px-6"
                   style={{
                     backgroundColor: "#0c0c0c",
                     border: "1px solid #1a1a1a",
                     borderRadius: 20,
-                    padding: "28px 24px",
                     overflow: "hidden",
                   }}
                 >
@@ -632,7 +628,7 @@ export default function Home() {
 
       {/* ── Stats Section ───────────────────────────────────────────────────── */}
       <section
-        className="px-6 sm:px-10 py-24"
+        className="px-6 sm:px-10 py-10 md:py-24"
         style={{ borderTop: "1px solid #111" }}
       >
         <div className="mx-auto max-w-4xl">
@@ -665,11 +661,11 @@ export default function Home() {
             ].map((item, i) => (
               <ScrollFade key={i} delay={i * 0.1} className="flex-1">
                 <div
+                  className="p-5 md:py-7 md:px-6"
                   style={{
                     backgroundColor: "#0c0c0c",
                     border: "1px solid #1a1a1a",
                     borderRadius: 20,
-                    padding: "28px 24px",
                     height: "100%",
                   }}
                 >
@@ -707,7 +703,7 @@ export default function Home() {
 
       {/* ── Final CTA ───────────────────────────────────────────────────────── */}
       <section
-        className="px-6 sm:px-10 py-24"
+        className="px-6 sm:px-10 py-10 md:py-24"
         style={{
           backgroundColor: "#0a0f1a",
           borderTop: "1px solid #1a2a3a",
