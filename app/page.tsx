@@ -85,35 +85,49 @@ function PhoneMockup() {
         </span>
       </div>
 
-      {/* Page content — mirrors dashboard px-5 pt-8 */}
-      <div style={{ padding: "10px 13px 13px", display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
+      {/* Page content */}
+      <div style={{ padding: "12px 14px 14px", display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
 
-        {/* Header — mirrors greeting + h1 */}
+        {/* Header — greeting + title + streak badge */}
         <div>
           <p style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.2em", margin: "0 0 3px" }}>
             Good morning, Alex
           </p>
-          <p style={{ fontSize: 15, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.01em" }}>
-            Arm Health Dashboard
-          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+            <p style={{ fontSize: 15, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.01em" }}>
+              Arm Health Dashboard
+            </p>
+            {/* Streak badge — mirrors real dashboard */}
+            <span
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 3,
+                backgroundColor: "rgba(249,115,22,0.10)",
+                border: "1px solid rgba(249,115,22,0.25)",
+                color: "#fb923c",
+                fontSize: 8, fontWeight: 700,
+                padding: "2px 6px", borderRadius: 999, whiteSpace: "nowrap",
+              }}
+            >
+              🔥 5-day streak
+            </span>
+          </div>
         </div>
 
-        {/* Score Card — exact Card: bg #111111, border #222222, blue glow shadow */}
+        {/* Score Card */}
         <div
           style={{
             backgroundColor: "#111111",
             border: "1px solid #222222",
             borderRadius: 16,
-            padding: "11px 12px",
+            padding: "13px 13px",
             boxShadow: "0 0 24px rgba(59,130,246,0.07)",
             display: "flex",
             flexDirection: "column",
-            gap: 9,
+            gap: 11,
           }}
         >
           {/* Score row */}
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            {/* Big number with radial glow */}
             <div style={{ position: "relative", flexShrink: 0 }}>
               <div
                 aria-hidden="true"
@@ -136,7 +150,6 @@ function PhoneMockup() {
               </span>
             </div>
             <span style={{ fontSize: 13, color: "#6b7280", fontWeight: 500 }}>/10</span>
-            {/* Badge + subtitle */}
             <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
               <span
                 style={{
@@ -154,8 +167,8 @@ function PhoneMockup() {
             </div>
           </div>
 
-          {/* ScoreBadges — exact: bg #0d0d0d, border #1e1e1e, rounded-xl */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
+          {/* ScoreBadges */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
             {(
               [["Pain", 1, "#22C55E"], ["Soreness", 2, "#F59E0B"], ["Stiffness", 1, "#22C55E"]] as [string, number, string][]
             ).map(([label, val, color]) => (
@@ -163,7 +176,7 @@ function PhoneMockup() {
                 key={label}
                 style={{
                   backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
-                  borderRadius: 11, padding: "6px 4px",
+                  borderRadius: 11, padding: "7px 4px",
                   display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
                 }}
               >
@@ -182,31 +195,35 @@ function PhoneMockup() {
           </p>
         </div>
 
-        {/* Recommendation card — exact: bg #111, border #222, borderLeft 3px green */}
+        {/* Recommendation card */}
         <div
           style={{
             backgroundColor: "#111111",
             border: "1px solid #222222",
             borderLeft: "3px solid #22C55E",
             borderRadius: 16,
-            padding: "10px 12px",
+            padding: "11px 13px",
             boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-            display: "flex", flexDirection: "column", gap: 4,
+            display: "flex", flexDirection: "column", gap: 5,
           }}
         >
           <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: 0 }}>
             Today&apos;s Recommendation
           </p>
-          <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.4 }}>
+          <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.45 }}>
             You&apos;re good to throw today. Normal intensity.
+          </p>
+          {/* Contextual insight — mirrors dashboard insights bullets */}
+          <p style={{ fontSize: 8, color: "#888", margin: 0, lineHeight: 1.4 }}>
+            · Pain has been consistently low — solid recent trend.
           </p>
           <p style={{ fontSize: 8, color: "#555555", margin: 0, lineHeight: 1.4 }}>
             ArmTrack tracks patterns to support your decisions — not to diagnose injuries.
           </p>
         </div>
 
-        {/* Action buttons — exact: grid grid-cols-2 gap-3 */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+        {/* Action buttons */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }}>
           <div
             style={{
               backgroundColor: "#3B82F6", borderRadius: 11,
@@ -223,6 +240,46 @@ function PhoneMockup() {
             }}
           >
             <span style={{ fontSize: 11, fontWeight: 700, color: "#9ca3af" }}>View History</span>
+          </div>
+        </div>
+
+        {/* Recent sessions — mini trend showing last 5 logs */}
+        <div
+          style={{
+            backgroundColor: "#111111",
+            border: "1px solid #222222",
+            borderRadius: 16,
+            padding: "11px 13px",
+            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
+          }}
+        >
+          <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: "0 0 9px" }}>
+            Recent Sessions
+          </p>
+          <div style={{ display: "flex", gap: 5 }}>
+            {[
+              { day: "Mon", pain: 1, color: "#22C55E" },
+              { day: "Tue", pain: 2, color: "#22C55E" },
+              { day: "Wed", pain: 1, color: "#22C55E" },
+              { day: "Thu", pain: 3, color: "#F59E0B" },
+              { day: "Fri", pain: 1, color: "#22C55E" },
+            ].map(({ day, pain, color }) => (
+              <div key={day} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                {/* Bar */}
+                <div style={{ width: "100%", height: 28, backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e", borderRadius: 6, display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: `${(pain / 10) * 100 + 20}%`,
+                      backgroundColor: color,
+                      opacity: 0.7,
+                      borderRadius: "4px 4px 0 0",
+                    }}
+                  />
+                </div>
+                <span style={{ fontSize: 7, color: "#555", fontWeight: 600 }}>{day}</span>
+              </div>
+            ))}
           </div>
         </div>
 
