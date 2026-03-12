@@ -35,59 +35,198 @@ function ScrollFade({
   );
 }
 
-// ── Readiness Card ────────────────────────────────────────────────────────────
+// ── Phone Mockup ──────────────────────────────────────────────────────────────
 
-function ReadinessCard() {
+function PhoneMockup() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
-      className="bg-[#111] border border-[#222] rounded-2xl p-6 w-full max-w-[320px] mx-auto md:mx-0"
+      style={{
+        backgroundColor: "#0a0a0a",
+        borderRadius: 44,
+        border: "1px solid #2a2a2a",
+        boxShadow:
+          "0 40px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03), 0 0 60px rgba(59,130,246,0.1)",
+        width: "100%",
+        maxWidth: 300,
+        aspectRatio: "9 / 19.5",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        margin: "0 auto",
+      }}
     >
-      {/* Label */}
-      <p className="text-[9px] tracking-widest text-[#555] uppercase mb-4">
-        Estimated Readiness
-      </p>
+      {/* Camera notch */}
+      <div style={{ display: "flex", justifyContent: "center", paddingTop: 13, paddingBottom: 5, flexShrink: 0 }}>
+        <div style={{ width: 54, height: 5, backgroundColor: "#1a1a1a", borderRadius: 999 }} />
+      </div>
 
-      {/* Score row */}
-      <div className="flex items-center gap-2">
+      {/* Nav — mirrors dashboard sticky nav */}
+      <div
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "5px 16px 8px",
+          borderBottom: "1px solid #111111",
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontSize: 14, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
+          Arm<span style={{ color: "#3B82F6" }}>Track</span>
+        </span>
         <span
-          className="text-5xl font-bold text-[#22C55E]"
-          style={{ filter: "drop-shadow(0 0 16px rgba(34,197,94,0.35))" }}
+          style={{
+            fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.3)",
+            border: "1px solid rgba(255,255,255,0.08)", borderRadius: 5, padding: "2px 6px",
+          }}
         >
-          8.2
-        </span>
-        <span className="text-lg text-[#333]">/10</span>
-        <span className="text-xs bg-[#052e16] text-[#22C55E] px-3 py-1 rounded-full ml-2">
-          Ready
+          Sign out
         </span>
       </div>
 
-      {/* Divider */}
-      <div className="border-t border-[#1a1a1a] my-4" />
+      {/* Page content — mirrors dashboard px-5 pt-8 */}
+      <div style={{ padding: "10px 13px 13px", display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
 
-      {/* Stat cards */}
-      <div className="flex gap-3">
-        {[
-          { label: "PAIN",      value: "1", color: "#22C55E" },
-          { label: "SORENESS",  value: "2", color: "#F59E0B" },
-          { label: "STIFFNESS", value: "1", color: "#22C55E" },
-        ].map(({ label, value, color }) => (
-          <div
-            key={label}
-            className="flex-1 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl py-3 flex flex-col items-center"
-          >
-            <span className="text-xl font-bold" style={{ color }}>{value}</span>
-            <span className="text-[8px] text-[#555] tracking-wider mt-1">{label}</span>
+        {/* Header — mirrors greeting + h1 */}
+        <div>
+          <p style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.2em", margin: "0 0 3px" }}>
+            Good morning, Alex
+          </p>
+          <p style={{ fontSize: 15, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.01em" }}>
+            Arm Health Dashboard
+          </p>
+        </div>
+
+        {/* Score Card — exact Card: bg #111111, border #222222, blue glow shadow */}
+        <div
+          style={{
+            backgroundColor: "#111111",
+            border: "1px solid #222222",
+            borderRadius: 16,
+            padding: "11px 12px",
+            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 9,
+          }}
+        >
+          {/* Score row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+            {/* Big number with radial glow */}
+            <div style={{ position: "relative", flexShrink: 0 }}>
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute", top: "50%", left: "40%",
+                  transform: "translate(-50%,-50%)",
+                  width: 70, height: 70, borderRadius: "50%",
+                  background: "radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 70%)",
+                  filter: "blur(12px)", pointerEvents: "none",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 52, fontWeight: 900, color: "#22C55E",
+                  lineHeight: 1, display: "block",
+                  fontVariantNumeric: "tabular-nums", position: "relative",
+                }}
+              >
+                8.2
+              </span>
+            </div>
+            <span style={{ fontSize: 13, color: "#6b7280", fontWeight: 500 }}>/10</span>
+            {/* Badge + subtitle */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <span
+                style={{
+                  display: "inline-flex", alignItems: "center",
+                  backgroundColor: "rgba(34,197,94,0.08)",
+                  border: "1px solid rgba(34,197,94,0.2)",
+                  color: "#22C55E",
+                  fontSize: 10, fontWeight: 700,
+                  padding: "3px 8px", borderRadius: 999, whiteSpace: "nowrap",
+                }}
+              >
+                Good to Go
+              </span>
+              <span style={{ fontSize: 8, color: "#6b7280" }}>Based on your recent logs</span>
+            </div>
           </div>
-        ))}
-      </div>
 
-      {/* Footer */}
-      <p className="text-[10px] text-[#444] text-center mt-4">
-        Based on your recent logs
-      </p>
+          {/* ScoreBadges — exact: bg #0d0d0d, border #1e1e1e, rounded-xl */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
+            {(
+              [["Pain", 1, "#22C55E"], ["Soreness", 2, "#F59E0B"], ["Stiffness", 1, "#22C55E"]] as [string, number, string][]
+            ).map(([label, val, color]) => (
+              <div
+                key={label}
+                style={{
+                  backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
+                  borderRadius: 11, padding: "6px 4px",
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+                }}
+              >
+                <span style={{ fontSize: 16, fontWeight: 900, color, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
+                  {val}
+                </span>
+                <span style={{ fontSize: 8, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <p style={{ fontSize: 8, color: "#4b5563", margin: 0, lineHeight: 1.4 }}>
+            Estimated from pain, soreness, stiffness, and recent throwing load.
+          </p>
+        </div>
+
+        {/* Recommendation card — exact: bg #111, border #222, borderLeft 3px green */}
+        <div
+          style={{
+            backgroundColor: "#111111",
+            border: "1px solid #222222",
+            borderLeft: "3px solid #22C55E",
+            borderRadius: 16,
+            padding: "10px 12px",
+            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
+            display: "flex", flexDirection: "column", gap: 4,
+          }}
+        >
+          <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: 0 }}>
+            Today&apos;s Recommendation
+          </p>
+          <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.4 }}>
+            You&apos;re good to throw today. Normal intensity.
+          </p>
+          <p style={{ fontSize: 8, color: "#555555", margin: 0, lineHeight: 1.4 }}>
+            ArmTrack tracks patterns to support your decisions — not to diagnose injuries.
+          </p>
+        </div>
+
+        {/* Action buttons — exact: grid grid-cols-2 gap-3 */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+          <div
+            style={{
+              backgroundColor: "#3B82F6", borderRadius: 11,
+              padding: "10px 0", textAlign: "center",
+              boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>Log Today</span>
+          </div>
+          <div
+            style={{
+              backgroundColor: "#111111", border: "1px solid #222222",
+              borderRadius: 11, padding: "10px 0", textAlign: "center",
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#9ca3af" }}>View History</span>
+          </div>
+        </div>
+
+      </div>
     </motion.div>
   );
 }
@@ -291,7 +430,7 @@ export default function Home() {
             >
               Start Free
             </a>
-            <ReadinessCard />
+            <PhoneMockup />
           </div>
         </div>
       </section>
