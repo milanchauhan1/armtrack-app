@@ -35,67 +35,60 @@ function ScrollFade({
   );
 }
 
-// ── Phone Mockup ──────────────────────────────────────────────────────────────
+// ── Readiness Card ────────────────────────────────────────────────────────────
 
-function PhoneMockup() {
+function ReadinessCard() {
   return (
-    <div
-      style={{
-        borderRadius: 36,
-        border: "1px solid #2a2a2a",
-        boxShadow:
-          "0 32px 64px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.03), 0 0 40px rgba(59,130,246,0.08)",
-        width: "100%",
-        aspectRatio: "9 / 19.5",
-        boxSizing: "border-box",
-        overflow: "hidden",
-      }}
-      className="bg-[#111] flex flex-col"
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="bg-[#111] border border-[#222] rounded-2xl p-6 w-full max-w-[320px] mx-auto md:mx-0"
     >
-      {/* Camera notch */}
-      <div className="flex justify-center pt-3 pb-2 flex-shrink-0">
-        <div className="w-12 h-1 rounded-full bg-[#1e1e1e]" />
-      </div>
+      {/* Label */}
+      <p className="text-[9px] tracking-widest text-[#555] uppercase mb-4">
+        Estimated Readiness
+      </p>
 
-      {/* Top bar */}
-      <div className="flex justify-between px-4 pt-1 pb-3 border-b border-[#1a1a1a] flex-shrink-0">
-        <span className="text-white font-bold text-sm">
-          Arm<span className="text-[#3B82F6]">Track</span>
+      {/* Score row */}
+      <div className="flex items-center gap-2">
+        <span
+          className="text-5xl font-bold text-[#22C55E]"
+          style={{ filter: "drop-shadow(0 0 16px rgba(34,197,94,0.35))" }}
+        >
+          8.2
         </span>
-        <span className="text-[#555] text-[10px] tracking-widest">TODAY</span>
-      </div>
-
-      {/* Center — score dominates */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4">
-        <span className="text-[9px] tracking-widest text-[#555] uppercase mb-3">
-          Estimated Readiness
-        </span>
-        <div className="flex items-baseline gap-1">
-          <span
-            className="text-6xl font-bold text-[#22C55E]"
-            style={{ filter: "drop-shadow(0 0 12px rgba(34,197,94,0.4))" }}
-          >
-            8.2
-          </span>
-          <span className="text-lg text-[#333]">/10</span>
-        </div>
-        <span className="text-xs bg-[#052e16] text-[#22C55E] px-3 py-1 rounded-full mt-2">
+        <span className="text-lg text-[#333]">/10</span>
+        <span className="text-xs bg-[#052e16] text-[#22C55E] px-3 py-1 rounded-full ml-2">
           Ready
         </span>
       </div>
 
-      {/* Bottom section */}
-      <div className="px-4 pb-4 space-y-2 flex-shrink-0">
-        {/* Recommendation card */}
-        <div className="bg-[#0a0a0a] border border-[#1a1a1a] border-l-2 border-l-[#22C55E] rounded-xl p-3">
-          <p className="text-xs text-[#aaa]">You&apos;re good to throw today.</p>
-        </div>
-        {/* Log button */}
-        <div className="bg-[#3B82F6] rounded-xl py-2.5 text-center">
-          <span className="text-xs font-semibold text-white">Log Today →</span>
-        </div>
+      {/* Divider */}
+      <div className="border-t border-[#1a1a1a] my-4" />
+
+      {/* Stat cards */}
+      <div className="flex gap-3">
+        {[
+          { label: "PAIN",      value: "1", color: "#22C55E" },
+          { label: "SORENESS",  value: "2", color: "#F59E0B" },
+          { label: "STIFFNESS", value: "1", color: "#22C55E" },
+        ].map(({ label, value, color }) => (
+          <div
+            key={label}
+            className="flex-1 bg-[#0a0a0a] border border-[#1a1a1a] rounded-xl py-3 flex flex-col items-center"
+          >
+            <span className="text-xl font-bold" style={{ color }}>{value}</span>
+            <span className="text-[8px] text-[#555] tracking-wider mt-1">{label}</span>
+          </div>
+        ))}
       </div>
-    </div>
+
+      {/* Footer */}
+      <p className="text-[10px] text-[#444] text-center mt-4">
+        Based on your recent logs
+      </p>
+    </motion.div>
   );
 }
 
@@ -285,29 +278,21 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Right: phone mockup */}
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.18, ease }}
-            className="flex flex-col items-center md:flex-1 md:items-end mt-6 md:mt-0"
-          >
-            <div style={{ width: "min(72vw, 300px)" }} className="md:max-w-[280px]">
-              <PhoneMockup />
-            </div>
-            {/* Mobile-only CTA — sits directly below mockup */}
+          {/* Right: readiness card */}
+          <div className="md:flex-1 md:flex md:justify-end mt-8 md:mt-0">
+            {/* Mobile CTA above card */}
             <a
               href="/signup"
-              className="md:hidden mt-4 inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full py-4 transition-all duration-150"
+              className="md:hidden mb-4 flex items-center justify-center rounded-xl text-base font-bold text-white py-4 transition-all duration-150"
               style={{
-                width: "min(72vw, 300px)",
                 backgroundColor: "#3B82F6",
                 boxShadow: "0 4px 28px rgba(59,130,246,0.4)",
               }}
             >
               Start Free
             </a>
-          </motion.div>
+            <ReadinessCard />
+          </div>
         </div>
       </section>
 
