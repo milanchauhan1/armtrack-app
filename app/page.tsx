@@ -340,6 +340,55 @@ export default function Home() {
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-6 md:py-20 sm:px-10">
 
+        {/* Baseball seam — decorative background texture */}
+        <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+          <svg
+            className="absolute inset-0 w-full h-full opacity-[0.06]"
+            viewBox="0 0 800 600"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <path
+              d="M 600 -50 C 500 100 480 300 520 500 C 540 600 560 650 580 700"
+              stroke="white"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 620 -50 C 520 100 500 300 540 500 C 560 600 580 650 600 700"
+              stroke="white"
+              strokeWidth="2.5"
+              fill="none"
+              strokeLinecap="round"
+            />
+            {[0,1,2,3,4,5,6,7].map(i => (
+              <line
+                key={`a${i}`}
+                x1={595 - i * 4}
+                y1={-20 + i * 92}
+                x2={625 + i * 4}
+                y2={-10 + i * 92}
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            ))}
+            {[0,1,2,3,4,5,6,7].map(i => (
+              <line
+                key={`b${i}`}
+                x1={615 - i * 4}
+                y1={10 + i * 92}
+                x2={645 + i * 4}
+                y2={20 + i * 92}
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            ))}
+          </svg>
+        </div>
+
         {/* Subtle radial glow */}
         <div
           aria-hidden="true"
