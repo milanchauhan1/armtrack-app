@@ -72,6 +72,7 @@ const microCopy: Record<number, string> = {
   10: "Your team's arm health starts here.",
   11: "We'll use this to personalize your coaching dashboard.",
   12: "",
+  13: "Optional — you can always join later from the Join page.",
 };
 
 // Arm zones for pain diagram (front-facing right arm, shoulder → wrist)
@@ -291,6 +292,7 @@ export default function OnboardingPage() {
   const [authChecking, setAuthChecking] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [pendingTeamCode, setPendingTeamCode] = useState("");
   const [data, setData] = useState<OnboardingData>({
     role: null,
     name: "",
@@ -328,11 +330,21 @@ export default function OnboardingPage() {
     setData((prev) => ({ ...prev, [key]: value }));
   }
 
+  // Pre-fill team code from localStorage when reaching step 13
+  useEffect(() => {
+    if (step === 13) {
+      const saved = localStorage.getItem("pending_team_code");
+      if (saved) setPendingTeamCode(saved);
+    }
+  }, [step]);
+
   function goNext() {
     setDirection(1);
     setStep((s) => {
       // Coach track: after name (step 1), skip player steps and go to coach steps
       if (data.role === "coach" && s === 1) return 10;
+      // Player track: after confirmation (step 9), go to team join step
+      if (data.role === "player" && s === 9) return 13;
       return s + 1;
     });
   }
@@ -342,6 +354,8 @@ export default function OnboardingPage() {
     setStep((s) => {
       // Coach track: back from first coach step returns to name
       if (data.role === "coach" && s === 10) return 1;
+      // Team join step: back goes to confirmation
+      if (s === 13) return 9;
       return s - 1;
     });
   }
@@ -366,8 +380,10 @@ export default function OnboardingPage() {
       const displayIdx = idx >= 0 ? idx : 2;
       return ((displayIdx + 1) / 5) * 100;
     }
-    // Player has 10 steps: 0–9
-    return ((step + 1) / 10) * 100;
+    // Player has 11 effective steps: 0–9 + 13
+    const playerOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13];
+    const idx = playerOrder.indexOf(step);
+    return ((idx >= 0 ? idx + 1 : step + 1) / 11) * 100;
   }
 
   const progressPct = getProgressPct();
@@ -729,33 +745,6 @@ export default function OnboardingPage() {
         recreational: "Recreational",
       };
 
-      const handleFinish = async () => {
-        setSaving(true);
-        setSaveError(false);
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) throw new Error("No user");
-          const { error } = await supabase.from("profiles").upsert({
-            id: user.id,
-            first_name: data.name,
-            role: data.role,
-            position: data.position,
-            goal: data.goal,
-            throw_frequency: data.throwFrequency,
-            injury_history: data.injuryHistory,
-            pain_zones: data.painZones,
-            level: data.level,
-            throws: data.throws,
-            onboarding_complete: true,
-          });
-          if (error) throw error;
-          router.push("/log");
-        } catch {
-          setSaveError(true);
-          setSaving(false);
-        }
-      };
-
       return {
         question: "",
         hideContinue: true,
@@ -804,24 +793,114 @@ export default function OnboardingPage() {
               </p>
             )}
 
+            <ContinueButton
+              disabled={false}
+              onClick={goNext}
+              label="Continue →"
+            />
+
+            <p className="text-xs" style={{ color: "#444444" }}>
+              Your personalized recommendations start after your first log.
+            </p>
+          </div>
+        ),
+        canContinue: false,
+      };
+    }
+
+    // Step 13 — Player: Join team (optional)
+    if (step === 13) {
+      const handleFinish = async (teamCode?: string) => {
+        setSaving(true);
+        setSaveError(false);
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) throw new Error("No user");
+          const { error } = await supabase.from("profiles").upsert({
+            id: user.id,
+            first_name: data.name,
+            role: data.role,
+            position: data.position,
+            goal: data.goal,
+            throw_frequency: data.throwFrequency,
+            injury_history: data.injuryHistory,
+            pain_zones: data.painZones,
+            level: data.level,
+            throws: data.throws,
+            onboarding_complete: true,
+          });
+          if (error) throw error;
+
+          // Join team if code provided
+          if (teamCode?.trim()) {
+            const { data: teamData } = await supabase
+              .from("teams")
+              .select("id")
+              .eq("code", teamCode.trim().toUpperCase())
+              .single();
+            if (teamData) {
+              await supabase.from("team_members").insert({
+                team_id: teamData.id,
+                player_id: user.id,
+              });
+            }
+            localStorage.removeItem("pending_team_code");
+          }
+
+          router.push("/log");
+        } catch {
+          setSaveError(true);
+          setSaving(false);
+        }
+      };
+
+      return {
+        question: "Join your team",
+        subText: "Enter the code your coach gave you, or skip to continue.",
+        hideContinue: true,
+        content: (
+          <div className="flex flex-col items-center gap-5 w-full">
+            <input
+              type="text"
+              value={pendingTeamCode}
+              onChange={(e) =>
+                setPendingTeamCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6))
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && pendingTeamCode.trim().length === 6)
+                  handleFinish(pendingTeamCode);
+              }}
+              placeholder="XXXXXX"
+              maxLength={6}
+              className="w-full rounded-xl px-5 py-4 text-center text-2xl font-black tracking-[0.3em] text-white placeholder-gray-700 outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ backgroundColor: "#141414", border: "2px solid #252525" }}
+            />
+
             {saveError && (
               <p className="text-sm text-red-400">
                 Something went wrong.{" "}
-                <button onClick={handleFinish} className="underline cursor-pointer">
+                <button onClick={() => handleFinish(pendingTeamCode)} className="underline cursor-pointer">
                   Try again
                 </button>
               </p>
             )}
 
             <ContinueButton
-              disabled={saving}
-              onClick={handleFinish}
-              label={saving ? "Saving..." : "Log My First Session →"}
+              disabled={saving || pendingTeamCode.trim().length !== 6}
+              onClick={() => handleFinish(pendingTeamCode)}
+              label={saving ? "Saving..." : "Join Team and Start →"}
             />
 
-            <p className="text-xs" style={{ color: "#444444" }}>
-              Your personalized recommendations start after your first log.
-            </p>
+            <button
+              onClick={() => handleFinish("")}
+              disabled={saving}
+              className="text-sm transition-colors cursor-pointer disabled:opacity-40"
+              style={{ color: "#555555" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#aaaaaa")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#555555")}
+            >
+              Skip — I don&apos;t have a code
+            </button>
           </div>
         ),
         canContinue: false,
@@ -898,7 +977,7 @@ export default function OnboardingPage() {
             onboarding_complete: true,
           });
           if (error) throw error;
-          router.push("/dashboard");
+          router.push("/coach");
         } catch {
           setSaveError(true);
           setSaving(false);

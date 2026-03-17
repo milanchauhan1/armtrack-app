@@ -15,6 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { CheckCircle } from "lucide-react";
 import {
   ArmLog,
   calculateEstimatedReadiness,
@@ -278,9 +279,16 @@ export default function DashboardPage() {
   const [streak, setStreak] = useState(0);
   const [loggedToday, setLoggedToday] = useState(false);
   const [chartMounted, setChartMounted] = useState(false);
+  const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
     setChartMounted(true);
+    const msg = sessionStorage.getItem("toast");
+    if (msg) {
+      setToast(msg);
+      sessionStorage.removeItem("toast");
+      setTimeout(() => setToast(null), 4000);
+    }
   }, []);
 
   useEffect(() => {
@@ -371,6 +379,29 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-black pb-20">
+      {/* Toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed top-4 left-1/2 z-50 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold shadow-lg"
+            style={{
+              transform: "translateX(-50%)",
+              backgroundColor: "rgba(34,197,94,0.15)",
+              border: "1px solid rgba(34,197,94,0.35)",
+              color: "#22C55E",
+              backdropFilter: "blur(12px)",
+            }}
+          >
+            <CheckCircle size={15} />
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Nav */}
       <nav
         className="sticky top-0 z-20 flex items-center justify-between bg-black px-5 py-4 sm:px-10"

@@ -7,10 +7,12 @@ import { supabase } from "@/lib/supabase";
 async function getRedirectPath(userId: string): Promise<string> {
   const { data: profile } = await supabase
     .from("profiles")
-    .select("onboarding_complete")
+    .select("onboarding_complete, role")
     .eq("id", userId)
     .single();
-  return profile?.onboarding_complete ? "/dashboard" : "/onboarding";
+  if (!profile?.onboarding_complete) return "/onboarding";
+  if (profile.role === "coach") return "/coach";
+  return "/dashboard";
 }
 
 export default function AuthCallback() {
