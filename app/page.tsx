@@ -2,13 +2,13 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, ArrowRight } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
-// ── ScrollFade — fires once on viewport entry ──────────────────────────────────
+// ── ScrollFade ─────────────────────────────────────────────────────────────────
 
 function ScrollFade({
   children,
@@ -34,201 +34,178 @@ function ScrollFade({
   );
 }
 
-// ── Phone Mockup ───────────────────────────────────────────────────────────────
+// ── Stats Card ─────────────────────────────────────────────────────────────────
 
-function PhoneMockup() {
+function StatsCard() {
+  const metrics: [string, string, string][] = [
+    ["Pain",             "2 / 10",    "#22C55E"],
+    ["Soreness",         "4 / 10",    "#F59E0B"],
+    ["Stiffness",        "3 / 10",    "#F59E0B"],
+    ["Throws yesterday", "85 pitches","#ffffff"],
+  ];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.65, delay: 0.28, ease }}
+      className="w-full md:max-w-[400px]"
       style={{
-        backgroundColor: "#0a0a0a",
-        borderRadius: 44,
-        border: "1px solid #2a2a2a",
+        backgroundColor: "#0d0d0d",
+        borderRadius: 20,
+        border: "1px solid #222222",
         boxShadow:
-          "0 40px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03), 0 0 60px rgba(59,130,246,0.12)",
-        width: "100%",
-        maxWidth: 340,
-        aspectRatio: "9 / 19.5",
+          "0 32px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.025), 0 0 60px rgba(245,158,11,0.07)",
         overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        margin: "0 auto",
       }}
     >
-      {/* Notch */}
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: 13, paddingBottom: 5, flexShrink: 0 }}>
-        <div style={{ width: 54, height: 5, backgroundColor: "#1a1a1a", borderRadius: 999 }} />
-      </div>
-
-      {/* Nav */}
+      {/* ── Alert bar ──────────────────────────────────────────────────────── */}
       <div
         style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "5px 16px 8px",
-          borderBottom: "1px solid #111111",
-          flexShrink: 0,
+          backgroundColor: "#1a1000",
+          borderBottom: "1px solid #2a2000",
+          padding: "8px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
         }}
       >
-        <span style={{ fontSize: 14, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
-          Arm<span style={{ color: "#3B82F6" }}>Track</span>
-        </span>
-        <span style={{ fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.25)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 5, padding: "2px 6px" }}>
-          Sign out
+        <div
+          style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            backgroundColor: "#F59E0B",
+            flexShrink: 0,
+            boxShadow: "0 0 6px rgba(245,158,11,0.8)",
+          }}
+        />
+        <span style={{ fontSize: 11, color: "#F59E0B", fontWeight: 500 }}>
+          Soreness trending up — 3 day pattern
         </span>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: "11px 13px 14px", display: "flex", flexDirection: "column", gap: 10, overflow: "hidden" }}>
-
-        {/* Header */}
-        <div>
-          <p style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.2em", margin: "0 0 3px" }}>
-            Good morning, Alex
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <p style={{ fontSize: 14, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.01em" }}>
-              Arm Health Dashboard
-            </p>
-            <span
-              style={{
-                display: "inline-flex", alignItems: "center",
-                backgroundColor: "rgba(249,115,22,0.10)",
-                border: "1px solid rgba(249,115,22,0.25)",
-                color: "#fb923c",
-                fontSize: 7, fontWeight: 700,
-                padding: "2px 5px", borderRadius: 999, whiteSpace: "nowrap",
-              }}
-            >
-              5-day streak
-            </span>
-          </div>
-        </div>
-
-        {/* Score Card */}
-        <div
+      {/* ── Score section ──────────────────────────────────────────────────── */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          padding: "20px 16px 16px",
+          gap: 10,
+        }}
+      >
+        <span
           style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderRadius: 14,
-            padding: "11px 12px",
-            boxShadow: "0 0 20px rgba(59,130,246,0.07)",
-            display: "flex", flexDirection: "column", gap: 9,
+            fontSize: 9,
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "#555555",
+            fontWeight: 600,
           }}
         >
-          {/* Amber alert line */}
+          ESTIMATED READINESS
+        </span>
+
+        <div style={{ position: "relative", lineHeight: 1 }}>
           <div
+            aria-hidden="true"
             style={{
-              display: "flex", alignItems: "center", gap: 5,
-              backgroundColor: "rgba(245,158,11,0.08)",
-              border: "1px solid rgba(245,158,11,0.2)",
-              borderRadius: 7,
-              padding: "4px 7px",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              width: 110,
+              height: 110,
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(245,158,11,0.28) 0%, transparent 70%)",
+              filter: "blur(18px)",
+              pointerEvents: "none",
+            }}
+          />
+          <span
+            style={{
+              fontSize: 56,
+              fontWeight: 700,
+              color: "#F59E0B",
+              lineHeight: 1,
+              display: "block",
+              position: "relative",
+              fontVariantNumeric: "tabular-nums",
             }}
           >
-            <div style={{ width: 5, height: 5, borderRadius: "50%", backgroundColor: "#F59E0B", flexShrink: 0 }} />
-            <p style={{ fontSize: 7.5, fontWeight: 600, color: "#F59E0B", margin: 0, lineHeight: 1.3 }}>
-              Readiness down after back-to-back throwing days
-            </p>
-          </div>
-
-          {/* Score row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ position: "relative", flexShrink: 0 }}>
-              <div
-                aria-hidden="true"
-                style={{
-                  position: "absolute", top: "50%", left: "40%",
-                  transform: "translate(-50%,-50%)",
-                  width: 64, height: 64, borderRadius: "50%",
-                  background: "radial-gradient(circle, rgba(245,158,11,0.3) 0%, transparent 70%)",
-                  filter: "blur(10px)", pointerEvents: "none",
-                }}
-              />
-              <span style={{ fontSize: 48, fontWeight: 900, color: "#F59E0B", lineHeight: 1, display: "block", fontVariantNumeric: "tabular-nums", position: "relative" }}>
-                6.1
-              </span>
-            </div>
-            <span style={{ fontSize: 12, color: "#6b7280", fontWeight: 500 }}>/10</span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-              <span
-                style={{
-                  display: "inline-flex", alignItems: "center",
-                  backgroundColor: "rgba(245,158,11,0.08)",
-                  border: "1px solid rgba(245,158,11,0.2)",
-                  color: "#F59E0B",
-                  fontSize: 9, fontWeight: 700,
-                  padding: "3px 7px", borderRadius: 999, whiteSpace: "nowrap",
-                }}
-              >
-                Proceed with Caution
-              </span>
-              <span style={{ fontSize: 7.5, color: "#6b7280" }}>Based on your recent logs</span>
-            </div>
-          </div>
-
-          {/* Score badges */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 5 }}>
-            {(
-              [["Pain", 2, "#22C55E"], ["Soreness", 4, "#F59E0B"], ["Stiffness", 3, "#22C55E"]] as [string, number, string][]
-            ).map(([label, val, color]) => (
-              <div
-                key={label}
-                style={{
-                  backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
-                  borderRadius: 9, padding: "6px 3px",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
-                }}
-              >
-                <span style={{ fontSize: 15, fontWeight: 900, color, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-                  {val}
-                </span>
-                <span style={{ fontSize: 7.5, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <p style={{ fontSize: 7.5, color: "#4b5563", margin: 0, lineHeight: 1.4 }}>
-            Estimated from pain, soreness, stiffness, and recent throwing load.
-          </p>
+            6.1
+          </span>
         </div>
 
-        {/* Recommendation card */}
-        <div
+        <span
           style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderLeft: "3px solid #F59E0B",
-            borderRadius: 14,
-            padding: "10px 12px",
-            boxShadow: "0 0 20px rgba(59,130,246,0.07)",
-            display: "flex", flexDirection: "column", gap: 4,
+            display: "inline-flex",
+            alignItems: "center",
+            backgroundColor: "rgba(245,158,11,0.08)",
+            border: "1px solid rgba(245,158,11,0.22)",
+            color: "#F59E0B",
+            fontSize: 12,
+            fontWeight: 600,
+            padding: "5px 14px",
+            borderRadius: 999,
           }}
         >
-          <p style={{ fontSize: 8.5, fontWeight: 700, color: "#fff", margin: 0 }}>
-            Today&apos;s Recommendation
-          </p>
-          <p style={{ fontSize: 8.5, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.45 }}>
-            Light catch only today. Monitor soreness trend.
-          </p>
-          <p style={{ fontSize: 7.5, color: "#555555", margin: 0, lineHeight: 1.4 }}>
-            ArmTrack tracks patterns to support your decisions — not to diagnose injuries.
-          </p>
-        </div>
+          Proceed with Caution
+        </span>
+      </div>
 
-        {/* Action buttons */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-          <div style={{ backgroundColor: "#3B82F6", borderRadius: 10, padding: "9px 0", textAlign: "center", boxShadow: "0 3px 12px rgba(59,130,246,0.35)" }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#fff" }}>Log Today</span>
+      {/* ── Metric rows ────────────────────────────────────────────────────── */}
+      <div
+        style={{
+          borderTop: "1px solid #1a1a1a",
+          padding: "12px 16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
+        }}
+      >
+        {metrics.map(([label, value, color]) => (
+          <div
+            key={label}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span style={{ fontSize: 11, color: "#555555" }}>{label}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color }}>{value}</span>
           </div>
-          <div style={{ backgroundColor: "#111111", border: "1px solid #222222", borderRadius: 10, padding: "9px 0", textAlign: "center" }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#9ca3af" }}>View History</span>
-          </div>
-        </div>
+        ))}
+      </div>
 
+      {/* ── Recommendation ─────────────────────────────────────────────────── */}
+      <div
+        style={{
+          margin: "4px 12px 12px",
+          backgroundColor: "#0a0800",
+          border: "1px solid #2a2000",
+          borderLeft: "2px solid #F59E0B",
+          borderRadius: 12,
+          padding: 12,
+        }}
+      >
+        <p
+          style={{
+            fontSize: 8,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#555555",
+            fontWeight: 600,
+            margin: "0 0 5px",
+          }}
+        >
+          TODAY&apos;S RECOMMENDATION
+        </p>
+        <p style={{ fontSize: 11, color: "#aaaaaa", lineHeight: 1.6, margin: 0 }}>
+          Light catch only today. Monitor soreness trend closely.
+        </p>
       </div>
     </motion.div>
   );
@@ -276,7 +253,7 @@ export default function Home() {
       </nav>
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-20 pb-8 sm:px-10 md:pt-24 md:pb-12">
+      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-12 pb-8 sm:px-10 md:pt-16 md:pb-12">
 
         {/* Background seam texture */}
         <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -293,12 +270,12 @@ export default function Home() {
         </div>
 
         {/* Radial glow */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 55% at 65% 40%, rgba(59,130,246,0.1) 0%, transparent 70%)" }} />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse 70% 55% at 65% 40%, rgba(59,130,246,0.09) 0%, transparent 70%)" }} />
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-10">
+        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-8 lg:gap-12">
 
           {/* Left: copy */}
-          <div className="flex flex-col gap-5 md:w-[54%] md:pr-6">
+          <div className="flex flex-col gap-5 md:w-[54%] md:pr-4">
 
             {/* Badge */}
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease }}>
@@ -320,7 +297,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.07, ease }}
               className="font-bold text-white"
-              style={{ fontSize: "clamp(28px, 7vw, 52px)", lineHeight: 1.08, letterSpacing: "-0.025em" }}
+              style={{ fontSize: "clamp(32px, 7vw, 56px)", lineHeight: 1.05, letterSpacing: "-0.025em" }}
             >
               Track arm stress before it turns into shutdown time.
             </motion.h1>
@@ -344,29 +321,29 @@ export default function Home() {
             >
               <a
                 href="/signup"
-                className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white transition-all duration-150"
+                className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white transition-all duration-200"
                 style={{
                   backgroundColor: "#3B82F6",
+                  padding: "0 28px",
                   height: 56,
-                  boxShadow: "0 4px 28px rgba(59,130,246,0.42)",
+                  boxShadow: "0 4px 24px rgba(59,130,246,0.38)",
                   flex: "1 1 auto",
-                  maxWidth: "100%",
                 }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.backgroundColor = "#60a5fa";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 36px rgba(59,130,246,0.55)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 0 24px rgba(59,130,246,0.55), 0 6px 36px rgba(59,130,246,0.4)";
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLElement).style.backgroundColor = "#3B82F6";
-                  (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 28px rgba(59,130,246,0.42)";
+                  (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(59,130,246,0.38)";
                 }}
               >
                 Start Free
               </a>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-xl text-base font-semibold transition-all duration-150"
-                style={{ border: "1px solid #2a2a2a", color: "#aaa", height: 56, padding: "0 28px" }}
+                className="inline-flex items-center justify-center gap-2 rounded-xl text-base font-semibold transition-all duration-200"
+                style={{ border: "1px solid #2a2a2a", color: "#aaa", height: 56, padding: "0 24px" }}
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.borderColor = "#444";
                   (e.currentTarget as HTMLElement).style.color = "#fff";
@@ -377,14 +354,26 @@ export default function Home() {
                 }}
               >
                 See How It Works
+                <ArrowRight size={15} strokeWidth={2} />
               </a>
             </motion.div>
+
+            {/* Trust line — directly under CTAs */}
+            <motion.p
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.28, ease }}
+              className="italic"
+              style={{ fontSize: 12, color: "#555", marginTop: -4 }}
+            >
+              Used by 500+ players from high school to college
+            </motion.p>
 
             {/* Bullets */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.3, ease }}
+              transition={{ duration: 0.45, delay: 0.34, ease }}
               className="flex flex-col gap-2"
             >
               {[
@@ -397,23 +386,20 @@ export default function Home() {
                   <span style={{ fontSize: 13, color: "#bbb" }}>{item}</span>
                 </div>
               ))}
-              <p className="mt-1 italic" style={{ fontSize: 12, color: "#555" }}>
-                Used by 500+ players from high school to college
-              </p>
             </motion.div>
           </div>
 
-          {/* Right: phone mockup */}
+          {/* Right: stats card */}
           <div className="flex-1 flex justify-center md:justify-end mt-8 md:mt-0">
-            <PhoneMockup />
+            <StatsCard />
           </div>
         </div>
 
         {/* Scroll indicator */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-          <span style={{ color: "#333", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase" }}>Scroll</span>
+          <span style={{ color: "#2a2a2a", fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase" }}>Scroll</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}>
-            <ChevronDown style={{ color: "#333", width: 18, height: 18 }} />
+            <ChevronDown style={{ color: "#2a2a2a", width: 18, height: 18 }} />
           </motion.div>
         </div>
       </section>
@@ -421,7 +407,7 @@ export default function Home() {
       {/* ── Social Proof Strip ──────────────────────────────────────────────── */}
       <div style={{ borderTop: "1px solid #1a1a1a", borderBottom: "1px solid #1a1a1a", backgroundColor: "#080808" }}>
         <ScrollFade>
-          <div className="mx-auto max-w-5xl px-6 sm:px-10 py-4 md:py-5">
+          <div className="mx-auto max-w-5xl px-6 sm:px-10 py-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
               {[
                 "500+ players tracking their arm",
@@ -431,7 +417,7 @@ export default function Home() {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4 flex-1 justify-center">
                   {i > 0 && (
-                    <span className="hidden sm:block" style={{ color: "#1e1e1e", fontSize: 16, userSelect: "none" }}>|</span>
+                    <span className="hidden sm:block" style={{ color: "#1a1a1a", fontSize: 16, userSelect: "none" }}>|</span>
                   )}
                   <span style={{ fontSize: 10, fontWeight: 600, color: "#999", textTransform: "uppercase", letterSpacing: "0.13em" }}>
                     {item}
@@ -444,24 +430,24 @@ export default function Home() {
       </div>
 
       {/* ── Problem Section ─────────────────────────────────────────────────── */}
-      <section id="problem" className="px-6 sm:px-10 py-12 md:py-20">
+      <section id="problem" className="px-6 sm:px-10 py-10 md:py-16">
         <div className="mx-auto max-w-3xl">
           <ScrollFade>
             <h2
               className="font-bold text-white text-center mb-3"
-              style={{ fontSize: "clamp(24px, 4.5vw, 30px)", letterSpacing: "-0.02em", lineHeight: 1.2 }}
+              style={{ fontSize: "clamp(22px, 4vw, 36px)", letterSpacing: "-0.02em", lineHeight: 1.15 }}
             >
               Most arm problems do not come out of nowhere.
             </h2>
           </ScrollFade>
 
           <ScrollFade delay={0.08}>
-            <p className="text-center mb-10 max-w-lg mx-auto" style={{ color: "#999", fontSize: 15, lineHeight: 1.65 }}>
+            <p className="text-center mb-8 max-w-lg mx-auto" style={{ color: "#999", fontSize: 15, lineHeight: 1.65 }}>
               Pain, soreness, and throwing load usually trend wrong before players miss time. Most athletes just do not have a system to catch it early.
             </p>
           </ScrollFade>
 
-          <div className="flex flex-col gap-3 mb-10">
+          <div className="flex flex-col gap-4 mb-8">
             {[
               {
                 title: "Throwing blind",
@@ -480,16 +466,16 @@ export default function Home() {
                 <div
                   style={{
                     backgroundColor: "#111111",
-                    border: "1px solid #222222",
+                    border: "1px solid #1a1a1a",
                     borderLeft: "3px solid #EF4444",
-                    borderRadius: 16,
-                    padding: "18px 20px",
+                    borderRadius: 14,
+                    padding: "16px 20px",
                   }}
                 >
-                  <p className="font-bold text-white mb-1" style={{ fontSize: 14, lineHeight: 1.4 }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", marginBottom: 4, lineHeight: 1.3 }}>
                     {card.title}
                   </p>
-                  <p style={{ fontSize: 13, color: "#999", lineHeight: 1.55 }}>
+                  <p style={{ fontSize: 13, color: "#777777", lineHeight: 1.6, margin: 0 }}>
                     {card.desc}
                   </p>
                 </div>
@@ -506,12 +492,12 @@ export default function Home() {
       </section>
 
       {/* ── How It Works ────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="px-6 sm:px-10 py-12 md:py-20" style={{ borderTop: "1px solid #111111" }}>
+      <section id="how-it-works" className="px-6 sm:px-10 py-10 md:py-16" style={{ borderTop: "1px solid #111111" }}>
         <div className="mx-auto max-w-4xl">
           <ScrollFade>
             <h2
-              className="font-bold text-white text-center mb-10"
-              style={{ fontSize: "clamp(24px, 4.5vw, 30px)", letterSpacing: "-0.02em" }}
+              className="font-bold text-white text-center mb-9"
+              style={{ fontSize: "clamp(22px, 4vw, 36px)", letterSpacing: "-0.02em" }}
             >
               A simple daily system for smarter throwing decisions.
             </h2>
@@ -538,20 +524,20 @@ export default function Home() {
               <ScrollFade key={step.n} delay={i * 0.1} className="flex-1">
                 <div
                   className="relative flex flex-col gap-3 h-full p-5 md:p-6"
-                  style={{ backgroundColor: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 18, overflow: "hidden" }}
+                  style={{ backgroundColor: "#0c0c0c", border: "1px solid #1a1a1a", borderRadius: 16, overflow: "hidden" }}
                 >
                   <span
                     aria-hidden="true"
                     className="absolute font-black leading-none select-none"
-                    style={{ fontSize: 72, color: "rgba(59,130,246,0.1)", top: 6, right: 14, letterSpacing: "-0.04em", lineHeight: 1 }}
+                    style={{ fontSize: 72, color: "rgba(59,130,246,0.09)", top: 6, right: 14, letterSpacing: "-0.04em", lineHeight: 1 }}
                   >
                     {step.n}
                   </span>
                   <div className="relative">
-                    <p className="font-bold text-white mb-2" style={{ fontSize: 17, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", marginBottom: 6, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
                       {step.title}
                     </p>
-                    <p style={{ fontSize: 13, color: "#999", lineHeight: 1.6 }}>{step.desc}</p>
+                    <p style={{ fontSize: 13, color: "#777777", lineHeight: 1.6, margin: 0 }}>{step.desc}</p>
                   </div>
                 </div>
               </ScrollFade>
@@ -561,18 +547,18 @@ export default function Home() {
       </section>
 
       {/* ── What You Actually Get ───────────────────────────────────────────── */}
-      <section className="px-6 sm:px-10 py-12 md:py-20" style={{ borderTop: "1px solid #111111" }}>
+      <section className="px-6 sm:px-10 py-10 md:py-16" style={{ borderTop: "1px solid #111111" }}>
         <div className="mx-auto max-w-4xl">
           <ScrollFade>
             <h2
               className="font-bold text-white text-center mb-3"
-              style={{ fontSize: "clamp(24px, 4.5vw, 30px)", letterSpacing: "-0.02em" }}
+              style={{ fontSize: "clamp(22px, 4vw, 36px)", letterSpacing: "-0.02em" }}
             >
               More than logs. A clearer answer for today.
             </h2>
           </ScrollFade>
           <ScrollFade delay={0.08}>
-            <p className="text-center mb-10 max-w-xl mx-auto" style={{ color: "#999", fontSize: 15, lineHeight: 1.65 }}>
+            <p className="text-center mb-8 max-w-xl mx-auto" style={{ color: "#999", fontSize: 15, lineHeight: 1.65 }}>
               ArmTrack turns daily check-ins into useful context. Instead of guessing based on how your arm felt in warmups, you can look at your recent trends and make a better decision.
             </p>
           </ScrollFade>
@@ -588,16 +574,16 @@ export default function Home() {
                 <div
                   style={{
                     backgroundColor: "#0f0f0f",
-                    border: "1px solid #1e1e1e",
-                    borderRadius: 16,
-                    padding: "20px 22px",
+                    border: "1px solid #1a1a1a",
+                    borderRadius: 14,
+                    padding: "18px 20px",
                     height: "100%",
                   }}
                 >
-                  <p className="font-bold text-white mb-2" style={{ fontSize: 14, lineHeight: 1.3 }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", marginBottom: 6, lineHeight: 1.3 }}>
                     {card.title}
                   </p>
-                  <p style={{ fontSize: 13, color: "#999", lineHeight: 1.6 }}>{card.desc}</p>
+                  <p style={{ fontSize: 13, color: "#777777", lineHeight: 1.6, margin: 0 }}>{card.desc}</p>
                 </div>
               </ScrollFade>
             ))}
@@ -606,54 +592,51 @@ export default function Home() {
       </section>
 
       {/* ── Who It Is For ───────────────────────────────────────────────────── */}
-      <section className="px-6 sm:px-10 py-12 md:py-20" style={{ borderTop: "1px solid #111111" }}>
-        <div className="mx-auto max-w-4xl">
+      <section className="px-6 sm:px-10 py-10 md:py-16" style={{ borderTop: "1px solid #111111" }}>
+        <div className="mx-auto max-w-5xl">
           <ScrollFade>
             <h2
-              className="font-bold text-white text-center mb-10"
-              style={{ fontSize: "clamp(24px, 4.5vw, 30px)", letterSpacing: "-0.02em" }}
+              className="font-bold text-white text-center mb-9"
+              style={{ fontSize: "clamp(22px, 4vw, 36px)", letterSpacing: "-0.02em" }}
             >
               Built for throwers at every level.
             </h2>
           </ScrollFade>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               {
                 title: "Pitchers",
                 desc: "Manage soreness, recovery, and throwing load between outings.",
-                accent: "#3B82F6",
               },
               {
                 title: "Catchers",
                 desc: "Track cumulative arm fatigue from high-volume throwing.",
-                accent: "#3B82F6",
               },
               {
                 title: "Position Players",
                 desc: "Know when your arm is ready to air it out and when it needs recovery.",
-                accent: "#3B82F6",
               },
               {
                 title: "Parents and Coaches",
                 desc: "Get better context around how an athlete is feeling day to day.",
-                accent: "#3B82F6",
               },
             ].map((card, i) => (
               <ScrollFade key={i} delay={i * 0.08}>
                 <div
                   style={{
                     backgroundColor: "#111111",
-                    border: "1px solid #222222",
+                    border: "1px solid #1a1a1a",
                     borderLeft: "3px solid #3B82F6",
-                    borderRadius: 16,
-                    padding: "20px 22px",
+                    borderRadius: 14,
+                    padding: "18px 16px",
+                    height: "100%",
                   }}
                 >
-                  <p className="font-bold text-white mb-1.5" style={{ fontSize: 15, letterSpacing: "-0.01em" }}>
+                  <p style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", marginBottom: 6, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
                     {card.title}
                   </p>
-                  <p style={{ fontSize: 13, color: "#999", lineHeight: 1.6 }}>{card.desc}</p>
+                  <p style={{ fontSize: 13, color: "#777777", lineHeight: 1.6, margin: 0 }}>{card.desc}</p>
                 </div>
               </ScrollFade>
             ))}
@@ -670,7 +653,7 @@ export default function Home() {
           <ScrollFade className="w-full flex flex-col items-center gap-5">
             <h2
               className="font-bold text-white"
-              style={{ fontSize: "clamp(22px, 4.5vw, 28px)", letterSpacing: "-0.02em", lineHeight: 1.2 }}
+              style={{ fontSize: "clamp(26px, 5vw, 38px)", letterSpacing: "-0.025em", lineHeight: 1.1 }}
             >
               Stop guessing what your arm can handle today.
             </h2>
@@ -679,19 +662,25 @@ export default function Home() {
             </p>
             <a
               href="/signup"
-              className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full transition-all duration-150"
+              className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full transition-all duration-200"
               style={{
                 backgroundColor: "#3B82F6",
                 height: 56,
                 maxWidth: 320,
-                boxShadow: "0 4px 32px rgba(59,130,246,0.45)",
+                boxShadow: "0 0 40px rgba(59,130,246,0.2), 0 4px 32px rgba(59,130,246,0.4)",
               }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "#60a5fa")}
-              onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "#3B82F6")}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "#60a5fa";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 50px rgba(59,130,246,0.35), 0 6px 40px rgba(59,130,246,0.5)";
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.backgroundColor = "#3B82F6";
+                (e.currentTarget as HTMLElement).style.boxShadow = "0 0 40px rgba(59,130,246,0.2), 0 4px 32px rgba(59,130,246,0.4)";
+              }}
             >
               Start Free
             </a>
-            <p style={{ fontSize: 12, color: "#555" }}>
+            <p style={{ fontSize: 12, color: "#888888" }}>
               Free to start. No complicated setup. Built for baseball and softball athletes.
             </p>
           </ScrollFade>
