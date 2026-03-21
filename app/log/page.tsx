@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import LogCelebration from "@/components/LogCelebration";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -222,7 +223,7 @@ export default function LogPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState<LogForm>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [celebrationStreak, setCelebrationStreak] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -325,13 +326,23 @@ export default function LogPage() {
 
     if (todayLog) {
       await supabase.from("arm_logs").update(payload).eq("id", todayLog.id);
+      setSubmitting(false);
+      router.replace("/dashboard");
     } else {
       await supabase.from("arm_logs").insert(payload);
-    }
 
-    setSubmitting(false);
-    setSubmitted(true);
-    setTimeout(() => router.replace("/dashboard"), 2000);
+      // Re-fetch logs after insert to get accurate post-insert streak
+      const { data: freshLogs } = await supabase
+        .from("arm_logs")
+        .select("date")
+        .eq("user_id", userId);
+      const freshStreak = freshLogs
+        ? computeStreak(freshLogs.map((l) => l.date))
+        : streak;
+
+      setSubmitting(false);
+      setCelebrationStreak(freshStreak);
+    }
   }
 
   // ── Loading ────────────────────────────────────────────────────────────────
@@ -344,45 +355,15 @@ export default function LogPage() {
     );
   }
 
-  // ── Success ────────────────────────────────────────────────────────────────
+  // ── Celebration ────────────────────────────────────────────────────────────
 
-  if (submitted) {
+  if (celebrationStreak !== null) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-black gap-5">
-        <motion.div
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 280, damping: 18 }}
-          className="flex items-center justify-center rounded-full bg-green-500"
-          style={{ width: 80, height: 80 }}
-        >
-          <svg width="34" height="26" viewBox="0 0 34 26" fill="none">
-            <path
-              d="M2 13L11 22L32 2"
-              stroke="white"
-              strokeWidth="3.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.18 }}
-          className="text-2xl font-extrabold text-white tracking-tight"
-        >
-          Logged ✓
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.32 }}
-          className="text-sm text-gray-500"
-        >
-          Redirecting to dashboard…
-        </motion.p>
-      </div>
+      <LogCelebration
+        streakCount={celebrationStreak}
+        firstName={profile?.first_name ?? ""}
+        onComplete={() => router.replace("/dashboard")}
+      />
     );
   }
 
