@@ -228,12 +228,13 @@ export default function LogPage() {
   useEffect(() => {
     async function loadData() {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (!session) {
         router.replace("/login");
         return;
       }
+      const user = session.user;
 
       const { data: prof } = await supabase
         .from("profiles")
