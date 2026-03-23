@@ -32,6 +32,7 @@ interface Profile {
   first_name: string;
   onboarding_complete: boolean;
   position: string | null;
+  role: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -304,7 +305,7 @@ export default function DashboardPage() {
 
       const { data: prof } = await supabase
         .from("profiles")
-        .select("first_name, onboarding_complete, position")
+        .select("first_name, onboarding_complete, position, role")
         .eq("id", user.id)
         .single();
 
@@ -554,7 +555,15 @@ export default function DashboardPage() {
         {/* ── Quick Actions ─────────────────────────────────────────────────────── */}
         <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
           <div className="grid grid-cols-2 gap-3">
-            {loggedToday ? (
+            {profile?.role === "coach" ? (
+              <Link
+                href="/coach/invite"
+                className="rounded-2xl py-3.5 text-sm font-bold text-white text-center transition-all duration-150 hover:opacity-90"
+                style={{ backgroundColor: "#3B82F6", boxShadow: "0 4px 20px rgba(59,130,246,0.35)" }}
+              >
+                Invite Players
+              </Link>
+            ) : loggedToday ? (
               <button
                 disabled
                 className="rounded-2xl py-3.5 text-sm font-bold cursor-not-allowed"

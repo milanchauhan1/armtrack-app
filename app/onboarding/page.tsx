@@ -48,6 +48,13 @@ export interface OnboardingData {
   sport: string;
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function generateCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+}
+
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const easing = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
@@ -968,7 +975,9 @@ export default function OnboardingPage() {
         try {
           const { data: { user } } = await supabase.auth.getUser();
           if (!user) throw new Error("No user");
-          const { error } = await supabase.from("profiles").upsert({
+
+          // 1. Save coach profile
+          const { error: profileErr } = await supabase.from("profiles").upsert({
             id: user.id,
             first_name: data.name,
             role: data.role,
@@ -976,7 +985,21 @@ export default function OnboardingPage() {
             sport: data.sport,
             onboarding_complete: true,
           });
-          if (error) throw error;
+          if (profileErr) throw profileErr;
+
+          // 2. Create team
+          const code = generateCode();
+          const { data: team, error: teamErr } = await supabase
+            .from("teams")
+            .insert({ coach_id: user.id, name: data.teamName, sport: data.sport, code })
+            .select()
+            .single();
+
+          // 3. Write team_id back to profile (best-effort — /coach has a manual fallback)
+          if (team && !teamErr) {
+            await supabase.from("profiles").upsert({ id: user.id, team_id: team.id });
+          }
+
           router.push("/coach");
         } catch {
           setSaveError(true);

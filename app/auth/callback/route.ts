@@ -35,6 +35,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/login`)
   }
 
+  // Check for pending team invite (set by /join/[code] before redirect to auth)
+  const pendingInvite = cookieStore.get('armtrack-pending-invite')?.value
+  if (pendingInvite) {
+    const response = NextResponse.redirect(`${origin}/join/${pendingInvite}`)
+    response.cookies.set('armtrack-pending-invite', '', { maxAge: 0, path: '/' })
+    return response
+  }
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('onboarding_complete, role')
