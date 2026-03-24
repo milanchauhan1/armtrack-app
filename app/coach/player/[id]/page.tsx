@@ -21,6 +21,7 @@ import {
   Legend,
 } from "recharts";
 import { ArrowLeft } from "lucide-react";
+import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -348,14 +349,14 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
   };
 
   return (
-    <div className="min-h-screen bg-black pb-20">
+    <div className="min-h-screen bg-black pb-28">
       {/* Nav */}
       <nav
         className="sticky top-0 z-20 flex items-center gap-3 bg-black px-5 py-4"
         style={{ borderBottom: "1px solid #111111" }}
       >
         <button
-          onClick={() => router.push("/coach")}
+          onClick={() => router.push("/coach/dashboard")}
           className="flex items-center gap-1.5 text-sm font-semibold transition-colors cursor-pointer"
           style={{ color: "#555555" }}
           onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
@@ -538,6 +539,7 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
           )}
         </motion.div>
       </div>
+      <CoachBottomNav />
     </div>
   );
 }
