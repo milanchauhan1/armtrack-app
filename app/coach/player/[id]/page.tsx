@@ -20,7 +20,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Shield, Send, MessageSquare } from "lucide-react";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -31,6 +31,21 @@ interface PlayerProfile {
   level: string | null;
   throws: string | null;
   injury_history: string | null;
+  goal: string | null;
+  throw_frequency: string | null;
+  pain_zones: string[] | null;
+}
+
+interface CoachRec {
+  id: string;
+  recommendation: string;
+  created_at: string;
+}
+
+interface CoachMsg {
+  id: string;
+  message: string;
+  created_at: string;
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -48,6 +63,23 @@ function formatDateShort(dateStr: string): string {
 function formatDateFull(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");
   return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+}
+
+function formatTime(isoStr: string): string {
+  const d = new Date(isoStr);
+  const today = new Date();
+  const isToday =
+    d.getFullYear() === today.getFullYear() &&
+    d.getMonth() === today.getMonth() &&
+    d.getDate() === today.getDate();
+  if (isToday) {
+    return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  }
+  return (
+    d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+    " · " +
+    d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+  );
 }
 
 function scoreColor(v: number): string {
@@ -263,6 +295,16 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [logs, setLogs] = useState<ArmLog[]>([]);
   const [chartMounted, setChartMounted] = useState(false);
+  const [coachId, setCoachId] = useState<string | null>(null);
+  const [teamId, setTeamId] = useState<string | null>(null);
+  const [activeRec, setActiveRec] = useState<CoachRec | null>(null);
+  const [messages, setMessages] = useState<CoachMsg[]>([]);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [recNote, setRecNote] = useState("");
+  const [sending, setSending] = useState(false);
+  const [sendSuccess, setSendSuccess] = useState(false);
+  const [msgText, setMsgText] = useState("");
+  const [sendingMsg, setSendingMsg] = useState(false);
 
   useEffect(() => {
     setChartMounted(true);
@@ -281,7 +323,7 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
       // Verify coach role
       const { data: coachProfile } = await supabase
         .from("profiles")
-        .select("role, onboarding_complete")
+        .select("role, onboarding_complete, team_id")
         .eq("id", user.id)
         .single();
 
@@ -294,10 +336,13 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
         return;
       }
 
+      setCoachId(user.id);
+      setTeamId((coachProfile as { team_id?: string } | null)?.team_id ?? null);
+
       // Fetch player profile
       const { data: playerProfile } = await supabase
         .from("profiles")
-        .select("first_name, position, level, throws, injury_history")
+        .select("first_name, position, level, throws, injury_history, goal, throw_frequency, pain_zones")
         .eq("id", params.id)
         .single();
 
@@ -315,12 +360,92 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
         .gte("date", cutoff)
         .order("date", { ascending: false });
 
+      // Fetch active coach recommendation for this player
+      const nowIso = new Date().toISOString();
+      const { data: recData } = await supabase
+        .from("coach_recommendations")
+        .select("id, recommendation, created_at")
+        .eq("player_id", params.id)
+        .or(`expires_at.gt.${nowIso},expires_at.is.null`)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      setActiveRec((recData as CoachRec | null) ?? null);
+
+      // Fetch last 3 messages sent to this player by this coach
+      const { data: msgData } = await supabase
+        .from("coach_messages")
+        .select("id, message, created_at")
+        .eq("coach_id", user.id)
+        .eq("player_id", params.id)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      setMessages((msgData ?? []) as CoachMsg[]);
+
       setProfile(playerProfile ?? null);
       setLogs((logsData ?? []) as ArmLog[]);
       setLoading(false);
     }
     load();
   }, [router, params.id]);
+
+  async function handleSendRec() {
+    if (!selectedOption || !coachId) return;
+    setSending(true);
+    const combined = recNote.trim()
+      ? `${selectedOption} — ${recNote.trim()}`
+      : selectedOption;
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    if (activeRec) {
+      await supabase
+        .from("coach_recommendations")
+        .update({ recommendation: combined, expires_at: endOfDay.toISOString() })
+        .eq("id", activeRec.id);
+      setActiveRec({ ...activeRec, recommendation: combined });
+    } else {
+      const { data } = await supabase
+        .from("coach_recommendations")
+        .insert({
+          coach_id: coachId,
+          player_id: params.id,
+          recommendation: combined,
+          expires_at: endOfDay.toISOString(),
+        })
+        .select("id, recommendation, created_at")
+        .single();
+      if (data) setActiveRec(data as CoachRec);
+    }
+
+    setSending(false);
+    setSendSuccess(true);
+    setSelectedOption(null);
+    setRecNote("");
+    setTimeout(() => setSendSuccess(false), 2000);
+  }
+
+  async function handleSendMsg() {
+    if (!msgText.trim() || !coachId || !teamId) return;
+    setSendingMsg(true);
+    const { data } = await supabase
+      .from("coach_messages")
+      .insert({
+        coach_id: coachId,
+        team_id: teamId,
+        player_id: params.id,
+        message: msgText.trim(),
+      })
+      .select("id, message, created_at")
+      .single();
+    if (data) {
+      setMessages([data as CoachMsg, ...messages].slice(0, 3));
+    }
+    setMsgText("");
+    setSendingMsg(false);
+  }
 
   if (loading) {
     return (
@@ -340,13 +465,6 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
     Soreness: l.soreness_level,
     Stiffness: l.stiffness_level,
   }));
-
-  const injuryLabel: Record<string, string> = {
-    never: "No injury history",
-    minor: "Minor soreness or strain",
-    significant: "Significant injury",
-    recovering: "Currently recovering",
-  };
 
   return (
     <div className="min-h-screen bg-black pb-28">
@@ -406,6 +524,18 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
                 Throws {profile.throws}
               </span>
             )}
+            {profile?.goal && (
+              <span
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold"
+                style={{
+                  backgroundColor: "rgba(59,130,246,0.08)",
+                  border: "1px solid rgba(59,130,246,0.2)",
+                  color: "#60a5fa",
+                }}
+              >
+                {profile.goal}
+              </span>
+            )}
             {profile?.injury_history && profile.injury_history !== "never" && (
               <span
                 className="rounded-lg px-3 py-1.5 text-xs font-semibold"
@@ -415,9 +545,22 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
                   color: "#F59E0B",
                 }}
               >
-                {injuryLabel[profile.injury_history] ?? profile.injury_history}
+                Injury history
               </span>
             )}
+            {(profile?.pain_zones ?? []).map((zone) => (
+              <span
+                key={zone}
+                className="rounded-lg px-3 py-1.5 text-xs font-semibold"
+                style={{
+                  backgroundColor: "rgba(239,68,68,0.08)",
+                  border: "1px solid rgba(239,68,68,0.2)",
+                  color: "#ef4444",
+                }}
+              >
+                {zone}
+              </span>
+            ))}
           </div>
 
           {/* Current readiness */}
@@ -537,6 +680,170 @@ export default function PlayerDetailPage({ params }: { params: { id: string } })
               ))}
             </div>
           )}
+        </motion.div>
+
+        {/* ── Recommendation Panel ─────────────────────────────────────── */}
+        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mt-6">
+          <div
+            className="rounded-2xl p-5 flex flex-col gap-4"
+            style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+          >
+            {/* Header */}
+            <div className="flex items-center gap-2">
+              <Shield size={16} style={{ color: "#3B82F6" }} />
+              <p className="text-sm font-bold text-white">Send Recommendation</p>
+            </div>
+
+            {/* Active rec display */}
+            {activeRec && (
+              <div
+                className="rounded-xl px-4 py-3 flex flex-col gap-1"
+                style={{ backgroundColor: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.15)" }}
+              >
+                <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#3B82F6" }}>
+                  Active today
+                </p>
+                <p className="text-sm text-white leading-relaxed">{activeRec.recommendation}</p>
+              </div>
+            )}
+
+            {/* Quick-select grid */}
+            {(() => {
+              const OPTIONS = [
+                "Full session — arm looks ready",
+                "Light throwing only today",
+                "Flat ground or catch only",
+                "Recovery day recommended",
+                "Monitor closely — check in before practice",
+                "Cleared to pitch",
+              ];
+              return (
+                <div className="grid grid-cols-2 gap-2">
+                  {OPTIONS.map((opt) => {
+                    const isSelected = selectedOption === opt;
+                    return (
+                      <button
+                        key={opt}
+                        onClick={() => setSelectedOption(isSelected ? null : opt)}
+                        className="rounded-xl px-3 py-2.5 text-xs font-semibold text-left transition-all duration-150 cursor-pointer"
+                        style={{
+                          backgroundColor: isSelected ? "rgba(59,130,246,0.15)" : "#0d0d0d",
+                          border: isSelected ? "1px solid rgba(59,130,246,0.4)" : "1px solid #1e1e1e",
+                          color: isSelected ? "#60a5fa" : "#888888",
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
+            {/* Note input */}
+            <textarea
+              value={recNote}
+              onChange={(e) => setRecNote(e.target.value.slice(0, 200))}
+              placeholder="Add a note (optional)"
+              rows={2}
+              className="w-full resize-none rounded-xl px-4 py-3 text-sm outline-none transition-all duration-150"
+              style={{
+                backgroundColor: "#0d0d0d",
+                border: "1px solid #1e1e1e",
+                color: "#ffffff",
+                caretColor: "#3B82F6",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(59,130,246,0.4)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#1e1e1e")}
+            />
+            <p className="text-[10px] -mt-2" style={{ color: "#444444" }}>
+              {recNote.length}/200
+            </p>
+
+            {/* Send button */}
+            <button
+              onClick={handleSendRec}
+              disabled={!selectedOption || sending}
+              className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: sendSuccess ? "rgba(34,197,94,0.15)" : "#3B82F6",
+                border: sendSuccess ? "1px solid rgba(34,197,94,0.3)" : "none",
+                color: sendSuccess ? "#22C55E" : "#ffffff",
+                boxShadow: sendSuccess ? "none" : "0 4px 20px rgba(59,130,246,0.3)",
+              }}
+            >
+              {sendSuccess ? (
+                "Recommendation sent"
+              ) : (
+                <>
+                  <Send size={14} />
+                  {activeRec ? "Update Recommendation" : "Send to Player"}
+                </>
+              )}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* ── Message Panel ────────────────────────────────────────────── */}
+        <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show" className="mt-4 mb-4">
+          <div
+            className="rounded-2xl p-5 flex flex-col gap-4"
+            style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+          >
+            <div className="flex items-center gap-2">
+              <MessageSquare size={16} style={{ color: "#555555" }} />
+              <p className="text-sm font-bold text-white">Send Message</p>
+            </div>
+
+            {/* Input + Send */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={msgText}
+                onChange={(e) => setMsgText(e.target.value.slice(0, 300))}
+                placeholder={`Message to ${profile?.first_name ?? "player"}...`}
+                className="flex-1 rounded-xl px-4 py-3 text-sm outline-none transition-all duration-150"
+                style={{
+                  backgroundColor: "#0d0d0d",
+                  border: "1px solid #1e1e1e",
+                  color: "#ffffff",
+                  caretColor: "#3B82F6",
+                }}
+                onFocus={(e) => (e.currentTarget.style.borderColor = "rgba(59,130,246,0.4)")}
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#1e1e1e")}
+                onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSendMsg()}
+              />
+              <button
+                onClick={handleSendMsg}
+                disabled={!msgText.trim() || sendingMsg}
+                className="rounded-xl px-4 py-3 transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed flex-shrink-0"
+                style={{ backgroundColor: "#3B82F6", boxShadow: "0 4px 16px rgba(59,130,246,0.25)" }}
+              >
+                <Send size={14} className="text-white" />
+              </button>
+            </div>
+
+            {/* Recent messages */}
+            {messages.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#444444" }}>
+                  Recent messages
+                </p>
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className="rounded-xl px-4 py-3 flex flex-col gap-1"
+                    style={{ backgroundColor: "#0d0d0d", border: "1px solid #1a1a1a" }}
+                  >
+                    <p className="text-xs text-white leading-relaxed">{msg.message}</p>
+                    <p className="text-[10px]" style={{ color: "#444444" }}>
+                      {formatTime(msg.created_at)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </motion.div>
       </div>
       <CoachBottomNav />
