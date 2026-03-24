@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Copy, Check, RefreshCw } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -74,7 +75,7 @@ export default function CoachInvitePage() {
         .eq("coach_id", user.id)
         .single();
 
-      if (!teamData) { router.replace("/coach"); return; }
+      if (!teamData) { router.replace("/coach/dashboard"); return; }
       setTeam(teamData as Team);
       setLoading(false);
     }
@@ -106,13 +107,13 @@ export default function CoachInvitePage() {
   const inviteUrl = `https://armtrack.app/join/${team.code}`;
 
   return (
-    <div className="min-h-screen bg-black pb-20">
+    <div className="min-h-screen bg-black pb-28">
       {/* Nav */}
       <nav
         className="sticky top-0 z-20 flex items-center justify-between bg-black px-5 py-4"
         style={{ borderBottom: "1px solid #111111" }}
       >
-        <Link href="/coach" className="text-xl font-extrabold tracking-tight text-white">
+        <Link href="/coach/dashboard" className="text-xl font-extrabold tracking-tight text-white">
           Arm<span className="text-blue-500">Track</span>
         </Link>
         <button
@@ -197,6 +198,7 @@ export default function CoachInvitePage() {
           </p>
         </motion.div>
       </div>
+      <CoachBottomNav />
     </div>
   );
 }
