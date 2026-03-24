@@ -15,7 +15,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Shield, MessageSquare } from "lucide-react";
 import {
   ArmLog,
   calculateEstimatedReadiness,
@@ -33,6 +33,7 @@ interface Profile {
   onboarding_complete: boolean;
   position: string | null;
   role: string | null;
+  team_id: string | null;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -72,6 +73,11 @@ function scoreColor(v: number): string {
   if (v <= 3) return "#22c55e";
   if (v <= 6) return "#f59e0b";
   return "#ef4444";
+}
+
+function formatTime(isoStr: string): string {
+  const d = new Date(isoStr);
+  return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }
 
 function formatDateShort(dateStr: string): string {
@@ -281,6 +287,12 @@ export default function DashboardPage() {
   const [loggedToday, setLoggedToday] = useState(false);
   const [chartMounted, setChartMounted] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [coachRec, setCoachRec] = useState<string | null>(null);
+  const [teamMsg, setTeamMsg] = useState<{
+    message: string;
+    coach_name: string;
+    created_at: string;
+  } | null>(null);
 
   useEffect(() => {
     setChartMounted(true);
@@ -305,7 +317,7 @@ export default function DashboardPage() {
 
       const { data: prof } = await supabase
         .from("profiles")
-        .select("first_name, onboarding_complete, position, role")
+        .select("first_name, onboarding_complete, position, role, team_id")
         .eq("id", user.id)
         .single();
 
@@ -315,6 +327,47 @@ export default function DashboardPage() {
       }
 
       setProfile(prof);
+
+      // Fetch active coach recommendation for today
+      const nowIso = new Date().toISOString();
+      const { data: recData } = await supabase
+        .from("coach_recommendations")
+        .select("recommendation")
+        .eq("player_id", user.id)
+        .gt("expires_at", nowIso)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (recData) setCoachRec((recData as { recommendation: string }).recommendation);
+
+      // Fetch most recent team message from last 24h
+      if (prof?.team_id) {
+        const yesterday = new Date();
+        yesterday.setHours(yesterday.getHours() - 24);
+        const { data: msgRows } = await supabase
+          .from("coach_messages")
+          .select("message, created_at, coach_id")
+          .eq("team_id", prof.team_id)
+          .or(`player_id.eq.${user.id},player_id.is.null`)
+          .gte("created_at", yesterday.toISOString())
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (msgRows && msgRows.length > 0) {
+          const latest = msgRows[0] as { message: string; created_at: string; coach_id: string };
+          const { data: coachProf } = await supabase
+            .from("profiles")
+            .select("first_name")
+            .eq("id", latest.coach_id)
+            .single();
+          setTeamMsg({
+            message: latest.message,
+            coach_name: (coachProf as { first_name: string } | null)?.first_name ?? "Coach",
+            created_at: latest.created_at,
+          });
+        }
+      }
 
       const { data: allDates } = await supabase
         .from("arm_logs")
@@ -500,9 +553,52 @@ export default function DashboardPage() {
           </Card>
         </motion.div>
 
+        {/* ── From Your Coach ──────────────────────────────────────────────────── */}
+        {coachRec && (
+          <motion.div custom={2} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+            <div
+              className="rounded-2xl p-5"
+              style={{
+                backgroundColor: "#111111",
+                border: "1px solid #222222",
+                borderLeft: "3px solid #3B82F6",
+                boxShadow: "0 0 24px rgba(59,130,246,0.07)",
+              }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Shield size={15} style={{ color: "#3B82F6" }} />
+                <p className="text-sm font-bold text-white">From Your Coach</p>
+              </div>
+              <p className="text-sm font-semibold text-white leading-relaxed mb-2">{coachRec}</p>
+              <p className="text-xs" style={{ color: "#555555" }}>Sent by your coach today</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Team Message ─────────────────────────────────────────────────────── */}
+        {teamMsg && (
+          <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+            <div
+              className="rounded-2xl p-5"
+              style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <MessageSquare size={15} style={{ color: "#555555" }} />
+                <p className="text-sm font-bold text-white">Team Message</p>
+              </div>
+              <p className="text-sm text-white leading-relaxed mb-2">{teamMsg.message}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs" style={{ color: "#555555" }}>{teamMsg.coach_name}</p>
+                <span style={{ color: "#333333" }}>·</span>
+                <p className="text-xs" style={{ color: "#444444" }}>{formatTime(teamMsg.created_at)}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* ── Daily Recommendation ─────────────────────────────────────────────── */}
         {recentLog && meta && readiness !== null && (
-          <motion.div custom={2} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+          <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
             <div
               className="rounded-2xl p-5"
               style={{ backgroundColor: "#111111", border: "1px solid #222222", borderLeft: `3px solid ${meta.color}`, boxShadow: "0 0 24px rgba(59,130,246,0.07)" }}
@@ -553,7 +649,7 @@ export default function DashboardPage() {
         )}
 
         {/* ── Quick Actions ─────────────────────────────────────────────────────── */}
-        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
+        <motion.div custom={5} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
           <div className="grid grid-cols-2 gap-3">
             {profile?.role === "coach" ? (
               <Link
@@ -593,7 +689,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ── 14-Day Trend Chart ───────────────────────────────────────────────── */}
-        <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+        <motion.div custom={6} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
             {chartMounted && chartData.length >= 2 ? (
@@ -642,7 +738,7 @@ export default function DashboardPage() {
         {/* ── Recent Logs ──────────────────────────────────────────────────────── */}
         <motion.div
           id="history"
-          custom={5}
+          custom={7}
           variants={fadeUp}
           initial="hidden"
           animate="show"
