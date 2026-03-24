@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
   if (profile?.onboarding_complete) {
     if (profile.role === 'coach') {
-      return NextResponse.redirect(`${origin}/coach`)
+      return NextResponse.redirect(`${origin}/coach/dashboard`)
     }
     return NextResponse.redirect(`${origin}/dashboard`)
   }

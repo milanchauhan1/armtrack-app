@@ -995,12 +995,12 @@ export default function OnboardingPage() {
             .select()
             .single();
 
-          // 3. Write team_id back to profile (best-effort — /coach has a manual fallback)
+          // 3. Write team_id back to profile (best-effort — /coach/dashboard handles missing team gracefully)
           if (team && !teamErr) {
             await supabase.from("profiles").upsert({ id: user.id, team_id: team.id });
           }
 
-          router.push("/coach");
+          router.push("/coach/dashboard");
         } catch {
           setSaveError(true);
           setSaving(false);
