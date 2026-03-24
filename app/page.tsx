@@ -1,14 +1,30 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  Shield,
+  Users,
+  Zap,
+  AlertTriangle,
+  TrendingDown,
+  EyeOff,
+  Smartphone,
+  Sliders,
+  CheckCircle,
+  ClipboardList,
+  BarChart2,
+  MessageSquare,
+  Activity,
+  TrendingUp,
+} from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
-// ── Scroll fade — fires once when element enters viewport ──────────────────────
+// ── ScrollFade — fires once when element enters viewport ──────────────────────
 
 function ScrollFade({
   children,
@@ -19,14 +35,11 @@ function ScrollFade({
   delay?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
-
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 16 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
       transition={{ duration: 0.5, delay, ease }}
       className={className}
     >
@@ -35,845 +48,1192 @@ function ScrollFade({
   );
 }
 
-// ── Phone Mockup ──────────────────────────────────────────────────────────────
+// ── CSS iPhone frame ───────────────────────────────────────────────────────────
 
-function PhoneMockup() {
+function IPhoneFrame({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+}) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.3 }}
+    <div
       style={{
-        backgroundColor: "#0a0a0a",
+        position: "relative",
+        width: 240,
         borderRadius: 44,
-        border: "1px solid #2a2a2a",
-        boxShadow:
-          "0 40px 80px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.03), 0 0 60px rgba(59,130,246,0.1)",
-        width: "100%",
-        maxWidth: 300,
-        aspectRatio: "9 / 19.5",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        margin: "0 auto",
+        background: "#1a1a1a",
+        border: "2px solid #333333",
+        padding: 12,
+        flexShrink: 0,
+        ...style,
       }}
     >
-      {/* Camera notch */}
-      <div style={{ display: "flex", justifyContent: "center", paddingTop: 13, paddingBottom: 5, flexShrink: 0 }}>
-        <div style={{ width: 54, height: 5, backgroundColor: "#1a1a1a", borderRadius: 999 }} />
-      </div>
-
-      {/* Nav — mirrors dashboard sticky nav */}
+      {/* Notch */}
       <div
         style={{
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "5px 16px 8px",
-          borderBottom: "1px solid #111111",
-          flexShrink: 0,
+          position: "absolute",
+          top: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 80,
+          height: 24,
+          background: "#1a1a1a",
+          borderRadius: "0 0 16px 16px",
+          zIndex: 10,
+        }}
+      />
+      {/* Screen */}
+      <div
+        style={{
+          borderRadius: 36,
+          overflow: "hidden",
+          background: "#000000",
+          width: "100%",
+          minHeight: 480,
+          position: "relative",
         }}
       >
-        <span style={{ fontSize: 14, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
-          Arm<span style={{ color: "#3B82F6" }}>Track</span>
-        </span>
-        <span
+        {/* Status bar */}
+        <div
           style={{
-            fontSize: 8, fontWeight: 600, color: "rgba(255,255,255,0.3)",
-            border: "1px solid rgba(255,255,255,0.08)", borderRadius: 5, padding: "2px 6px",
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 16px",
           }}
         >
-          Sign out
-        </span>
-      </div>
-
-      {/* Page content */}
-      <div style={{ padding: "12px 14px 14px", display: "flex", flexDirection: "column", gap: 12, overflow: "hidden" }}>
-
-        {/* Header — greeting + title + streak badge */}
-        <div>
-          <p style={{ fontSize: 8, fontWeight: 600, color: "#60a5fa", textTransform: "uppercase", letterSpacing: "0.2em", margin: "0 0 3px" }}>
-            Good morning, Alex
-          </p>
-          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <p style={{ fontSize: 15, fontWeight: 800, color: "#fff", margin: 0, letterSpacing: "-0.01em" }}>
-              Arm Health Dashboard
-            </p>
-            {/* Streak badge — mirrors real dashboard */}
-            <span
+          <span style={{ color: "#ffffff", fontSize: 11, fontWeight: 600 }}>9:41</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 1.5 }}>
+              {[6, 9, 12, 15].map((h, i) => (
+                <div
+                  key={i}
+                  style={{ width: 3, height: h, background: i < 3 ? "#ffffff" : "#555555", borderRadius: 1 }}
+                />
+              ))}
+            </div>
+            <div
               style={{
-                display: "inline-flex", alignItems: "center", gap: 3,
-                backgroundColor: "rgba(249,115,22,0.10)",
-                border: "1px solid rgba(249,115,22,0.25)",
-                color: "#fb923c",
-                fontSize: 8, fontWeight: 700,
-                padding: "2px 6px", borderRadius: 999, whiteSpace: "nowrap",
+                width: 22,
+                height: 11,
+                border: "1.5px solid #ffffff",
+                borderRadius: 3,
+                position: "relative",
+                marginLeft: 2,
               }}
             >
-              🔥 5-day streak
-            </span>
-          </div>
-        </div>
-
-        {/* Score Card */}
-        <div
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderRadius: 16,
-            padding: "13px 13px",
-            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 11,
-          }}
-        >
-          {/* Score row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-            <div style={{ position: "relative", flexShrink: 0 }}>
               <div
-                aria-hidden="true"
                 style={{
-                  position: "absolute", top: "50%", left: "40%",
-                  transform: "translate(-50%,-50%)",
-                  width: 70, height: 70, borderRadius: "50%",
-                  background: "radial-gradient(circle, rgba(34,197,94,0.28) 0%, transparent 70%)",
-                  filter: "blur(12px)", pointerEvents: "none",
+                  position: "absolute",
+                  left: 2,
+                  top: 2,
+                  width: "70%",
+                  height: "calc(100% - 4px)",
+                  background: "#ffffff",
+                  borderRadius: 1,
                 }}
               />
-              <span
-                style={{
-                  fontSize: 52, fontWeight: 900, color: "#22C55E",
-                  lineHeight: 1, display: "block",
-                  fontVariantNumeric: "tabular-nums", position: "relative",
-                }}
-              >
-                8.2
-              </span>
-            </div>
-            <span style={{ fontSize: 13, color: "#6b7280", fontWeight: 500 }}>/10</span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-              <span
-                style={{
-                  display: "inline-flex", alignItems: "center",
-                  backgroundColor: "rgba(34,197,94,0.08)",
-                  border: "1px solid rgba(34,197,94,0.2)",
-                  color: "#22C55E",
-                  fontSize: 10, fontWeight: 700,
-                  padding: "3px 8px", borderRadius: 999, whiteSpace: "nowrap",
-                }}
-              >
-                Good to Go
-              </span>
-              <span style={{ fontSize: 8, color: "#6b7280" }}>Based on your recent logs</span>
-            </div>
-          </div>
-
-          {/* ScoreBadges */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-            {(
-              [["Pain", 1, "#22C55E"], ["Soreness", 2, "#F59E0B"], ["Stiffness", 1, "#22C55E"]] as [string, number, string][]
-            ).map(([label, val, color]) => (
               <div
-                key={label}
                 style={{
-                  backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e",
-                  borderRadius: 11, padding: "7px 4px",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
+                  position: "absolute",
+                  right: -4,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: 2.5,
+                  height: 5,
+                  background: "#ffffff",
+                  borderRadius: "0 1px 1px 0",
                 }}
-              >
-                <span style={{ fontSize: 16, fontWeight: 900, color, lineHeight: 1, fontVariantNumeric: "tabular-nums" }}>
-                  {val}
-                </span>
-                <span style={{ fontSize: 8, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <p style={{ fontSize: 8, color: "#4b5563", margin: 0, lineHeight: 1.4 }}>
-            Estimated from pain, soreness, stiffness, and recent throwing load.
-          </p>
-        </div>
-
-        {/* Recommendation card */}
-        <div
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderLeft: "3px solid #22C55E",
-            borderRadius: 16,
-            padding: "11px 13px",
-            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-            display: "flex", flexDirection: "column", gap: 5,
-          }}
-        >
-          <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: 0 }}>
-            Today&apos;s Recommendation
-          </p>
-          <p style={{ fontSize: 9, fontWeight: 600, color: "#d1d5db", margin: 0, lineHeight: 1.45 }}>
-            You&apos;re good to throw today. Normal intensity.
-          </p>
-          {/* Contextual insight — mirrors dashboard insights bullets */}
-          <p style={{ fontSize: 8, color: "#888", margin: 0, lineHeight: 1.4 }}>
-            · Pain has been consistently low — solid recent trend.
-          </p>
-          <p style={{ fontSize: 8, color: "#555555", margin: 0, lineHeight: 1.4 }}>
-            ArmTrack tracks patterns to support your decisions — not to diagnose injuries.
-          </p>
-        </div>
-
-        {/* Action buttons */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 }}>
-          <div
-            style={{
-              backgroundColor: "#3B82F6", borderRadius: 11,
-              padding: "10px 0", textAlign: "center",
-              boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
-            }}
-          >
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#fff" }}>Log Today</span>
-          </div>
-          <div
-            style={{
-              backgroundColor: "#111111", border: "1px solid #222222",
-              borderRadius: 11, padding: "10px 0", textAlign: "center",
-            }}
-          >
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#9ca3af" }}>View History</span>
+              />
+            </div>
           </div>
         </div>
-
-        {/* Recent sessions — mini trend showing last 5 logs */}
-        <div
-          style={{
-            backgroundColor: "#111111",
-            border: "1px solid #222222",
-            borderRadius: 16,
-            padding: "11px 13px",
-            boxShadow: "0 0 24px rgba(59,130,246,0.07)",
-          }}
-        >
-          <p style={{ fontSize: 9, fontWeight: 700, color: "#fff", margin: "0 0 9px" }}>
-            Recent Sessions
-          </p>
-          <div style={{ display: "flex", gap: 5 }}>
-            {[
-              { day: "Mon", pain: 1, color: "#22C55E" },
-              { day: "Tue", pain: 2, color: "#22C55E" },
-              { day: "Wed", pain: 1, color: "#22C55E" },
-              { day: "Thu", pain: 3, color: "#F59E0B" },
-              { day: "Fri", pain: 1, color: "#22C55E" },
-            ].map(({ day, pain, color }) => (
-              <div key={day} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                {/* Bar */}
-                <div style={{ width: "100%", height: 28, backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e", borderRadius: 6, display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
-                  <div
-                    style={{
-                      width: "100%",
-                      height: `${(pain / 10) * 100 + 20}%`,
-                      backgroundColor: color,
-                      opacity: 0.7,
-                      borderRadius: "4px 4px 0 0",
-                    }}
-                  />
-                </div>
-                <span style={{ fontSize: 7, color: "#555", fontWeight: 600 }}>{day}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
+        {children}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
-// ── Page ───────────────────────────────────────────────────────────────────────
+// ── Player dashboard mockup ────────────────────────────────────────────────────
 
-export default function Home() {
+function PlayerScreen() {
   return (
-    <div className="flex flex-col min-h-screen bg-black">
-
-      {/* ── Navbar ─────────────────────────────────────────────────────────── */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 sm:px-10"
+    <div style={{ padding: "0 14px 20px" }}>
+      <p style={{ color: "#888888", fontSize: 10, marginBottom: 12 }}>Good morning, Jake</p>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4 }}>
+        <span style={{ color: "#22C55E", fontSize: 42, fontWeight: 900, lineHeight: 1 }}>7.8</span>
+        <span style={{ color: "#555555", fontSize: 14, fontWeight: 500 }}>/10</span>
+      </div>
+      <span
         style={{
-          borderBottom: "1px solid rgba(255,255,255,0.04)",
-          backgroundColor: "rgba(0,0,0,0.88)",
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
+          display: "inline-flex",
+          alignItems: "center",
+          borderRadius: 99,
+          padding: "3px 10px",
+          fontSize: 10,
+          fontWeight: 700,
+          background: "rgba(34,197,94,0.10)",
+          border: "1px solid rgba(34,197,94,0.25)",
+          color: "#22C55E",
+          marginBottom: 14,
         }}
       >
-        <span className="text-xl font-extrabold tracking-tight text-white">
-          Arm<span className="text-blue-500">Track</span>
-        </span>
-        <div className="flex items-center gap-3">
-          <a
-            href="/login"
-            className="px-4 py-2 text-sm font-semibold transition-colors duration-150"
-            style={{ color: "#999" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#fff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#999")}
-          >
-            Log in
-          </a>
-          <a
-            href="/signup"
-            className="inline-flex items-center justify-center rounded-lg text-sm font-bold text-white transition-all duration-150"
+        Good to Go
+      </span>
+      <div
+        style={{
+          background: "#111111",
+          border: "1px solid #222222",
+          borderLeft: "3px solid #22C55E",
+          borderRadius: 12,
+          padding: "10px 12px",
+          marginBottom: 12,
+        }}
+      >
+        <p
+          style={{
+            color: "#888888",
+            fontSize: 9,
+            marginBottom: 4,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+          }}
+        >
+          Today&apos;s Recommendation
+        </p>
+        <p style={{ color: "#ffffff", fontSize: 10, lineHeight: 1.5 }}>
+          Normal session today — stay within your plan.
+        </p>
+      </div>
+      <div style={{ display: "flex", gap: 6 }}>
+        {(
+          [
+            ["P", 3, "#22c55e"],
+            ["S", 4, "#f59e0b"],
+            ["St", 2, "#22c55e"],
+          ] as [string, number, string][]
+        ).map(([label, val, color]) => (
+          <span
+            key={label}
             style={{
-              backgroundColor: "#3B82F6",
-              padding: "8px 18px",
-              boxShadow: "0 4px 16px rgba(59,130,246,0.3)",
+              padding: "4px 8px",
+              borderRadius: 8,
+              fontSize: 10,
+              fontWeight: 700,
+              background: `${color}15`,
+              color,
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundColor = "#60a5fa")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundColor = "#3B82F6")
-            }
           >
-            Sign up
-          </a>
+            {label}
+            {val}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Coach dashboard mockup ─────────────────────────────────────────────────────
+
+const COACH_ROWS: { name: string; pos: string; score: string | null; label: string; color: string }[] = [
+  { name: "Jake M.", pos: "Pitcher", score: "8.4", label: "Ready", color: "#22C55E" },
+  { name: "Carlos R.", pos: "Pitcher", score: "7.1", label: "Good to Go", color: "#22C55E" },
+  { name: "Devon T.", pos: "Catcher", score: "5.8", label: "Caution", color: "#F59E0B" },
+  { name: "Malik W.", pos: "Infielder", score: null, label: "Not logged", color: "#555555" },
+];
+
+function CoachScreen() {
+  return (
+    <div style={{ padding: "0 14px 20px" }}>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}
+      >
+        <p style={{ color: "#ffffff", fontSize: 12, fontWeight: 700 }}>Team Readiness</p>
+        <p style={{ color: "#888888", fontSize: 9 }}>5 players</p>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        {COACH_ROWS.map((row, i) => (
+          <motion.div
+            key={row.name}
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.35, delay: 0.3 + i * 0.08, ease }}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              background: "#111111",
+              border: "1px solid #1e1e1e",
+              borderLeft: `3px solid ${row.color}`,
+              borderRadius: 10,
+              padding: "7px 10px",
+            }}
+          >
+            <div>
+              <p style={{ color: "#ffffff", fontSize: 10, fontWeight: 600, lineHeight: 1.2 }}>
+                {row.name}
+              </p>
+              <p style={{ color: "#555555", fontSize: 9 }}>{row.pos}</p>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              {row.score && (
+                <p style={{ color: row.color, fontSize: 12, fontWeight: 900 }}>{row.score}</p>
+              )}
+              <p style={{ color: row.color, fontSize: 9, fontWeight: 600 }}>{row.label}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      <button
+        style={{
+          marginTop: 12,
+          width: "100%",
+          padding: "8px 0",
+          background: "rgba(59,130,246,0.15)",
+          border: "1px solid rgba(59,130,246,0.35)",
+          borderRadius: 10,
+          color: "#60a5fa",
+          fontSize: 10,
+          fontWeight: 700,
+          cursor: "pointer",
+        }}
+      >
+        Notify Team
+      </button>
+    </div>
+  );
+}
+
+// ── Feature row helper ─────────────────────────────────────────────────────────
+
+function FeatureRow({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: React.ElementType;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+      <div
+        style={{
+          flexShrink: 0,
+          width: 36,
+          height: 36,
+          borderRadius: 10,
+          background: "rgba(59,130,246,0.10)",
+          border: "1px solid rgba(59,130,246,0.2)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Icon size={16} style={{ color: "#3B82F6" }} />
+      </div>
+      <div>
+        <p style={{ color: "#ffffff", fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{title}</p>
+        <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.5 }}>{desc}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── Blue label pill ────────────────────────────────────────────────────────────
+
+function BluePill({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      style={{
+        display: "inline-block",
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.15em",
+        color: "#3B82F6",
+        background: "rgba(59,130,246,0.08)",
+        border: "1px solid rgba(59,130,246,0.2)",
+        padding: "5px 12px",
+        borderRadius: 99,
+        marginBottom: 20,
+        textTransform: "uppercase" as const,
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+export default function LandingPage() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div
+      style={{
+        background: "#000000",
+        color: "#ffffff",
+        fontFamily: "Inter, system-ui, sans-serif",
+        overflowX: "hidden",
+      }}
+    >
+      {/* ─────────────────────────────────── responsive overrides */}
+      <style>{`
+        @media (max-width: 640px) {
+          .hide-mobile { display: none !important; }
+          .hero-grid { flex-direction: column !important; align-items: flex-start !important; }
+          .hero-phones { display: none !important; }
+          .hero-headline { font-size: 34px !important; }
+          .hero-ctas { flex-direction: column !important; }
+          .problem-cards { flex-direction: column !important; }
+          .steps-row { flex-direction: column !important; align-items: center !important; }
+          .steps-line { display: none !important; }
+          .how-columns { flex-direction: column !important; }
+          .coach-section { flex-direction: column-reverse !important; align-items: center !important; }
+          .player-section { flex-direction: column-reverse !important; align-items: center !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .footer-inner { flex-direction: column !important; gap: 4px !important; text-align: center !important; }
+          .cta-row { flex-direction: column !important; align-items: stretch !important; }
+          .cta-row a { text-align: center !important; }
+        }
+      `}</style>
+
+      {/* ── NAVBAR ─────────────────────────────────────────────────────────── */}
+      <nav
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          background: "#000000",
+          borderBottom: scrolled ? "1px solid #222222" : "1px solid transparent",
+          transition: "border-color 0.2s ease",
+          padding: "0 20px",
+          height: 60,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Link
+          href="/"
+          style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
+        >
+          <img
+            src="/icons/icon-192.png"
+            width={32}
+            height={32}
+            alt="ArmTrack"
+            style={{ borderRadius: 8 }}
+          />
+          <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>
+            <span style={{ color: "#ffffff" }}>Arm</span>
+            <span style={{ color: "#3B82F6" }}>Track</span>
+          </span>
+        </Link>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Link
+            href="/login"
+            className="hide-mobile"
+            style={{
+              color: "#888888",
+              fontSize: 14,
+              fontWeight: 600,
+              textDecoration: "none",
+              transition: "color 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#888888")}
+          >
+            Log In
+          </Link>
+          <Link
+            href="/signup"
+            style={{
+              background: "#3B82F6",
+              color: "#ffffff",
+              fontSize: 14,
+              fontWeight: 700,
+              textDecoration: "none",
+              padding: "8px 18px",
+              borderRadius: 99,
+              boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Get Started Free
+          </Link>
         </div>
       </nav>
 
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative flex flex-col justify-start md:justify-center overflow-hidden px-6 pt-16 pb-6 md:py-20 sm:px-10">
-
-        {/* Baseball seam — decorative background texture */}
-        <div aria-hidden="true" className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          <svg
-            className="absolute inset-0 w-full h-full opacity-[0.06]"
-            viewBox="0 0 800 600"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid slice"
-          >
-            <path
-              d="M 600 -50 C 500 100 480 300 520 500 C 540 600 560 650 580 700"
-              stroke="white"
-              strokeWidth="2.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 620 -50 C 520 100 500 300 540 500 C 560 600 580 650 600 700"
-              stroke="white"
-              strokeWidth="2.5"
-              fill="none"
-              strokeLinecap="round"
-            />
-            {[0,1,2,3,4,5,6,7].map(i => (
-              <line
-                key={`a${i}`}
-                x1={595 - i * 4}
-                y1={-20 + i * 92}
-                x2={625 + i * 4}
-                y2={-10 + i * 92}
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            ))}
-            {[0,1,2,3,4,5,6,7].map(i => (
-              <line
-                key={`b${i}`}
-                x1={615 - i * 4}
-                y1={10 + i * 92}
-                x2={645 + i * 4}
-                y2={20 + i * 92}
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            ))}
-          </svg>
-        </div>
-
-        {/* Subtle radial glow */}
+      {/* ── HERO ───────────────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          padding: "60px 20px",
+          maxWidth: 1200,
+          margin: "0 auto",
+        }}
+      >
         <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse 80% 60% at 60% 40%, rgba(59,130,246,0.1) 0%, transparent 70%)",
-          }}
-        />
-
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col md:flex-row md:items-center md:gap-12">
-
-          {/* Left: text */}
-          <div className="flex flex-col md:gap-5 md:w-[55%] md:pr-4">
-
-            {/* Badge */}
+          className="hero-grid"
+          style={{ display: "flex", alignItems: "center", gap: 60, width: "100%" }}
+        >
+          {/* Left — text */}
+          <div style={{ flex: 1, minWidth: 0 }}>
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, ease }}
+              transition={{ duration: 0.5, ease }}
             >
-              <span
-                className="inline-flex items-center font-semibold whitespace-nowrap"
-                style={{
-                  fontSize: 9,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "#888",
-                  border: "1px solid #2a2a2a",
-                  padding: "4px 9px",
-                  borderRadius: 6,
-                }}
-              >
-                Arm Care · Baseball &amp; Softball
-              </span>
+              <BluePill>Built for Baseball &amp; Softball</BluePill>
             </motion.div>
 
-            {/* Headline */}
             <motion.h1
-              initial={{ opacity: 0, y: 16 }}
+              className="hero-headline"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.08, ease }}
-              className="mt-3 md:mt-0 font-bold text-white"
+              transition={{ duration: 0.5, delay: 0.08, ease }}
               style={{
-                fontSize: "clamp(30px, 8vw, 56px)",
+                fontSize: 56,
+                fontWeight: 800,
                 lineHeight: 1.1,
-                letterSpacing: "-0.02em",
+                letterSpacing: "-0.03em",
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 24,
               }}
             >
-              Know if your arm is ready to throw today.
+              Know which arms are ready before practice starts.
             </motion.h1>
 
-            {/* Subheadline — desktop only */}
             <motion.p
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.16, ease }}
-              className="hidden md:block text-base leading-relaxed max-w-md"
-              style={{ color: "#aaa" }}
+              style={{
+                fontSize: 18,
+                color: "#888888",
+                lineHeight: 1.6,
+                margin: 0,
+                marginBottom: 36,
+                maxWidth: 520,
+              }}
             >
-              Log pain, soreness, and throwing load in 30 seconds. Get an
-              estimated readiness level and a recommendation — every day.
+              ArmTrack gives coaches real-time visibility into every player&apos;s arm health — and
+              gives players a daily recommendation to protect their career.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              className="hero-ctas"
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.24, ease }}
-              className="hidden md:flex md:flex-row gap-3"
+              transition={{ duration: 0.5, delay: 0.22, ease }}
+              style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 36 }}
             >
-              <a
+              <Link
                 href="/signup"
-                className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full md:w-auto py-4 px-8 transition-all duration-150"
                 style={{
-                  backgroundColor: "#3B82F6",
-                  boxShadow: "0 4px 28px rgba(59,130,246,0.4)",
-                  minWidth: 160,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#60a5fa";
-                  (e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 6px 36px rgba(59,130,246,0.55)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = "#3B82F6";
-                  (e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 4px 28px rgba(59,130,246,0.4)";
+                  background: "#3B82F6",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "14px 24px",
+                  borderRadius: 14,
+                  boxShadow: "0 4px 24px rgba(59,130,246,0.4)",
+                  whiteSpace: "nowrap",
                 }}
               >
-                Start Free
-              </a>
-              <a
-                href="#how-it-works"
-                className="hidden md:inline-flex items-center justify-center rounded-xl text-base font-semibold transition-all duration-150"
+                Get Started as a Coach
+              </Link>
+              <Link
+                href="/signup"
                 style={{
-                  border: "1px solid #2a2a2a",
-                  color: "#aaa",
-                  padding: "0 28px",
-                  height: 56,
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "#444";
-                  (e.currentTarget as HTMLElement).style.color = "#fff";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLElement).style.borderColor = "#2a2a2a";
-                  (e.currentTarget as HTMLElement).style.color = "#aaa";
+                  background: "#111111",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "14px 24px",
+                  borderRadius: 14,
+                  border: "1px solid #222222",
+                  whiteSpace: "nowrap",
                 }}
               >
-                See How It Works
-              </a>
+                I&apos;m a Player
+              </Link>
             </motion.div>
 
-            {/* Trust bullets — desktop only */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.32, ease }}
-              className="hidden md:flex flex-col gap-2"
+              transition={{ duration: 0.5, delay: 0.28, ease }}
+              style={{ display: "flex", gap: 24, flexWrap: "wrap" }}
             >
               {[
-                "Log in under 30 seconds",
-                "Based on your actual throwing data",
-                "Built for players, not generic wellness apps",
-              ].map((item) => (
-                <div key={item} className="flex items-center gap-2">
-                  <Check size={13} strokeWidth={2.5} style={{ color: "#3B82F6", flexShrink: 0 }} />
-                  <span style={{ fontSize: 13, color: "#aaa" }}>{item}</span>
+                { icon: Shield, text: "Free for players" },
+                { icon: Users, text: "Built for teams" },
+                { icon: Zap, text: "No hardware needed" },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Icon size={14} style={{ color: "#888888", flexShrink: 0 }} />
+                  <span style={{ color: "#888888", fontSize: 13, fontWeight: 500 }}>{text}</span>
                 </div>
               ))}
             </motion.div>
           </div>
 
-          {/* Right: readiness card */}
-          <div className="md:flex-1 md:flex md:justify-end mt-8 md:mt-0">
-            {/* Mobile CTA above card */}
-            <a
-              href="/signup"
-              className="md:hidden mb-4 flex items-center justify-center rounded-xl text-base font-bold text-white py-4 transition-all duration-150"
+          {/* Right — phones */}
+          <div
+            className="hero-phones"
+            style={{ position: "relative", width: 380, height: 560, flexShrink: 0 }}
+          >
+            {/* Glow */}
+            <div
               style={{
-                backgroundColor: "#3B82F6",
-                boxShadow: "0 4px 28px rgba(59,130,246,0.4)",
+                position: "absolute",
+                inset: 0,
+                background:
+                  "radial-gradient(ellipse at center, rgba(59,130,246,0.15) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+            {/* Back phone — player */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, ease }}
+              style={{ position: "absolute", left: 0, top: 40, zIndex: 1 }}
+            >
+              <IPhoneFrame style={{ transform: "rotate(-4deg)", opacity: 0.85 }}>
+                <PlayerScreen />
+              </IPhoneFrame>
+            </motion.div>
+            {/* Front phone — coach */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.6, ease }}
+              style={{ position: "absolute", right: 0, top: 0, zIndex: 2 }}
+            >
+              <IPhoneFrame style={{ transform: "rotate(3deg)" }}>
+                <CoachScreen />
+              </IPhoneFrame>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "100px 20px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <span
+              style={{
+                display: "inline-block",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                color: "#EF4444",
+                background: "rgba(239,68,68,0.08)",
+                border: "1px solid rgba(239,68,68,0.2)",
+                padding: "5px 12px",
+                borderRadius: 99,
+                marginBottom: 20,
+                textTransform: "uppercase",
               }}
             >
-              Start Free
-            </a>
-            <PhoneMockup />
-          </div>
-        </div>
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-          <span className="text-[#444] text-[10px] tracking-widest uppercase">Scroll</span>
-          <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <ChevronDown className="text-[#444] w-5 h-5" />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Social Proof Bar ────────────────────────────────────────────────── */}
-      <div
-        style={{
-          borderTop: "1px solid #1a1a1a",
-          borderBottom: "1px solid #1a1a1a",
-          backgroundColor: "#080808",
-        }}
-      >
-        <ScrollFade>
-          <div className="mx-auto max-w-4xl px-6 sm:px-10 py-4 md:py-6 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-0">
-            {[
-              "500+ players tracking their arm",
-              "High school to college level",
-              "Free for every athlete",
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4"
-                style={{ flex: 1, justifyContent: "center" }}
-              >
-                {i > 0 && (
-                  <span
-                    className="hidden sm:block"
-                    style={{ color: "#1e1e1e", fontSize: 18, userSelect: "none" }}
-                  >
-                    |
-                  </span>
-                )}
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    color: "#999",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.14em",
-                  }}
-                >
-                  {item}
-                </span>
-              </div>
-            ))}
-          </div>
-        </ScrollFade>
-      </div>
-
-      {/* ── Problem Section ─────────────────────────────────────────────────── */}
-      <section id="problem" className="px-6 sm:px-10 py-10 md:py-24">
-        <div className="mx-auto max-w-3xl">
-          <ScrollFade>
+              The Problem
+            </span>
             <h2
-              className="font-bold text-white text-center mb-4"
-              style={{ fontSize: "clamp(26px, 5vw, 32px)", letterSpacing: "-0.01em" }}
+              style={{
+                fontSize: 40,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.15,
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 48,
+              }}
             >
-              Most arm injuries don&rsquo;t come out of nowhere.
+              Coaches are making throwing decisions blind.
             </h2>
           </ScrollFade>
 
-          <ScrollFade delay={0.08}>
-            <p className="text-center text-base mb-12 max-w-xl mx-auto" style={{ color: "#aaa" }}>
-              They show up in the data first. Most players just don&rsquo;t have a
-              system to see it.
-            </p>
-          </ScrollFade>
-
-          <div className="flex flex-col gap-3 mb-12">
+          <div className="problem-cards" style={{ display: "flex", gap: 20, marginBottom: 48 }}>
             {[
-              {
-                title: "Throwing without knowing your recovery status",
-                desc: "Every session is a guess when you have no baseline.",
-              },
-              {
-                title: "Missing soreness trends before they become injuries",
-                desc: "Small signals compound. By the time it hurts, it's already late.",
-              },
-              {
-                title: "No data when talking to coaches or trainers",
-                desc: "Gut feel isn't a plan. A log is.",
-              },
-            ].map((card, i) => (
-              <ScrollFade key={i} delay={i * 0.1}>
+              { icon: AlertTriangle, text: "Players say 'I\u2019m fine' even when they're not" },
+              { icon: TrendingDown, text: "One fatigued arm away from a season-ending injury" },
+              { icon: EyeOff, text: "No visibility into how your roster actually feels" },
+            ].map(({ icon: Icon, text }, i) => (
+              <ScrollFade key={text} delay={i * 0.1} className="flex-1">
                 <div
                   style={{
-                    backgroundColor: "#111",
-                    border: "1px solid #222",
+                    background: "#111111",
+                    border: "1px solid #222222",
                     borderLeft: "3px solid #EF4444",
                     borderRadius: 16,
-                    padding: "20px 22px",
-                  }}
-                >
-                  <p
-                    className="font-bold text-white mb-1"
-                    style={{ fontSize: 15, lineHeight: 1.4 }}
-                  >
-                    {card.title}
-                  </p>
-                  <p style={{ fontSize: 13, color: "#888", lineHeight: 1.5 }}>
-                    {card.desc}
-                  </p>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
-
-          <ScrollFade delay={0.32}>
-            <p
-              className="text-center font-bold text-white"
-              style={{ fontSize: 20, letterSpacing: "-0.01em" }}
-            >
-              ArmTrack gives you that system.
-            </p>
-          </ScrollFade>
-        </div>
-      </section>
-
-      {/* ── How It Works ────────────────────────────────────────────────────── */}
-      <section
-        id="how-it-works"
-        className="px-6 sm:px-10 py-10 md:py-24"
-        style={{ borderTop: "1px solid #111" }}
-      >
-        <div className="mx-auto max-w-4xl">
-          <ScrollFade>
-            <h2
-              className="font-bold text-white text-center mb-16"
-              style={{ fontSize: "clamp(26px, 5vw, 32px)", letterSpacing: "-0.01em" }}
-            >
-              Three steps. Under a minute.
-            </h2>
-          </ScrollFade>
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            {[
-              {
-                n: "01",
-                title: "Log your arm",
-                desc: "Rate pain, soreness, stiffness. Add throws and intensity. 30 seconds.",
-              },
-              {
-                n: "02",
-                title: "Get your readiness score",
-                desc: "A weighted estimate from your recent logs. A daily signal, not a diagnosis.",
-              },
-              {
-                n: "03",
-                title: "Know before you throw",
-                desc: "Green means go. Amber means careful. Red means rest.",
-              },
-            ].map((step, i) => (
-              <ScrollFade key={step.n} delay={i * 0.1} className="flex-1">
-                <div
-                  className="relative flex flex-col gap-4 h-full p-5 md:py-7 md:px-6"
-                  style={{
-                    backgroundColor: "#0c0c0c",
-                    border: "1px solid #1a1a1a",
-                    borderRadius: 20,
-                    overflow: "hidden",
-                  }}
-                >
-                  {/* Large step number behind content */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute font-black leading-none select-none"
-                    style={{
-                      fontSize: 80,
-                      color: "rgba(59,130,246,0.12)",
-                      top: 8,
-                      right: 16,
-                      letterSpacing: "-0.04em",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {step.n}
-                  </span>
-                  <div className="relative">
-                    <p
-                      className="font-bold text-white mb-2"
-                      style={{ fontSize: 18, letterSpacing: "-0.01em", lineHeight: 1.3 }}
-                    >
-                      {step.title}
-                    </p>
-                    <p style={{ fontSize: 14, color: "#888", lineHeight: 1.6 }}>
-                      {step.desc}
-                    </p>
-                  </div>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats Section ───────────────────────────────────────────────────── */}
-      <section
-        className="px-6 sm:px-10 py-10 md:py-24"
-        style={{ borderTop: "1px solid #111" }}
-      >
-        <div className="mx-auto max-w-4xl">
-          <ScrollFade>
-            <h2
-              className="font-bold text-white text-center mb-14"
-              style={{ fontSize: "clamp(26px, 5vw, 32px)", letterSpacing: "-0.01em" }}
-            >
-              The stakes are real.
-            </h2>
-          </ScrollFade>
-
-          <div className="flex flex-col sm:flex-row gap-4 mb-8">
-            {[
-              {
-                stat: "1 in 4",
-                label: "baseball players suffer a significant arm injury",
-                accent: "#EF4444",
-              },
-              {
-                stat: "38.8%",
-                label: "of MLB pitchers have had Tommy John surgery",
-                accent: "#F59E0B",
-              },
-              {
-                stat: "Days before",
-                label: "injuries show warning signs in the data",
-                accent: "#60a5fa",
-              },
-            ].map((item, i) => (
-              <ScrollFade key={i} delay={i * 0.1} className="flex-1">
-                <div
-                  className="p-5 md:py-7 md:px-6"
-                  style={{
-                    backgroundColor: "#0c0c0c",
-                    border: "1px solid #1a1a1a",
-                    borderRadius: 20,
+                    padding: "24px 20px",
+                    textAlign: "left",
                     height: "100%",
                   }}
                 >
+                  <Icon size={22} style={{ color: "#EF4444", marginBottom: 12 }} />
                   <p
-                    className="font-black leading-none mb-3"
                     style={{
-                      fontSize: "clamp(32px, 5vw, 42px)",
-                      color: item.accent,
-                      letterSpacing: "-0.02em",
+                      color: "#ffffff",
+                      fontSize: 15,
+                      lineHeight: 1.5,
+                      fontWeight: 500,
+                      margin: 0,
                     }}
                   >
-                    {item.stat}
-                  </p>
-                  <p style={{ fontSize: 14, color: "#888", lineHeight: 1.55 }}>
-                    {item.label}
+                    {text}
                   </p>
                 </div>
               </ScrollFade>
             ))}
           </div>
 
-          <ScrollFade delay={0.32}>
-            <p
-              className="text-center italic"
-              style={{ fontSize: 16, color: "#aaa" }}
-            >
-              ArmTrack helps you be in the{" "}
-              <span style={{ color: "#22C55E", fontStyle: "normal", fontWeight: 700 }}>
-                3 in 4.
-              </span>
+          <ScrollFade>
+            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, margin: 0 }}>
+              ArmTrack changes that. 60 seconds of daily logging gives coaches and players the data
+              to make smarter decisions — before injuries happen.
             </p>
           </ScrollFade>
         </div>
       </section>
 
-      {/* ── Final CTA ───────────────────────────────────────────────────────── */}
-      <section
-        className="px-6 sm:px-10 py-10 md:py-24"
-        style={{
-          backgroundColor: "#0a0f1a",
-          borderTop: "1px solid #1a2a3a",
-        }}
-      >
-        <div className="mx-auto max-w-md flex flex-col items-center gap-6 text-center">
-          <ScrollFade className="w-full flex flex-col items-center gap-6">
+      {/* ── HOW FAST ───────────────────────────────────────────────────────── */}
+      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
+        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <BluePill>Designed for Athletes</BluePill>
             <h2
-              className="font-bold text-white"
-              style={{ fontSize: "clamp(24px, 5vw, 32px)", letterSpacing: "-0.01em", lineHeight: 1.2 }}
-            >
-              Your arm is your career.
-              <br />
-              Track it like one.
-            </h2>
-            <p style={{ fontSize: 15, color: "#888" }}>
-              Free for every athlete. 30 seconds a day.
-            </p>
-            <a
-              href="/signup"
-              className="inline-flex items-center justify-center rounded-xl text-base font-bold text-white w-full transition-all duration-150"
               style={{
-                backgroundColor: "#3B82F6",
-                height: 56,
-                maxWidth: 320,
-                boxShadow: "0 4px 32px rgba(59,130,246,0.45)",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = "#60a5fa";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.backgroundColor = "#3B82F6";
+                fontSize: 40,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.15,
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 60,
               }}
             >
-              Get Started Free →
-            </a>
+              Log your arm in 60 seconds. Seriously.
+            </h2>
+          </ScrollFade>
+
+          <div
+            className="steps-row"
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              position: "relative",
+              marginBottom: 32,
+            }}
+          >
+            {/* Dashed connector */}
+            <div
+              className="steps-line"
+              style={{
+                position: "absolute",
+                top: 24,
+                left: "calc(16.67% + 24px)",
+                right: "calc(16.67% + 24px)",
+                height: 1,
+                borderTop: "2px dashed rgba(59,130,246,0.25)",
+                zIndex: 0,
+              }}
+            />
+            {[
+              {
+                num: "01",
+                icon: Smartphone,
+                title: "Open ArmTrack",
+                desc: "From your home screen. No login required after setup.",
+              },
+              {
+                num: "02",
+                icon: Sliders,
+                title: "Rate your arm",
+                desc: "Three sliders. Throws count. Activity type. Done.",
+              },
+              {
+                num: "03",
+                icon: Shield,
+                title: "Get your call",
+                desc: "Your readiness score and today's recommendation. Instantly.",
+              },
+            ].map(({ num, icon: Icon, title, desc }, i) => (
+              <ScrollFade key={num} delay={i * 0.12} className="flex-1">
+                <div
+                  style={{ textAlign: "center", padding: "0 16px", position: "relative", zIndex: 1 }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 99,
+                      background: "#3B82F6",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 16px",
+                      boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+                    }}
+                  >
+                    <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 800 }}>{num}</span>
+                  </div>
+                  <Icon size={22} style={{ color: "#3B82F6", marginBottom: 10 }} />
+                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
+                    {title}
+                  </p>
+                  <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.5 }}>{desc}</p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+
+          <ScrollFade>
+            <p style={{ color: "#555555", fontSize: 13, fontStyle: "italic" }}>
+              Most players log in under 45 seconds.
+            </p>
           </ScrollFade>
         </div>
       </section>
 
-      {/* ── Footer ──────────────────────────────────────────────────────────── */}
-      <footer
-        className="px-6 sm:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-2"
-        style={{ borderTop: "1px solid #1a1a1a" }}
-      >
-        <span style={{ fontSize: 14, color: "#555" }}>ArmTrack © 2026</span>
-        <span
-          className="text-center sm:text-right"
-          style={{ fontSize: 14, color: "#555" }}
-        >
-          Built for players who take their arm seriously.
-        </span>
-      </footer>
+      {/* ── STATS BAR ──────────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "80px 20px" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <div
+            className="stats-grid"
+            style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}
+          >
+            {[
+              { stat: "1 in 4", label: "pitchers suffer a career arm injury" },
+              { stat: "36x", label: "higher risk when throwing fatigued" },
+              { stat: "38.8%", label: "of MLB pitchers have had Tommy John" },
+              { stat: "60 sec", label: "average time to log with ArmTrack" },
+            ].map(({ stat, label }, i) => (
+              <ScrollFade key={stat} delay={i * 0.1}>
+                <div
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #222222",
+                    borderRadius: 16,
+                    padding: "28px 20px",
+                    textAlign: "center",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 32,
+                      fontWeight: 900,
+                      color: "#3B82F6",
+                      letterSpacing: "-0.02em",
+                      marginBottom: 6,
+                    }}
+                  >
+                    {stat}
+                  </p>
+                  <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.4 }}>{label}</p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+        </div>
+      </section>
 
+      {/* ── HOW IT WORKS ───────────────────────────────────────────────────── */}
+      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
+        <div style={{ maxWidth: 960, margin: "0 auto" }}>
+          <ScrollFade>
+            <div style={{ textAlign: "center", marginBottom: 60 }}>
+              <h2
+                style={{
+                  fontSize: 40,
+                  fontWeight: 800,
+                  letterSpacing: "-0.025em",
+                  color: "#ffffff",
+                  margin: 0,
+                  marginBottom: 12,
+                }}
+              >
+                Built for the whole program
+              </h2>
+              <p style={{ color: "#888888", fontSize: 16, margin: 0 }}>
+                Coaches get visibility. Players get accountability. Everyone gets healthier arms.
+              </p>
+            </div>
+          </ScrollFade>
+
+          <div className="how-columns" style={{ display: "flex", gap: 24 }}>
+            <ScrollFade delay={0} className="flex-1">
+              <div
+                style={{
+                  background: "#111111",
+                  border: "1px solid #222222",
+                  borderLeft: "3px solid #3B82F6",
+                  borderRadius: 20,
+                  padding: "32px 28px",
+                  height: "100%",
+                }}
+              >
+                <p style={{ color: "#ffffff", fontSize: 18, fontWeight: 800, marginBottom: 28 }}>
+                  For Coaches
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                  <FeatureRow
+                    icon={ClipboardList}
+                    title="Create your team"
+                    desc="Set up in 60 seconds. Invite your roster with one link."
+                  />
+                  <FeatureRow
+                    icon={BarChart2}
+                    title="See your roster's readiness"
+                    desc="Every player's arm health score, color coded, before practice."
+                  />
+                  <FeatureRow
+                    icon={MessageSquare}
+                    title="Send recommendations"
+                    desc="Tell players to push or rest — right on their dashboard."
+                  />
+                </div>
+              </div>
+            </ScrollFade>
+
+            <ScrollFade delay={0.1} className="flex-1">
+              <div
+                style={{
+                  background: "#111111",
+                  border: "1px solid #222222",
+                  borderLeft: "3px solid #3B82F6",
+                  borderRadius: 20,
+                  padding: "32px 28px",
+                  height: "100%",
+                }}
+              >
+                <p style={{ color: "#ffffff", fontSize: 18, fontWeight: 800, marginBottom: 28 }}>
+                  For Players
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+                  <FeatureRow
+                    icon={Activity}
+                    title="Log in 60 seconds"
+                    desc="Pain, soreness, stiffness, throws. Fast and effortless."
+                  />
+                  <FeatureRow
+                    icon={Shield}
+                    title="Get your recommendation"
+                    desc="ArmTrack estimates your readiness based on your recent trend."
+                  />
+                  <FeatureRow
+                    icon={TrendingUp}
+                    title="Track your arm over time"
+                    desc="14-day trend chart. Spot patterns before they become injuries."
+                  />
+                </div>
+              </div>
+            </ScrollFade>
+          </div>
+        </div>
+      </section>
+
+      {/* ── COACH FEATURE ──────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "100px 20px" }}>
+        <div
+          className="coach-section"
+          style={{
+            maxWidth: 1000,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 60,
+          }}
+        >
+          <div style={{ flex: 1 }}>
+            <ScrollFade>
+              <BluePill>Coach Dashboard</BluePill>
+              <h2
+                style={{
+                  fontSize: 40,
+                  fontWeight: 800,
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.15,
+                  color: "#ffffff",
+                  margin: 0,
+                  marginBottom: 16,
+                }}
+              >
+                Your entire roster. One screen.
+              </h2>
+              <p
+                style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 28 }}
+              >
+                See which players are ready to throw, which need a light day, and who hasn&apos;t
+                logged yet — before practice starts.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+                {[
+                  "Readiness scores for every player, updated daily",
+                  "Subsections by position — pitchers, catchers, position players",
+                  "Recommendations and team messages in one tap",
+                ].map((item) => (
+                  <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <CheckCircle
+                      size={16}
+                      style={{ color: "#3B82F6", flexShrink: 0, marginTop: 2 }}
+                    />
+                    <span style={{ color: "#cccccc", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/signup"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#3B82F6",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "13px 22px",
+                  borderRadius: 12,
+                  boxShadow: "0 4px 20px rgba(59,130,246,0.35)",
+                }}
+              >
+                Start as a Coach →
+              </Link>
+            </ScrollFade>
+          </div>
+
+          <ScrollFade delay={0.1} className="flex-shrink-0">
+            <IPhoneFrame>
+              <CoachScreen />
+            </IPhoneFrame>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── PLAYER FEATURE ─────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "100px 20px" }}>
+        <div
+          className="player-section"
+          style={{
+            maxWidth: 1000,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 60,
+          }}
+        >
+          <ScrollFade delay={0.1} className="flex-shrink-0">
+            <IPhoneFrame>
+              <PlayerScreen />
+            </IPhoneFrame>
+          </ScrollFade>
+
+          <div style={{ flex: 1 }}>
+            <ScrollFade>
+              <BluePill>For Players</BluePill>
+              <h2
+                style={{
+                  fontSize: 40,
+                  fontWeight: 800,
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.15,
+                  color: "#ffffff",
+                  margin: 0,
+                  marginBottom: 16,
+                }}
+              >
+                Know when to push. Know when to rest.
+              </h2>
+              <p
+                style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 28 }}
+              >
+                Log your arm daily and get a personalized recommendation based on your pain,
+                soreness, stiffness, and recent throwing load.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
+                {[
+                  "Weighted readiness score — pain counts more than stiffness",
+                  "Position-aware recommendations for your role",
+                  "14-day trend chart to catch patterns early",
+                ].map((item) => (
+                  <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                    <CheckCircle
+                      size={16}
+                      style={{ color: "#3B82F6", flexShrink: 0, marginTop: 2 }}
+                    />
+                    <span style={{ color: "#cccccc", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/signup"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#3B82F6",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "13px 22px",
+                  borderRadius: 12,
+                  boxShadow: "0 4px 20px rgba(59,130,246,0.35)",
+                }}
+              >
+                Start Tracking Free →
+              </Link>
+            </ScrollFade>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SOCIAL PROOF ───────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "80px 20px" }}>
+        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <div
+              style={{
+                fontSize: 64,
+                fontWeight: 900,
+                color: "#3B82F6",
+                opacity: 0.3,
+                lineHeight: 1,
+                marginBottom: 8,
+                fontFamily: "Georgia, serif",
+              }}
+            >
+              &ldquo;
+            </div>
+            <p
+              style={{
+                fontSize: 22,
+                color: "#ffffff",
+                fontStyle: "italic",
+                lineHeight: 1.6,
+                marginBottom: 20,
+              }}
+            >
+              Finally know which arms are ready before practice. This changes how I make throwing
+              decisions every single day.
+            </p>
+            <p style={{ color: "#888888", fontSize: 14 }}>
+              — High school pitching coach, Illinois
+            </p>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ──────────────────────────────────────────────────────── */}
+      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <h2
+              style={{
+                fontSize: 48,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.1,
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 16,
+              }}
+            >
+              Protect your program. Start today.
+            </h2>
+            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 36 }}>
+              Free for every player. Built for coaches who care about keeping their roster healthy.
+            </p>
+            <div
+              className="cta-row"
+              style={{
+                display: "flex",
+                gap: 12,
+                justifyContent: "center",
+                flexWrap: "wrap",
+                marginBottom: 20,
+              }}
+            >
+              <Link
+                href="/signup"
+                style={{
+                  background: "#3B82F6",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "14px 24px",
+                  borderRadius: 14,
+                  boxShadow: "0 4px 24px rgba(59,130,246,0.4)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Get Started as a Coach
+              </Link>
+              <Link
+                href="/signup"
+                style={{
+                  background: "#111111",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "14px 24px",
+                  borderRadius: 14,
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Sign Up as a Player
+              </Link>
+            </div>
+            <p style={{ color: "#555555", fontSize: 13 }}>
+              No app download required. Works on any device.
+            </p>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
+      <footer
+        style={{ background: "#000000", borderTop: "1px solid #111111", padding: "24px 20px" }}
+      >
+        <div
+          className="footer-inner"
+          style={{
+            maxWidth: 1200,
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ color: "#444444", fontSize: 13 }}>ArmTrack &copy; 2026</span>
+          <span style={{ color: "#444444", fontSize: 13 }}>Built for baseball &amp; softball</span>
+        </div>
+      </footer>
     </div>
   );
 }
