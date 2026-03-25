@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Shield,
@@ -18,6 +19,8 @@ import {
   MessageSquare,
   Activity,
   TrendingUp,
+  Bell,
+  Flame,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -390,12 +393,15 @@ export default function LandingPage() {
     >
       {/* ─────────────────────────────────── responsive overrides */}
       <style>{`
+        @media (max-width: 768px) {
+          .hero-nav-center { display: none !important; }
+          .hero-text-block { padding: 24px 24px 16px !important; gap: 24px !important; flex-direction: column !important; }
+          .hero-headline { font-size: 38px !important; }
+          .hero-right-col { max-width: 100% !important; }
+          .hero-mockup-block { padding: 0 12px !important; }
+        }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
-          .hero-grid { flex-direction: column !important; align-items: flex-start !important; }
-          .hero-phones { display: none !important; }
-          .hero-headline { font-size: 34px !important; }
-          .hero-ctas { flex-direction: column !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
           .steps-line { display: none !important; }
@@ -412,230 +418,180 @@ export default function LandingPage() {
       {/* ── NAVBAR ─────────────────────────────────────────────────────────── */}
       <nav
         style={{
-          position: "sticky",
+          position: "fixed",
           top: 0,
+          left: 0,
+          right: 0,
           zIndex: 50,
-          background: "#000000",
-          borderBottom: scrolled ? "1px solid #222222" : "1px solid transparent",
-          transition: "border-color 0.2s ease",
-          padding: "0 20px",
-          height: 60,
+          background: scrolled ? "rgba(0,0,0,0.9)" : "transparent",
+          backdropFilter: scrolled ? "blur(12px)" : "none",
+          transition: "background 0.25s ease, backdrop-filter 0.25s ease",
+          padding: "20px 48px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <Link
-          href="/"
-          style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
-        >
-          <img
-            src="/icons/icon-192.png"
-            width={32}
-            height={32}
-            alt="ArmTrack"
-            style={{ borderRadius: 8 }}
-          />
-          <span style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
+          <Image src="/icons/icon-192.png" width={40} height={40} alt="ArmTrack" style={{ borderRadius: 8 }} />
+          <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#ffffff" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
           </span>
         </Link>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link
-            href="/login"
-            className="hide-mobile"
-            style={{
-              color: "#888888",
-              fontSize: 14,
-              fontWeight: 600,
-              textDecoration: "none",
-              transition: "color 0.15s",
-            }}
+        <div className="hero-nav-center" style={{ display: "flex", alignItems: "center", gap: 24, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 999, padding: "8px 20px", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.04)" }}>
+          {["Features", "For Coaches", "For Players"].map((label) => (
+            <Link key={label} href={`#${label.toLowerCase().replace(/ /g, "-")}`}
+              style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", textDecoration: "none", whiteSpace: "nowrap", transition: "color 0.15s" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
+            >{label}</Link>
+          ))}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
+          <Link href="/login" className="hide-mobile"
+            style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", textDecoration: "none", transition: "color 0.15s" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#888888")}
-          >
-            Log In
-          </Link>
-          <Link
-            href="/signup"
-            style={{
-              background: "#3B82F6",
-              color: "#ffffff",
-              fontSize: 14,
-              fontWeight: 700,
-              textDecoration: "none",
-              padding: "8px 18px",
-              borderRadius: 99,
-              boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
-              whiteSpace: "nowrap",
-            }}
-          >
+            onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
+          >Log in</Link>
+          <Link href="/signup" style={{ background: "#ffffff", color: "#000000", fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "8px 16px", borderRadius: 999, whiteSpace: "nowrap" }}>
             Get Started Free
           </Link>
         </div>
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          padding: "60px 20px",
-          maxWidth: 1200,
-          margin: "0 auto",
-        }}
-      >
-        <div
-          className="hero-grid"
-          style={{ display: "flex", alignItems: "center", gap: 60, width: "100%" }}
-        >
-          {/* Left — text */}
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease }}
-            >
-              <BluePill>Built for Baseball &amp; Softball</BluePill>
-            </motion.div>
+      <section style={{ background: "#000000", minHeight: "100vh", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
 
-            <motion.h1
-              className="hero-headline"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.08, ease }}
-              style={{
-                fontSize: 56,
-                fontWeight: 800,
-                lineHeight: 1.1,
-                letterSpacing: "-0.03em",
-                color: "#ffffff",
-                margin: 0,
-                marginBottom: 24,
-              }}
-            >
-              Know which arms are ready before practice starts.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.16, ease }}
-              style={{
-                fontSize: 18,
-                color: "#888888",
-                lineHeight: 1.6,
-                margin: 0,
-                marginBottom: 36,
-                maxWidth: 520,
-              }}
-            >
-              ArmTrack gives coaches real-time visibility into every player&apos;s arm health — and
-              gives players a daily recommendation to protect their career.
-            </motion.p>
-
-            <motion.div
-              className="hero-ctas"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.22, ease }}
-              style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 36 }}
-            >
-              <Link
-                href="/signup"
-                style={{
-                  background: "#3B82F6",
-                  color: "#ffffff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  padding: "14px 24px",
-                  borderRadius: 14,
-                  boxShadow: "0 4px 24px rgba(59,130,246,0.4)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Get Started as a Coach
-              </Link>
-              <Link
-                href="/signup"
-                style={{
-                  background: "#111111",
-                  color: "#ffffff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  padding: "14px 24px",
-                  borderRadius: 14,
-                  border: "1px solid #222222",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                I&apos;m a Player
-              </Link>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.28, ease }}
-              style={{ display: "flex", gap: 24, flexWrap: "wrap" }}
-            >
-              {[
-                { icon: Shield, text: "Free for players" },
-                { icon: Users, text: "Built for teams" },
-                { icon: Zap, text: "No hardware needed" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Icon size={14} style={{ color: "#888888", flexShrink: 0 }} />
-                  <span style={{ color: "#888888", fontSize: 13, fontWeight: 500 }}>{text}</span>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right — phones */}
-          <div
-            className="hero-phones"
-            style={{ position: "relative", width: 380, height: 560, flexShrink: 0 }}
-          >
-            {/* Glow */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "radial-gradient(ellipse at center, rgba(59,130,246,0.15) 0%, transparent 70%)",
-                pointerEvents: "none",
-              }}
-            />
-            {/* Back phone — player */}
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, ease }}
-              style={{ position: "absolute", left: 0, top: 40, zIndex: 1 }}
-            >
-              <IPhoneFrame style={{ transform: "rotate(-4deg)", opacity: 0.85 }}>
-                <PlayerScreen />
-              </IPhoneFrame>
-            </motion.div>
-            {/* Front phone — coach */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.6, ease }}
-              style={{ position: "absolute", right: 0, top: 0, zIndex: 2 }}
-            >
-              <IPhoneFrame style={{ transform: "rotate(3deg)" }}>
-                <CoachScreen />
-              </IPhoneFrame>
-            </motion.div>
-          </div>
+        {/* Image block — top 55% */}
+        <div style={{ position: "relative", width: "100%", height: "55vh", overflow: "hidden", flexShrink: 0 }}>
+          <Image src="/hero-pitcher.png" alt="Pitcher throwing" fill priority style={{ objectFit: "contain", objectPosition: "center top" }} />
+          {/* Bottom fade */}
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 180, pointerEvents: "none",
+            background: "linear-gradient(to top, #000000, transparent)" }} />
+          {/* Side fades */}
+          <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
+            background: "linear-gradient(to right, #000000 0%, transparent 30%, transparent 70%, #000000 100%)" }} />
         </div>
+
+        {/* Text block — headline left, subtext+CTAs right */}
+        <div className="hero-text-block" style={{ padding: "32px 64px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 80, flexShrink: 0 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <h1 className="hero-headline" style={{ fontFamily: "'Inter Variable', Inter, sans-serif", fontSize: 56, fontWeight: 550, letterSpacing: "-0.03em", lineHeight: 1.0, color: "#ffffff", margin: 0, maxWidth: 480 }}>
+              Players track.<br />Coaches see.<br />Everyone throws smarter.
+            </h1>
+          </motion.div>
+          <motion.div className="hero-right-col" style={{ maxWidth: 360, flexShrink: 0 }}
+            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <p style={{ color: "#999999", fontSize: 16, lineHeight: 1.7, marginBottom: 20 }}>
+              ArmTrack connects players and coaches through daily arm health data — so everyone makes smarter throwing decisions, together.
+            </p>
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{ display: "flex", gap: 12, flexWrap: "wrap" }}
+            >
+              <Link href="/signup" style={{ background: "#ffffff", color: "#000000", fontSize: 14, fontWeight: 600, textDecoration: "none", padding: "10px 20px", borderRadius: 999, whiteSpace: "nowrap" }}>Get Started Free</Link>
+              <Link href="#product" style={{ background: "transparent", color: "#ffffff", fontSize: 14, textDecoration: "none", padding: "10px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", whiteSpace: "nowrap" }}>Learn More</Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Product mockup — directly below text, bleeds off bottom */}
+        <motion.div id="product" className="hero-mockup-block"
+          initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          style={{ position: "relative", padding: "0 32px", marginTop: 8, flexShrink: 0 }}
+        >
+          {/* Laptop frame */}
+          <div style={{ background: "#111111", border: "1px solid #252525", borderRadius: "12px 12px 0 0", overflow: "hidden" }}>
+            {/* macOS chrome */}
+            <div style={{ padding: "12px 16px", background: "#161616", borderBottom: "1px solid #1f1f1f", display: "flex", alignItems: "center", gap: 6 }}>
+              {[["#ef4444"], ["#f59e0b"], ["#22c55e"]].map(([c], i) => (
+                <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />
+              ))}
+            </div>
+            {/* Split screen */}
+            <div style={{ display: "flex", minHeight: 260 }}>
+              {/* Left — player */}
+              <div style={{ width: "50%", padding: 24, background: "#0d0d0d" }}>
+                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Players</p>
+                <p style={{ color: "#555555", fontSize: 13, marginBottom: 4 }}>Good morning, Jake</p>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 48, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
+                  <span style={{ fontSize: 20, color: "#333333", marginBottom: 4 }}>/10</span>
+                  <span style={{ fontSize: 11, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 6, marginLeft: 8 }}>Good to Go</span>
+                </div>
+                <p style={{ fontSize: 11, color: "#333333", marginBottom: 12 }}>Based on your recent logs</p>
+                <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                  {[["P 2","#0a1f0a","#22C55E"],["S 4","#1f1500","#F59E0B"],["St 1","#0a1f0a","#22C55E"]].map(([l,b,c]) => (
+                    <span key={l} style={{ fontSize: 11, background: b, color: c, padding: "4px 8px", borderRadius: 6 }}>{l}</span>
+                  ))}
+                </div>
+                <div style={{ height: 1, background: "#1a1a1a", marginBottom: 12 }} />
+                <div style={{ background: "#0a0a0a", borderLeft: "2px solid #3B82F6", paddingLeft: 12, paddingTop: 8, paddingBottom: 8, paddingRight: 12, borderRadius: "0 6px 6px 0", marginBottom: 12 }}>
+                  <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 4 }}>Today&apos;s Recommendation</p>
+                  <p style={{ fontSize: 13, color: "#ffffff" }}>Normal session today — stay within your pitch count plan.</p>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <Flame size={14} style={{ color: "#3B82F6" }} />
+                  <span style={{ fontSize: 13, color: "#555555" }}>5-day streak</span>
+                </div>
+              </div>
+              {/* Right — coach */}
+              <div style={{ width: "50%", padding: 24, background: "#0d0d0d", borderLeft: "1px solid #1a1a1a" }}>
+                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Coaches</p>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <span style={{ fontSize: 15, fontWeight: 700, color: "#ffffff" }}>Team Readiness</span>
+                  <span style={{ fontSize: 11, color: "#444444" }}>4 of 5 logged</span>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                  {[
+                    { name: "Jake M.", pos: "Pitcher", score: "8.4", label: "Ready", color: "#22C55E", opacity: 1 },
+                    { name: "Carlos R.", pos: "Pitcher", score: "7.1", label: "Good to Go", color: "#22C55E", opacity: 1 },
+                    { name: "Devon T.", pos: "Catcher", score: "5.8", label: "Caution", color: "#F59E0B", opacity: 1 },
+                    { name: "Malik W.", pos: "Infielder", score: null, label: "Not logged", color: "#333333", opacity: 0.4 },
+                  ].map((row) => (
+                    <div key={row.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#111111", borderRadius: 10, padding: "10px 12px", opacity: row.opacity }}>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>{row.name}</span>
+                        <span style={{ fontSize: 10, color: "#555555", background: "#1a1a1a", padding: "2px 6px", borderRadius: 4, marginLeft: 8 }}>{row.pos}</span>
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {row.score && <span style={{ fontSize: 13, fontWeight: 700, color: row.color, marginRight: 4 }}>{row.score}</span>}
+                        <span style={{ fontSize: 11, color: row.color }}>{row.label}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button style={{ width: "100%", background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, border: "none", borderRadius: 10, padding: "8px 0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                  <Bell size={14} />Notify Team
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Phone mockup — overlapping bottom-left of laptop */}
+          <div style={{ position: "absolute", bottom: 0, left: 80, width: 160, background: "#1a1a1a", borderRadius: "20px 20px 0 0", border: "1px solid #333333", overflow: "hidden", zIndex: 10 }}>
+            <div style={{ padding: "8px 12px", background: "#111111", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 11, color: "#ffffff", fontWeight: 600 }}>9:41</span>
+              <span style={{ fontSize: 10, color: "#ffffff" }}>▮▮▮</span>
+            </div>
+            <div style={{ padding: 12, background: "#0d0d0d" }}>
+              <p style={{ fontSize: 11, color: "#3B82F6", fontWeight: 700, marginBottom: 8 }}>ArmTrack</p>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
+                <span style={{ fontSize: 28, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
+                <span style={{ fontSize: 13, color: "#444444" }}>/10</span>
+              </div>
+              <span style={{ display: "inline-block", fontSize: 10, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 12 }}>Good to Go</span>
+              <div style={{ background: "#3B82F6", color: "#ffffff", fontSize: 11, fontWeight: 600, padding: "6px 0", borderRadius: 8, textAlign: "center" }}>Log Today</div>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
