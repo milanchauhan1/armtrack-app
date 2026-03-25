@@ -432,10 +432,10 @@ export default function LandingPage() {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", flexShrink: 0 }}>
-          <Image src="/icons/icon-192.png" width={40} height={40} alt="ArmTrack" style={{ borderRadius: 8 }} />
-          <span style={{ fontSize: 22, fontWeight: 700, letterSpacing: "-0.01em" }}>
-            <span style={{ color: "#ffffff" }}>Arm</span>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", flexShrink: 0 }}>
+          <Image src="/icons/icon-192.png" width={52} height={52} alt="ArmTrack" style={{ borderRadius: 10 }} />
+          <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
+            <span style={{ color: "#f5f5f5" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
           </span>
         </Link>
@@ -461,134 +461,146 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", minHeight: "100vh", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <section style={{ background: "#000", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
 
-        {/* Image block — top 55% */}
-        <div style={{ position: "relative", width: "100%", height: "55vh", overflow: "hidden", flexShrink: 0 }}>
-          <Image src="/hero-pitcher.png" alt="Pitcher throwing" fill priority style={{ objectFit: "contain", objectPosition: "center top" }} />
-          {/* Bottom fade */}
-          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: 180, pointerEvents: "none",
-            background: "linear-gradient(to top, #000000, transparent)" }} />
-          {/* Side fades */}
-          <div style={{ position: "absolute", inset: 0, pointerEvents: "none",
-            background: "linear-gradient(to right, #000000 0%, transparent 30%, transparent 70%, #000000 100%)" }} />
+        {/* Image — centered, top 52% of viewport, black space around it */}
+        <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
+          {/* Edge fades */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
         </div>
 
-        {/* Text block — headline left, subtext+CTAs right */}
-        <div className="hero-text-block" style={{ padding: "32px 64px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 80, flexShrink: 0 }}>
-          <motion.div
+        {/* Text — overlaps slightly with bottom of image */}
+        <div className="hero-text-block" style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 80, marginBottom: 48 }}>
+          <motion.div style={{ maxWidth: 480 }}
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h1 className="hero-headline" style={{ fontFamily: "'Inter Variable', Inter, sans-serif", fontSize: 56, fontWeight: 550, letterSpacing: "-0.03em", lineHeight: 1.0, color: "#ffffff", margin: 0, maxWidth: 480 }}>
-              Players track.<br />Coaches see.<br />Everyone throws smarter.
+            <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 550, letterSpacing: "-0.03em", lineHeight: 1.0, color: "#f5f5f5", margin: 0 }}>
+              Know when to throw.<br />Know when to recover.
             </h1>
           </motion.div>
-          <motion.div className="hero-right-col" style={{ maxWidth: 360, flexShrink: 0 }}
+          <motion.div className="hero-right-col" style={{ maxWidth: 360, paddingTop: 8, flexShrink: 0 }}
             initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p style={{ color: "#999999", fontSize: 16, lineHeight: 1.7, marginBottom: 20 }}>
-              ArmTrack connects players and coaches through daily arm health data — so everyone makes smarter throwing decisions, together.
+            <p style={{ color: "#999", fontSize: 16, lineHeight: 1.7, marginBottom: 24 }}>
+              ArmTrack gives players and coaches the visibility they need — arm readiness, workload, and recovery data — so every throwing decision is smarter.
             </p>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ display: "flex", gap: 12, flexWrap: "wrap" }}
+              style={{ display: "flex", gap: 12 }}
             >
-              <Link href="/signup" style={{ background: "#ffffff", color: "#000000", fontSize: 14, fontWeight: 600, textDecoration: "none", padding: "10px 20px", borderRadius: 999, whiteSpace: "nowrap" }}>Get Started Free</Link>
-              <Link href="#product" style={{ background: "transparent", color: "#ffffff", fontSize: 14, textDecoration: "none", padding: "10px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", whiteSpace: "nowrap" }}>Learn More</Link>
+              <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block" }}>
+                Get Started Free
+              </a>
+              <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)" }}>
+                Learn More
+              </a>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Product mockup — directly below text, bleeds off bottom */}
+        {/* MacBook + Phone mockup — directly below text */}
         <motion.div id="product" className="hero-mockup-block"
-          initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{ position: "relative", padding: "0 32px", marginTop: 8, flexShrink: 0 }}
+          style={{ position: "relative", padding: "0 48px" }}
         >
-          {/* Laptop frame */}
-          <div style={{ background: "#111111", border: "1px solid #252525", borderRadius: "12px 12px 0 0", overflow: "hidden" }}>
-            {/* macOS chrome */}
-            <div style={{ padding: "12px 16px", background: "#161616", borderBottom: "1px solid #1f1f1f", display: "flex", alignItems: "center", gap: 6 }}>
-              {[["#ef4444"], ["#f59e0b"], ["#22c55e"]].map(([c], i) => (
-                <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: c }} />
-              ))}
-            </div>
-            {/* Split screen */}
-            <div style={{ display: "flex", minHeight: 260 }}>
-              {/* Left — player */}
-              <div style={{ width: "50%", padding: 24, background: "#0d0d0d" }}>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Players</p>
-                <p style={{ color: "#555555", fontSize: 13, marginBottom: 4 }}>Good morning, Jake</p>
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 4 }}>
-                  <span style={{ fontSize: 48, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
-                  <span style={{ fontSize: 20, color: "#333333", marginBottom: 4 }}>/10</span>
-                  <span style={{ fontSize: 11, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 6, marginLeft: 8 }}>Good to Go</span>
-                </div>
-                <p style={{ fontSize: 11, color: "#333333", marginBottom: 12 }}>Based on your recent logs</p>
-                <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                  {[["P 2","#0a1f0a","#22C55E"],["S 4","#1f1500","#F59E0B"],["St 1","#0a1f0a","#22C55E"]].map(([l,b,c]) => (
-                    <span key={l} style={{ fontSize: 11, background: b, color: c, padding: "4px 8px", borderRadius: 6 }}>{l}</span>
-                  ))}
-                </div>
-                <div style={{ height: 1, background: "#1a1a1a", marginBottom: 12 }} />
-                <div style={{ background: "#0a0a0a", borderLeft: "2px solid #3B82F6", paddingLeft: 12, paddingTop: 8, paddingBottom: 8, paddingRight: 12, borderRadius: "0 6px 6px 0", marginBottom: 12 }}>
-                  <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 4 }}>Today&apos;s Recommendation</p>
-                  <p style={{ fontSize: 13, color: "#ffffff" }}>Normal session today — stay within your pitch count plan.</p>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Flame size={14} style={{ color: "#3B82F6" }} />
-                  <span style={{ fontSize: 13, color: "#555555" }}>5-day streak</span>
-                </div>
+          {/* MacBook outer body */}
+          <div style={{ background: "linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%)", borderRadius: "16px 16px 0 0", padding: "14px 14px 0", boxShadow: "0 0 0 1px #3a3a3a, 0 -8px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)", position: "relative" }}>
+            {/* Screen bezel */}
+            <div style={{ background: "#0a0a0a", borderRadius: "10px 10px 0 0", overflow: "hidden", border: "1px solid #2a2a2a", minHeight: 360 }}>
+              {/* macOS chrome */}
+              <div style={{ padding: "12px 16px", background: "#141414", borderBottom: "1px solid #1f1f1f", display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#EF4444" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#F59E0B" }} />
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#22C55E" }} />
               </div>
-              {/* Right — coach */}
-              <div style={{ width: "50%", padding: 24, background: "#0d0d0d", borderLeft: "1px solid #1a1a1a" }}>
-                <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Coaches</p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                  <span style={{ fontSize: 15, fontWeight: 700, color: "#ffffff" }}>Team Readiness</span>
-                  <span style={{ fontSize: 11, color: "#444444" }}>4 of 5 logged</span>
+              {/* Split screen */}
+              <div style={{ display: "flex", minHeight: 320 }}>
+                {/* Left — player */}
+                <div style={{ width: "50%", padding: 24, background: "#0d0d0d" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Players</p>
+                  <p style={{ color: "#444444", fontSize: 13, marginBottom: 8 }}>Good morning, Jake</p>
+                  <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 48, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
+                    <span style={{ fontSize: 20, color: "#333333", marginBottom: 4 }}>/10</span>
+                    <span style={{ fontSize: 11, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 6, marginLeft: 8 }}>Good to Go</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: "#333333", marginBottom: 12 }}>Based on your recent logs</p>
+                  <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+                    {[["P 2","#0a1f0a","#22C55E"],["S 4","#1f1500","#F59E0B"],["St 1","#0a1f0a","#22C55E"]].map(([l,b,c]) => (
+                      <span key={l} style={{ fontSize: 11, background: b, color: c, padding: "4px 8px", borderRadius: 6 }}>{l}</span>
+                    ))}
+                  </div>
+                  <div style={{ height: 1, background: "#1a1a1a", marginBottom: 12 }} />
+                  <div style={{ background: "#080808", borderLeft: "2px solid #3B82F6", paddingLeft: 12, paddingTop: 8, paddingBottom: 8, paddingRight: 12, borderRadius: "0 6px 6px 0", marginBottom: 12 }}>
+                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 4 }}>Today&apos;s Recommendation</p>
+                    <p style={{ fontSize: 13, color: "#f5f5f5" }}>Normal session today — stay within your pitch count plan.</p>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Flame size={13} style={{ color: "#3B82F6" }} />
+                    <span style={{ fontSize: 13, color: "#555555" }}>5-day streak</span>
+                  </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
-                  {[
-                    { name: "Jake M.", pos: "Pitcher", score: "8.4", label: "Ready", color: "#22C55E", opacity: 1 },
-                    { name: "Carlos R.", pos: "Pitcher", score: "7.1", label: "Good to Go", color: "#22C55E", opacity: 1 },
-                    { name: "Devon T.", pos: "Catcher", score: "5.8", label: "Caution", color: "#F59E0B", opacity: 1 },
-                    { name: "Malik W.", pos: "Infielder", score: null, label: "Not logged", color: "#333333", opacity: 0.4 },
-                  ].map((row) => (
-                    <div key={row.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#111111", borderRadius: 10, padding: "10px 12px", opacity: row.opacity }}>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>{row.name}</span>
-                        <span style={{ fontSize: 10, color: "#555555", background: "#1a1a1a", padding: "2px 6px", borderRadius: 4, marginLeft: 8 }}>{row.pos}</span>
+                {/* Right — coach */}
+                <div style={{ width: "50%", padding: 24, background: "#0d0d0d", borderLeft: "1px solid #1a1a1a" }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Coaches</p>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f5" }}>Team Readiness</span>
+                    <span style={{ fontSize: 11, color: "#444444" }}>Today</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: "#444444", marginBottom: 12 }}>4 of 5 players logged</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                    {[
+                      { name: "Jake M.", pos: "Pitcher", score: "8.4", label: "Ready", color: "#22C55E", opacity: 1 },
+                      { name: "Carlos R.", pos: "Pitcher", score: "7.1", label: "Good to Go", color: "#22C55E", opacity: 1 },
+                      { name: "Devon T.", pos: "Catcher", score: "5.8", label: "Caution", color: "#F59E0B", opacity: 1 },
+                      { name: "Malik W.", pos: "Infielder", score: null, label: "Not logged", color: "#333333", opacity: 0.4 },
+                    ].map((row) => (
+                      <div key={row.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#111111", borderRadius: 10, padding: "10px 12px", border: "1px solid #1a1a1a", opacity: row.opacity }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5" }}>{row.name}</span>
+                          <span style={{ fontSize: 10, color: "#555555", background: "#1a1a1a", padding: "2px 8px", borderRadius: 99, marginLeft: 8 }}>{row.pos}</span>
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          {row.score && <span style={{ fontSize: 13, fontWeight: 700, color: row.color, marginRight: 4 }}>{row.score}</span>}
+                          <span style={{ fontSize: 11, color: row.color }}>{row.label}</span>
+                        </div>
                       </div>
-                      <div style={{ display: "flex", alignItems: "center" }}>
-                        {row.score && <span style={{ fontSize: 13, fontWeight: 700, color: row.color, marginRight: 4 }}>{row.score}</span>}
-                        <span style={{ fontSize: 11, color: row.color }}>{row.label}</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
+                  <button style={{ width: "100%", background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, border: "none", borderRadius: 10, padding: "8px 0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                    <Bell size={14} />Notify Team
+                  </button>
                 </div>
-                <button style={{ width: "100%", background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, border: "none", borderRadius: 10, padding: "8px 0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                  <Bell size={14} />Notify Team
-                </button>
               </div>
             </div>
           </div>
+          {/* MacBook base/chin */}
+          <div style={{ height: 24, background: "linear-gradient(180deg, #262626 0%, #1a1a1a 100%)", borderRadius: "0 0 6px 6px", boxShadow: "0 1px 0 #111, 0 4px 20px rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 56, height: 3, background: "#333", borderRadius: 2 }} />
+          </div>
 
-          {/* Phone mockup — overlapping bottom-left of laptop */}
-          <div style={{ position: "absolute", bottom: 0, left: 80, width: 160, background: "#1a1a1a", borderRadius: "20px 20px 0 0", border: "1px solid #333333", overflow: "hidden", zIndex: 10 }}>
-            <div style={{ padding: "8px 12px", background: "#111111", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#ffffff", fontWeight: 600 }}>9:41</span>
-              <span style={{ fontSize: 10, color: "#ffffff" }}>▮▮▮</span>
+          {/* Phone mockup — overlapping MacBook bottom-left */}
+          <div style={{ position: "absolute", bottom: 24, left: 56, zIndex: 10, width: 152, borderRadius: 32, background: "#1c1c1e", border: "1.5px solid #3a3a3a", boxShadow: "0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08)", overflow: "hidden" }}>
+            {/* Dynamic island */}
+            <div style={{ height: 36, background: "#0a0a0a", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 4 }}>
+              <div style={{ width: 72, height: 20, background: "#1c1c1e", borderRadius: 999 }} />
             </div>
-            <div style={{ padding: 12, background: "#0d0d0d" }}>
-              <p style={{ fontSize: 11, color: "#3B82F6", fontWeight: 700, marginBottom: 8 }}>ArmTrack</p>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 4 }}>
-                <span style={{ fontSize: 28, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
-                <span style={{ fontSize: 13, color: "#444444" }}>/10</span>
-              </div>
-              <span style={{ display: "inline-block", fontSize: 10, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 12 }}>Good to Go</span>
-              <div style={{ background: "#3B82F6", color: "#ffffff", fontSize: 11, fontWeight: 600, padding: "6px 0", borderRadius: 8, textAlign: "center" }}>Log Today</div>
+            {/* Status bar */}
+            <div style={{ padding: "4px 16px 8px", background: "#0d0d0d", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 11, color: "#f5f5f5", fontWeight: 600 }}>9:41</span>
+              <span style={{ fontSize: 11, color: "#f5f5f5" }}>▮▮▮</span>
+            </div>
+            {/* Screen content */}
+            <div style={{ padding: 12, background: "#0a0a0a" }}>
+              <div style={{ fontSize: 11, color: "#3B82F6", fontWeight: 700, marginBottom: 8 }}>ArmTrack</div>
+              <div style={{ fontSize: 28, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8 <span style={{ fontSize: 14, color: "#333" }}>/10</span></div>
+              <div style={{ display: "inline-block", background: "#052e16", color: "#22C55E", fontSize: 10, padding: "2px 8px", borderRadius: 999, marginTop: 6, marginBottom: 12 }}>Good to Go</div>
+              <div style={{ background: "#3B82F6", color: "white", fontSize: 11, fontWeight: 600, padding: 8, borderRadius: 8, textAlign: "center" }}>Log Today</div>
             </div>
           </div>
         </motion.div>
