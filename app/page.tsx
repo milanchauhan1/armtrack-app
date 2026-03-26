@@ -393,6 +393,7 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 48px !important; }
+          .hero-phone-float { display: none !important; }
         }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
@@ -458,7 +459,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "#000", minHeight: "100vh", position: "relative" }}>
 
         {/* Pitcher image — 52vh, centered, edge fades */}
         <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
@@ -509,45 +510,37 @@ export default function LandingPage() {
             </div>
           </div>
         </motion.div>
-      </section>
 
-      {/* ── PRODUCT SHOWCASE ───────────────────────────────────────────────── */}
-      <section id="product" style={{ background: "#000", padding: "80px 20px 100px" }}>
-        <ScrollFade>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            {/* Glow card behind phone */}
-            <div style={{
-              position: "relative",
-              padding: "52px 64px",
-              background: "radial-gradient(ellipse at 50% 20%, rgba(59,130,246,0.09) 0%, transparent 65%)",
-              borderRadius: 44,
-              border: "1px solid rgba(255,255,255,0.05)",
-            }}>
-              {/* iPhone frame */}
-              <div style={{
-                width: 300,
-                borderRadius: 56,
-                background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
-                padding: 11,
-                boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 60px 120px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.07)",
-                position: "relative",
-              }}>
-                <div style={{ position: "absolute", left: -3, top: 80, width: 3, height: 30, background: "#222", borderRadius: "2px 0 0 2px" }} />
-                <div style={{ position: "absolute", left: -3, top: 120, width: 3, height: 36, background: "#222", borderRadius: "2px 0 0 2px" }} />
-                <div style={{ position: "absolute", left: -3, top: 168, width: 3, height: 36, background: "#222", borderRadius: "2px 0 0 2px" }} />
-                <div style={{ position: "absolute", right: -3, top: 144, width: 3, height: 72, background: "#222", borderRadius: "0 2px 2px 0" }} />
-                <div style={{ borderRadius: 47, overflow: "hidden", background: "#000", position: "relative" }}>
-                  <div style={{ position: "absolute", top: 16, left: "50%", transform: "translateX(-50%)", width: 96, height: 30, background: "#000", borderRadius: 999, zIndex: 10 }} />
-                  <Image src="/dashboard-preview.png" width={278} height={602} alt="ArmTrack player dashboard" style={{ width: "100%", height: "auto", display: "block" }} />
-                </div>
-              </div>
+        {/* iPhone — absolute right, centered vertically, bleeds off edge */}
+        <motion.div
+          className="hero-phone-float"
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.9, delay: 0.45, ease }}
+          style={{ position: "absolute", right: -24, top: "50%", transform: "translateY(-50%)", zIndex: 3 }}
+        >
+          <div style={{
+            width: 280,
+            borderRadius: 52,
+            background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
+            padding: 10,
+            boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07)",
+            position: "relative",
+          }}>
+            <div style={{ position: "absolute", left: -3, top: 72, width: 3, height: 28, background: "#222", borderRadius: "2px 0 0 2px" }} />
+            <div style={{ position: "absolute", left: -3, top: 108, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
+            <div style={{ position: "absolute", left: -3, top: 152, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
+            <div style={{ position: "absolute", right: -3, top: 130, width: 3, height: 64, background: "#222", borderRadius: "0 2px 2px 0" }} />
+            <div style={{ borderRadius: 44, overflow: "hidden", background: "#000", position: "relative" }}>
+              <div style={{ position: "absolute", top: 14, left: "50%", transform: "translateX(-50%)", width: 88, height: 28, background: "#000", borderRadius: 999, zIndex: 10 }} />
+              <Image src="/dashboard-preview.png" width={260} height={562} alt="ArmTrack player dashboard" priority style={{ width: "100%", height: "auto", display: "block" }} />
             </div>
           </div>
-        </ScrollFade>
+        </motion.div>
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "100px 20px" }}>
+      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <span
