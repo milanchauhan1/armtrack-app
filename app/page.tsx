@@ -448,7 +448,7 @@ export default function LandingPage() {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", flexShrink: 0 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none", flexShrink: 0 }}>
           <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" style={{ borderRadius: 24 }} />
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
@@ -482,13 +482,18 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, delay: 0.2, ease }}
-          style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}
+          style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", paddingTop: 72 }}
         >
-          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
-          {/* Blue aura tinting the image base */}
-          <div style={{ position: "absolute", bottom: 0, left: "50%", transform: "translateX(-50%)", width: "60%", height: "40%", background: "radial-gradient(ellipse at 50% 100%, rgba(59,130,246,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
+          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center 30%", height: "100%", width: "auto" }} />
+          {/* Top fade — less aggressive so pitcher head shows */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 22%, transparent 65%, #000 100%)", pointerEvents: "none" }} />
+          {/* Right edge — longer softer fade so mound doesn't hard-cut */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 18%, transparent 60%, rgba(0,0,0,0.4) 80%, #000 100%)", pointerEvents: "none" }} />
+          {/* Left fade */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, transparent 70%, #000 100%)", pointerEvents: "none" }} />
+          {/* Blue aura — wraps image edges softly */}
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 90%, rgba(59,130,246,0.22) 0%, transparent 55%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 85% 50%, rgba(59,130,246,0.12) 0%, transparent 40%)", pointerEvents: "none" }} />
         </motion.div>
 
         {/* Text block */}
@@ -567,7 +572,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
+      <section id="product" style={{ background: "#000000", padding: "100px 20px", marginTop: "-80px", position: "relative", zIndex: 1 }}>
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <span
