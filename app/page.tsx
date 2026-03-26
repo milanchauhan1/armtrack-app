@@ -395,13 +395,13 @@ export default function LandingPage() {
       <style>{`
         @media (max-width: 768px) {
           .hero-nav-center { display: none !important; }
-          .hero-text-block { padding: 24px 24px 16px !important; gap: 24px !important; flex-direction: column !important; }
-          .hero-headline { font-size: 38px !important; }
-          .hero-right-col { max-width: 100% !important; }
-          .hero-mockup-block { padding: 0 12px !important; }
+          .hero-headline { font-size: 44px !important; }
         }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
+          .hero-headline { font-size: 36px !important; letter-spacing: -0.03em !important; }
+          .hero-cta-row { flex-direction: column !important; align-items: stretch !important; }
+          .hero-cta-row a { text-align: center !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
           .steps-line { display: none !important; }
@@ -508,18 +508,39 @@ export default function LandingPage() {
           transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
           style={{ position: "relative", padding: "0 48px" }}
         >
-          {/* MacBook outer body */}
-          <div style={{ background: "linear-gradient(180deg, #2d2d2d 0%, #1e1e1e 100%)", borderRadius: "16px 16px 0 0", padding: "14px 14px 0", boxShadow: "0 0 0 1px #3a3a3a, 0 -8px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)", position: "relative" }}>
-            {/* Screen bezel */}
-            <div style={{ background: "#0a0a0a", borderRadius: "10px 10px 0 0", overflow: "hidden", border: "1px solid #2a2a2a", minHeight: 360 }}>
-              {/* macOS chrome */}
-              <div style={{ padding: "12px 16px", background: "#141414", borderBottom: "1px solid #1f1f1f", display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#EF4444" }} />
-                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#F59E0B" }} />
-                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#22C55E" }} />
-              </div>
-              {/* Split screen */}
-              <div style={{ display: "flex", minHeight: 320 }}>
+          {/* Full MacBook wrapper */}
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
+            {/* Screen lid */}
+            <div style={{
+              width: "100%",
+              background: "linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%)",
+              borderRadius: "16px 16px 0 0",
+              padding: "14px 14px 0 14px",
+              boxShadow: "0 0 0 1px #444, inset 0 1px 0 rgba(255,255,255,0.15)",
+            }}>
+              {/* Screen glass — rounded inner bezel */}
+              <div style={{
+                background: "#080808",
+                borderRadius: "8px 8px 0 0",
+                overflow: "hidden",
+                border: "1px solid #222",
+                minHeight: "380px",
+              }}>
+                {/* macOS window chrome */}
+                <div style={{
+                  padding: "11px 16px",
+                  background: "#111",
+                  borderBottom: "1px solid #1e1e1e",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "7px",
+                }}>
+                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#FF5F57" }} />
+                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#FFBD2E" }} />
+                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#28CA41" }} />
+                </div>
+                {/* App content */}
+                <div style={{ display: "flex", minHeight: "340px" }}>
                 {/* Left — player */}
                 <div style={{ width: "50%", padding: 24, background: "#0d0d0d" }}>
                   <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Players</p>
@@ -576,31 +597,108 @@ export default function LandingPage() {
                     <Bell size={14} />Notify Team
                   </button>
                 </div>
+                </div>
               </div>
             </div>
-          </div>
-          {/* MacBook base/chin */}
-          <div style={{ height: 24, background: "linear-gradient(180deg, #262626 0%, #1a1a1a 100%)", borderRadius: "0 0 6px 6px", boxShadow: "0 1px 0 #111, 0 4px 20px rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: 56, height: 3, background: "#333", borderRadius: 2 }} />
-          </div>
 
-          {/* Phone mockup — overlapping MacBook bottom-left */}
-          <div style={{ position: "absolute", bottom: 24, left: 56, zIndex: 10, width: 152, borderRadius: 32, background: "#1c1c1e", border: "1.5px solid #3a3a3a", boxShadow: "0 12px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.08)", overflow: "hidden" }}>
-            {/* Dynamic island */}
-            <div style={{ height: 36, background: "#0a0a0a", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 4 }}>
-              <div style={{ width: 72, height: 20, background: "#1c1c1e", borderRadius: 999 }} />
+            {/* Bottom chin bar */}
+            <div style={{
+              width: "100%",
+              height: "20px",
+              background: "linear-gradient(180deg, #2e2e2e 0%, #222 100%)",
+              borderRadius: "0 0 3px 3px",
+              boxShadow: "0 1px 0 #111",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              {/* Trackpad hint line */}
+              <div style={{ width: "50px", height: "2px", background: "#3a3a3a", borderRadius: "1px" }} />
             </div>
-            {/* Status bar */}
-            <div style={{ padding: "4px 16px 8px", background: "#0d0d0d", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#f5f5f5", fontWeight: 600 }}>9:41</span>
-              <span style={{ fontSize: 11, color: "#f5f5f5" }}>▮▮▮</span>
-            </div>
-            {/* Screen content */}
-            <div style={{ padding: 12, background: "#0a0a0a" }}>
-              <div style={{ fontSize: 11, color: "#3B82F6", fontWeight: 700, marginBottom: 8 }}>ArmTrack</div>
-              <div style={{ fontSize: 28, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8 <span style={{ fontSize: 14, color: "#333" }}>/10</span></div>
-              <div style={{ display: "inline-block", background: "#052e16", color: "#22C55E", fontSize: 10, padding: "2px 8px", borderRadius: 999, marginTop: 6, marginBottom: 12 }}>Good to Go</div>
-              <div style={{ background: "#3B82F6", color: "white", fontSize: 11, fontWeight: 600, padding: 8, borderRadius: 8, textAlign: "center" }}>Log Today</div>
+
+            {/* Stand — trapezoid shape */}
+            <div style={{
+              width: "140px",
+              height: "16px",
+              background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
+              clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+            }} />
+
+            {/* Stand foot */}
+            <div style={{
+              width: "220px",
+              height: "6px",
+              background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
+              borderRadius: "0 0 4px 4px",
+              boxShadow: "0 2px 12px rgba(0,0,0,0.5)",
+            }} />
+
+            {/* iPhone wrapper — absolute positioned bottom-left of MacBook */}
+            <div style={{
+              position: "absolute",
+              bottom: 22,
+              left: 48,
+              zIndex: 10,
+              width: "164px",
+              borderRadius: "38px",
+              background: "linear-gradient(180deg, #2a2a2a 0%, #1c1c1c 100%)",
+              border: "1.5px solid #404040",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.3)",
+              overflow: "hidden",
+            }}>
+              {/* Dynamic island */}
+              <div style={{
+                height: "44px",
+                background: "#0a0a0a",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <div style={{
+                  width: "80px",
+                  height: "24px",
+                  background: "#000",
+                  borderRadius: "999px",
+                }} />
+              </div>
+
+              {/* Status bar */}
+              <div style={{
+                padding: "4px 18px 8px",
+                background: "#0a0a0a",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}>
+                <span style={{ fontSize: "11px", color: "#f5f5f5", fontWeight: 600, letterSpacing: "-0.02em" }}>9:41</span>
+                <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
+                  <div style={{ width: "14px", height: "8px", border: "1.5px solid #f5f5f5", borderRadius: "2px", position: "relative" }}>
+                    <div style={{ position: "absolute", right: "-4px", top: "50%", transform: "translateY(-50%)", width: "2px", height: "4px", background: "#f5f5f5", borderRadius: "0 1px 1px 0" }} />
+                    <div style={{ width: "8px", height: "4px", background: "#f5f5f5", borderRadius: "1px", margin: "1px" }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Real screenshot */}
+              <Image
+                src="/dashboard-preview.png"
+                width={164}
+                height={280}
+                alt="ArmTrack player dashboard"
+                style={{ width: "100%", height: "auto", display: "block" }}
+              />
+
+              {/* Home indicator */}
+              <div style={{
+                height: "24px",
+                background: "#0a0a0a",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}>
+                <div style={{ width: "44px", height: "4px", background: "#3a3a3a", borderRadius: "999px" }} />
+              </div>
             </div>
           </div>
         </motion.div>
