@@ -392,14 +392,14 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           .hero-nav-center { display: none !important; }
           .hero-headline { font-size: 44px !important; }
-          .hero-text-block { padding: 0 24px 0 24px !important; }
+          .hero-content-row { flex-direction: column !important; justify-content: flex-end !important; padding: 0 24px 48px !important; gap: 40px !important; }
+          .hero-phone-col { display: none !important; }
         }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
-          .hero-headline { font-size: 36px !important; letter-spacing: -0.03em !important; }
+          .hero-headline { font-size: 34px !important; letter-spacing: -0.03em !important; }
           .hero-cta-row { flex-direction: column !important; align-items: stretch !important; }
           .hero-cta-row a { text-align: center !important; }
-          .hero-subtext { display: none !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
           .steps-line { display: none !important; }
@@ -459,85 +459,90 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "#000", height: "100vh", position: "relative", overflow: "hidden" }}>
 
-        {/* Pitcher image — centered, top 52% of viewport */}
-        <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
+        {/* Background: pitcher image fills section */}
+        <div style={{ position: "absolute", inset: 0 }}>
+          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
+          {/* Dark left vignette for text readability */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.2) 75%, rgba(0,0,0,0.6) 100%)", pointerEvents: "none" }} />
+          {/* Top + bottom fades */}
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 12%, transparent 75%, #000 100%)", pointerEvents: "none" }} />
         </div>
 
-        {/* Text block — single column, left-of-center, overlaps image bottom */}
-        <motion.div
-          className="hero-text-block"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease }}
-          style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px 0 12%", marginBottom: 48 }}
+        {/* Content row: text left, phone right — fills full viewport */}
+        <div
+          className="hero-content-row"
+          style={{ position: "relative", zIndex: 2, height: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 7% 0 12%" }}
         >
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 48 }}>
-            {/* Left: badge + headline + CTAs */}
-            <div style={{ maxWidth: 480, flexShrink: 0 }}>
-              <span style={{
-                display: "inline-block",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.15em",
-                color: "#3B82F6",
-                background: "rgba(59,130,246,0.08)",
-                border: "1px solid rgba(59,130,246,0.2)",
-                padding: "5px 14px",
-                borderRadius: 99,
-                textTransform: "uppercase",
-                marginBottom: 20,
-              }}>
-                Arm Care Platform
-              </span>
-              <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 24px" }}>
-                Make smarter throwing decisions.
-              </h1>
-              <div className="hero-cta-row" style={{ display: "flex", gap: 12 }}>
-                <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap" }}>
-                  Get Started Free
-                </a>
-                <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
-                  Learn More
-                </a>
+          {/* Left: badge + headline + mission statement + CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease }}
+            style={{ maxWidth: 500 }}
+          >
+            <span style={{
+              display: "inline-block",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.15em",
+              color: "#3B82F6",
+              background: "rgba(59,130,246,0.08)",
+              border: "1px solid rgba(59,130,246,0.2)",
+              padding: "5px 14px",
+              borderRadius: 99,
+              textTransform: "uppercase",
+              marginBottom: 20,
+            }}>
+              Arm Care Platform
+            </span>
+            <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 20px" }}>
+              Make smarter throwing decisions.
+            </h1>
+            {/* Mission statement — anchored to headline, part of the composition */}
+            <div style={{ borderLeft: "2px solid #3B82F6", paddingLeft: 16, marginBottom: 32 }}>
+              <p style={{ color: "#c0c0c0", fontSize: 17, lineHeight: 1.65, margin: 0, fontWeight: 400 }}>
+                Arm readiness, workload, and recovery data —<br />so every throwing decision is smarter.
+              </p>
+            </div>
+            <div className="hero-cta-row" style={{ display: "flex", gap: 12 }}>
+              <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap" }}>
+                Get Started Free
+              </a>
+              <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
+                Learn More
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Right: iPhone mockup */}
+          <motion.div
+            className="hero-phone-col"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.4, ease }}
+            style={{ flexShrink: 0 }}
+          >
+            <div style={{
+              width: 260,
+              borderRadius: 52,
+              background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
+              padding: 10,
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07)",
+              position: "relative",
+            }}>
+              <div style={{ position: "absolute", left: -3, top: 72, width: 3, height: 28, background: "#222", borderRadius: "2px 0 0 2px" }} />
+              <div style={{ position: "absolute", left: -3, top: 108, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
+              <div style={{ position: "absolute", left: -3, top: 152, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
+              <div style={{ position: "absolute", right: -3, top: 130, width: 3, height: 64, background: "#222", borderRadius: "0 2px 2px 0" }} />
+              <div style={{ borderRadius: 44, overflow: "hidden", background: "#000", position: "relative" }}>
+                <div style={{ position: "absolute", top: 14, left: "50%", transform: "translateX(-50%)", width: 88, height: 28, background: "#000", borderRadius: 999, zIndex: 10 }} />
+                <Image src="/dashboard-preview.png" width={240} height={520} alt="ArmTrack player dashboard" priority style={{ width: "100%", height: "auto", display: "block" }} />
               </div>
             </div>
-            {/* Right: subtext */}
-            <p className="hero-subtext" style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, maxWidth: 300, paddingTop: 8, flexShrink: 0 }}>
-              Arm readiness, workload, and recovery data — so every throwing decision is smarter.
-            </p>
-          </div>
-        </motion.div>
-
-        {/* iPhone mockup — centered, black glassy frame */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease }}
-          style={{ display: "flex", justifyContent: "center", paddingBottom: 64 }}
-        >
-          <div style={{
-            width: 280,
-            borderRadius: 52,
-            background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
-            padding: 10,
-            boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 50px 100px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07)",
-            position: "relative",
-          }}>
-            <div style={{ position: "absolute", left: -3, top: 72, width: 3, height: 28, background: "#222", borderRadius: "2px 0 0 2px" }} />
-            <div style={{ position: "absolute", left: -3, top: 108, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
-            <div style={{ position: "absolute", left: -3, top: 152, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
-            <div style={{ position: "absolute", right: -3, top: 130, width: 3, height: 64, background: "#222", borderRadius: "0 2px 2px 0" }} />
-            <div style={{ borderRadius: 44, overflow: "hidden", background: "#000", position: "relative" }}>
-              <div style={{ position: "absolute", top: 14, left: "50%", transform: "translateX(-50%)", width: 88, height: 28, background: "#000", borderRadius: 999, zIndex: 10 }} />
-              <Image src="/dashboard-preview.png" width={260} height={562} alt="ArmTrack player dashboard" priority style={{ width: "100%", height: "auto", display: "block" }} />
-            </div>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
