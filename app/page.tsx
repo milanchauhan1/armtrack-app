@@ -6,8 +6,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   Shield,
-  Users,
-  Zap,
   AlertTriangle,
   TrendingDown,
   EyeOff,
@@ -19,8 +17,6 @@ import {
   MessageSquare,
   Activity,
   TrendingUp,
-  Bell,
-  Flame,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
