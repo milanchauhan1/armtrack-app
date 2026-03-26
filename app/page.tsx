@@ -474,7 +474,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease }}
-          style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px 60px 12%" }}
+          style={{ position: "relative", zIndex: 2, marginTop: "-65px", padding: "0 64px 60px 7%" }}
         >
           <div style={{ maxWidth: 520 }}>
             <span style={{
@@ -517,7 +517,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.45, ease }}
-          style={{ position: "absolute", right: 32, top: "44%", transform: "translateY(-50%)", zIndex: 3 }}
+          style={{ position: "absolute", right: 16, top: "44%", transform: "translateY(-50%)", zIndex: 3 }}
         >
           <div style={{
             width: 280,
