@@ -399,6 +399,7 @@ export default function LandingPage() {
           .hero-headline { font-size: 36px !important; letter-spacing: -0.03em !important; }
           .hero-cta-row { flex-direction: column !important; align-items: stretch !important; }
           .hero-cta-row a { text-align: center !important; }
+          .hero-subtext { display: none !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
           .steps-line { display: none !important; }
@@ -430,7 +431,7 @@ export default function LandingPage() {
         }}
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", flexShrink: 0 }}>
-          <Image src="/icons/icon-192.png" width={52} height={52} alt="ArmTrack" style={{ borderRadius: 10 }} />
+          <Image src="/icons/icon-192.png" width={72} height={72} alt="ArmTrack" style={{ borderRadius: 14 }} />
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
@@ -475,36 +476,40 @@ export default function LandingPage() {
           transition={{ duration: 0.8, delay: 0.1, ease }}
           style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px 0 12%", marginBottom: 48 }}
         >
-          <div style={{ maxWidth: 540 }}>
-            <span style={{
-              display: "inline-block",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.15em",
-              color: "#3B82F6",
-              background: "rgba(59,130,246,0.08)",
-              border: "1px solid rgba(59,130,246,0.2)",
-              padding: "5px 14px",
-              borderRadius: 99,
-              textTransform: "uppercase",
-              marginBottom: 20,
-            }}>
-              Arm Care Platform
-            </span>
-            <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 16px" }}>
-              Make smarter throwing decisions.
-            </h1>
-            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, marginBottom: 28, maxWidth: 440 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 48 }}>
+            {/* Left: badge + headline + CTAs */}
+            <div style={{ maxWidth: 480, flexShrink: 0 }}>
+              <span style={{
+                display: "inline-block",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                color: "#3B82F6",
+                background: "rgba(59,130,246,0.08)",
+                border: "1px solid rgba(59,130,246,0.2)",
+                padding: "5px 14px",
+                borderRadius: 99,
+                textTransform: "uppercase",
+                marginBottom: 20,
+              }}>
+                Arm Care Platform
+              </span>
+              <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 24px" }}>
+                Make smarter throwing decisions.
+              </h1>
+              <div className="hero-cta-row" style={{ display: "flex", gap: 12 }}>
+                <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap" }}>
+                  Get Started Free
+                </a>
+                <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
+                  Learn More
+                </a>
+              </div>
+            </div>
+            {/* Right: subtext */}
+            <p className="hero-subtext" style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, maxWidth: 300, paddingTop: 8, flexShrink: 0 }}>
               Arm readiness, workload, and recovery data — so every throwing decision is smarter.
             </p>
-            <div className="hero-cta-row" style={{ display: "flex", gap: 12 }}>
-              <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap" }}>
-                Get Started Free
-              </a>
-              <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
-                Learn More
-              </a>
-            </div>
           </div>
         </motion.div>
 
