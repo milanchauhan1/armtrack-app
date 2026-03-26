@@ -477,12 +477,15 @@ export default function LandingPage() {
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section style={{ background: "#000", minHeight: "88vh", position: "relative" }}>
 
+        {/* Blue circular glow — floats behind pitcher image, outside it */}
+        <div style={{ position: "absolute", top: "26vh", left: "50%", transform: "translateX(-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+
         {/* Pitcher image — fades + scales in */}
         <motion.div
           initial={{ opacity: 0, scale: 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, delay: 0.2, ease }}
-          style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", paddingTop: 72 }}
+          style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", paddingTop: 72, zIndex: 1 }}
         >
           <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center 30%", height: "100%", width: "auto" }} />
           {/* Top fade — less aggressive so pitcher head shows */}
@@ -491,9 +494,6 @@ export default function LandingPage() {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 18%, transparent 60%, rgba(0,0,0,0.4) 80%, #000 100%)", pointerEvents: "none" }} />
           {/* Left fade */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, transparent 70%, #000 100%)", pointerEvents: "none" }} />
-          {/* Blue aura — wraps image edges softly */}
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 50% 90%, rgba(59,130,246,0.22) 0%, transparent 55%)", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 85% 50%, rgba(59,130,246,0.12) 0%, transparent 40%)", pointerEvents: "none" }} />
         </motion.div>
 
         {/* Text block */}
