@@ -459,7 +459,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", minHeight: "100vh", position: "relative" }}>
+      <section style={{ background: "#000", minHeight: "92vh", position: "relative" }}>
 
         {/* Pitcher image — 52vh, centered, edge fades */}
         <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
@@ -517,7 +517,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.9, delay: 0.45, ease }}
-          style={{ position: "absolute", right: -24, top: "50%", transform: "translateY(-50%)", zIndex: 3 }}
+          style={{ position: "absolute", right: 32, top: "44%", transform: "translateY(-50%)", zIndex: 3 }}
         >
           <div style={{
             width: 280,
