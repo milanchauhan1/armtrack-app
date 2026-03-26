@@ -392,8 +392,7 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           .hero-nav-center { display: none !important; }
           .hero-headline { font-size: 44px !important; }
-          .hero-content-row { flex-direction: column !important; justify-content: flex-end !important; padding: 0 24px 48px !important; gap: 40px !important; }
-          .hero-phone-col { display: none !important; }
+          .hero-text-block { padding: 0 24px 48px !important; }
         }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
@@ -459,29 +458,24 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", height: "100vh", position: "relative", overflow: "hidden" }}>
+      <section style={{ background: "#000", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
 
-        {/* Background: pitcher image fills section */}
-        <div style={{ position: "absolute", inset: 0 }}>
-          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 20%" }} />
-          {/* Dark left vignette for text readability */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.2) 75%, rgba(0,0,0,0.6) 100%)", pointerEvents: "none" }} />
-          {/* Top + bottom fades */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 12%, transparent 75%, #000 100%)", pointerEvents: "none" }} />
+        {/* Pitcher image — 52vh, centered, edge fades */}
+        <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
         </div>
 
-        {/* Content row: text left, phone right — fills full viewport */}
-        <div
-          className="hero-content-row"
-          style={{ position: "relative", zIndex: 2, height: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 7% 0 12%" }}
+        {/* Text block — left-of-center, overlaps image bottom */}
+        <motion.div
+          className="hero-text-block"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1, ease }}
+          style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px 60px 12%" }}
         >
-          {/* Left: badge + headline + mission statement + CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease }}
-            style={{ maxWidth: 500 }}
-          >
+          <div style={{ maxWidth: 520 }}>
             <span style={{
               display: "inline-block",
               fontSize: 11,
@@ -500,9 +494,8 @@ export default function LandingPage() {
             <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 20px" }}>
               Make smarter throwing decisions.
             </h1>
-            {/* Mission statement — anchored to headline, part of the composition */}
             <div style={{ borderLeft: "2px solid #3B82F6", paddingLeft: 16, marginBottom: 32 }}>
-              <p style={{ color: "#c0c0c0", fontSize: 17, lineHeight: 1.65, margin: 0, fontWeight: 400 }}>
+              <p style={{ color: "#c0c0c0", fontSize: 17, lineHeight: 1.65, margin: 0 }}>
                 Arm readiness, workload, and recovery data —<br />so every throwing decision is smarter.
               </p>
             </div>
@@ -511,42 +504,50 @@ export default function LandingPage() {
                 Get Started Free
               </a>
               <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
-                Learn More
+                See the App
               </a>
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
+      </section>
 
-          {/* Right: iPhone mockup */}
-          <motion.div
-            className="hero-phone-col"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.4, ease }}
-            style={{ flexShrink: 0 }}
-          >
+      {/* ── PRODUCT SHOWCASE ───────────────────────────────────────────────── */}
+      <section id="product" style={{ background: "#000", padding: "80px 20px 100px" }}>
+        <ScrollFade>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            {/* Glow card behind phone */}
             <div style={{
-              width: 260,
-              borderRadius: 52,
-              background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
-              padding: 10,
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07)",
               position: "relative",
+              padding: "52px 64px",
+              background: "radial-gradient(ellipse at 50% 20%, rgba(59,130,246,0.09) 0%, transparent 65%)",
+              borderRadius: 44,
+              border: "1px solid rgba(255,255,255,0.05)",
             }}>
-              <div style={{ position: "absolute", left: -3, top: 72, width: 3, height: 28, background: "#222", borderRadius: "2px 0 0 2px" }} />
-              <div style={{ position: "absolute", left: -3, top: 108, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
-              <div style={{ position: "absolute", left: -3, top: 152, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
-              <div style={{ position: "absolute", right: -3, top: 130, width: 3, height: 64, background: "#222", borderRadius: "0 2px 2px 0" }} />
-              <div style={{ borderRadius: 44, overflow: "hidden", background: "#000", position: "relative" }}>
-                <div style={{ position: "absolute", top: 14, left: "50%", transform: "translateX(-50%)", width: 88, height: 28, background: "#000", borderRadius: 999, zIndex: 10 }} />
-                <Image src="/dashboard-preview.png" width={240} height={520} alt="ArmTrack player dashboard" priority style={{ width: "100%", height: "auto", display: "block" }} />
+              {/* iPhone frame */}
+              <div style={{
+                width: 300,
+                borderRadius: 56,
+                background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
+                padding: 11,
+                boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 60px 120px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.07)",
+                position: "relative",
+              }}>
+                <div style={{ position: "absolute", left: -3, top: 80, width: 3, height: 30, background: "#222", borderRadius: "2px 0 0 2px" }} />
+                <div style={{ position: "absolute", left: -3, top: 120, width: 3, height: 36, background: "#222", borderRadius: "2px 0 0 2px" }} />
+                <div style={{ position: "absolute", left: -3, top: 168, width: 3, height: 36, background: "#222", borderRadius: "2px 0 0 2px" }} />
+                <div style={{ position: "absolute", right: -3, top: 144, width: 3, height: 72, background: "#222", borderRadius: "0 2px 2px 0" }} />
+                <div style={{ borderRadius: 47, overflow: "hidden", background: "#000", position: "relative" }}>
+                  <div style={{ position: "absolute", top: 16, left: "50%", transform: "translateX(-50%)", width: 96, height: 30, background: "#000", borderRadius: 999, zIndex: 10 }} />
+                  <Image src="/dashboard-preview.png" width={278} height={602} alt="ArmTrack player dashboard" style={{ width: "100%", height: "auto", display: "block" }} />
+                </div>
               </div>
             </div>
-          </motion.div>
-        </div>
+          </div>
+        </ScrollFade>
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
+      <section style={{ background: "#000000", padding: "100px 20px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <span
