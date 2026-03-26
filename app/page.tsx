@@ -461,244 +461,256 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", minHeight: "100vh", position: "relative", overflow: "hidden" }}>
+      <section
+        style={{
+          background: "#000",
+          minHeight: "100vh",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          paddingTop: 100,
+          paddingBottom: 0,
+          textAlign: "center",
+        }}
+      >
+        {/* Blue radial glow */}
+        <div
+          style={{
+            position: "absolute",
+            top: "55%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 700,
+            height: 700,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(59,130,246,0.13) 0%, transparent 70%)",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
 
-        {/* Image — centered, top 52% of viewport, black space around it */}
-        <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-          <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
-          {/* Edge fades */}
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
-        </div>
-
-        {/* Text — overlaps slightly with bottom of image */}
-        <div className="hero-text-block" style={{ position: "relative", zIndex: 2, marginTop: "-40px", padding: "0 64px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 80, marginBottom: 48 }}>
-          <motion.div style={{ maxWidth: 480 }}
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 550, letterSpacing: "-0.03em", lineHeight: 1.0, color: "#f5f5f5", margin: 0 }}>
-              Know when to throw.<br />Know when to recover.
-            </h1>
-          </motion.div>
-          <motion.div className="hero-right-col" style={{ maxWidth: 360, paddingTop: 8, flexShrink: 0 }}
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <p style={{ color: "#999", fontSize: 16, lineHeight: 1.7, marginBottom: 24 }}>
-              ArmTrack gives players and coaches the visibility they need — arm readiness, workload, and recovery data — so every throwing decision is smarter.
-            </p>
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              style={{ display: "flex", gap: 12 }}
-            >
-              <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block" }}>
-                Get Started Free
-              </a>
-              <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)" }}>
-                Learn More
-              </a>
-            </motion.div>
-          </motion.div>
-        </div>
-
-        {/* MacBook + Phone mockup — directly below text */}
-        <motion.div id="product" className="hero-mockup-block"
-          initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{ position: "relative", padding: "0 48px" }}
+        {/* Badge */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.05, ease }}
+          style={{ position: "relative", zIndex: 1, marginBottom: 24 }}
         >
-          {/* Full MacBook wrapper */}
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}>
-            {/* Screen lid */}
-            <div style={{
-              width: "100%",
-              background: "linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%)",
-              borderRadius: "16px 16px 0 0",
-              padding: "14px 14px 0 14px",
-              boxShadow: "0 0 0 1px #444, inset 0 1px 0 rgba(255,255,255,0.15)",
-            }}>
-              {/* Screen glass — rounded inner bezel */}
-              <div style={{
-                background: "#080808",
-                borderRadius: "8px 8px 0 0",
+          <span
+            style={{
+              display: "inline-block",
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.15em",
+              color: "#3B82F6",
+              background: "rgba(59,130,246,0.08)",
+              border: "1px solid rgba(59,130,246,0.2)",
+              padding: "5px 14px",
+              borderRadius: 99,
+              textTransform: "uppercase",
+            }}
+          >
+            Arm Care Platform
+          </span>
+        </motion.div>
+
+        {/* Headline */}
+        <motion.h1
+          className="hero-headline"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15, ease }}
+          style={{
+            fontSize: 68,
+            fontWeight: 600,
+            letterSpacing: "-0.04em",
+            lineHeight: 1.05,
+            color: "#f5f5f5",
+            margin: 0,
+            marginBottom: 20,
+            maxWidth: 680,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          Make smarter throwing decisions.
+        </motion.h1>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.25, ease }}
+          style={{
+            color: "#888888",
+            fontSize: 17,
+            lineHeight: 1.65,
+            maxWidth: 520,
+            marginBottom: 36,
+            position: "relative",
+            zIndex: 1,
+            padding: "0 24px",
+          }}
+        >
+          Arm readiness, workload, and recovery data — so every throwing decision is smarter.
+        </motion.p>
+
+        {/* CTA buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.35, ease }}
+          className="hero-cta-row"
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 52,
+            position: "relative",
+            zIndex: 1,
+            padding: "0 24px",
+          }}
+        >
+          <a
+            href="/signup"
+            style={{
+              background: "white",
+              color: "#000",
+              padding: "12px 28px",
+              borderRadius: 999,
+              fontSize: 15,
+              fontWeight: 600,
+              letterSpacing: "-0.01em",
+              textDecoration: "none",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Get Started Free
+          </a>
+          <a
+            href="#product"
+            style={{
+              background: "transparent",
+              color: "white",
+              padding: "11px 27px",
+              borderRadius: 999,
+              fontSize: 15,
+              fontWeight: 500,
+              border: "1.5px solid rgba(255,255,255,0.3)",
+              textDecoration: "none",
+              display: "inline-block",
+              backdropFilter: "blur(4px)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Learn More
+          </a>
+        </motion.div>
+
+        {/* iPhone 15 Pro mockup */}
+        <motion.div
+          id="product"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.45, ease }}
+          style={{ position: "relative", zIndex: 1 }}
+        >
+          {/* Outer titanium frame */}
+          <div
+            style={{
+              width: 280,
+              borderRadius: 52,
+              background: "linear-gradient(145deg, #3d3d3d 0%, #1c1c1e 60%, #2a2a2a 100%)",
+              padding: 10,
+              boxShadow:
+                "0 0 0 1px #4a4a4a, 0 50px 100px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1)",
+              position: "relative",
+            }}
+          >
+            {/* Volume up */}
+            <div
+              style={{
+                position: "absolute",
+                left: -3,
+                top: 108,
+                width: 3,
+                height: 32,
+                background: "#4a4a4a",
+                borderRadius: "2px 0 0 2px",
+              }}
+            />
+            {/* Volume down */}
+            <div
+              style={{
+                position: "absolute",
+                left: -3,
+                top: 152,
+                width: 3,
+                height: 32,
+                background: "#4a4a4a",
+                borderRadius: "2px 0 0 2px",
+              }}
+            />
+            {/* Silent switch */}
+            <div
+              style={{
+                position: "absolute",
+                left: -3,
+                top: 72,
+                width: 3,
+                height: 28,
+                background: "#4a4a4a",
+                borderRadius: "2px 0 0 2px",
+              }}
+            />
+            {/* Power button */}
+            <div
+              style={{
+                position: "absolute",
+                right: -3,
+                top: 130,
+                width: 3,
+                height: 64,
+                background: "#4a4a4a",
+                borderRadius: "0 2px 2px 0",
+              }}
+            />
+
+            {/* Inner screen */}
+            <div
+              style={{
+                borderRadius: 44,
                 overflow: "hidden",
-                border: "1px solid #222",
-                minHeight: "380px",
-              }}>
-                {/* macOS window chrome */}
-                <div style={{
-                  padding: "11px 16px",
-                  background: "#111",
-                  borderBottom: "1px solid #1e1e1e",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "7px",
-                }}>
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#FF5F57" }} />
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#FFBD2E" }} />
-                  <div style={{ width: 11, height: 11, borderRadius: "50%", background: "#28CA41" }} />
-                </div>
-                {/* App content */}
-                <div style={{ display: "flex", minHeight: "340px" }}>
-                {/* Left — player */}
-                <div style={{ width: "50%", padding: 24, background: "#0d0d0d" }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Players</p>
-                  <p style={{ color: "#444444", fontSize: 13, marginBottom: 8 }}>Good morning, Jake</p>
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: 8, marginBottom: 4 }}>
-                    <span style={{ fontSize: 48, fontWeight: 700, color: "#22C55E", lineHeight: 1 }}>7.8</span>
-                    <span style={{ fontSize: 20, color: "#333333", marginBottom: 4 }}>/10</span>
-                    <span style={{ fontSize: 11, background: "#052e16", color: "#22C55E", padding: "2px 8px", borderRadius: 99, marginBottom: 6, marginLeft: 8 }}>Good to Go</span>
-                  </div>
-                  <p style={{ fontSize: 11, color: "#333333", marginBottom: 12 }}>Based on your recent logs</p>
-                  <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-                    {[["P 2","#0a1f0a","#22C55E"],["S 4","#1f1500","#F59E0B"],["St 1","#0a1f0a","#22C55E"]].map(([l,b,c]) => (
-                      <span key={l} style={{ fontSize: 11, background: b, color: c, padding: "4px 8px", borderRadius: 6 }}>{l}</span>
-                    ))}
-                  </div>
-                  <div style={{ height: 1, background: "#1a1a1a", marginBottom: 12 }} />
-                  <div style={{ background: "#080808", borderLeft: "2px solid #3B82F6", paddingLeft: 12, paddingTop: 8, paddingBottom: 8, paddingRight: 12, borderRadius: "0 6px 6px 0", marginBottom: 12 }}>
-                    <p style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.12em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 4 }}>Today&apos;s Recommendation</p>
-                    <p style={{ fontSize: 13, color: "#f5f5f5" }}>Normal session today — stay within your pitch count plan.</p>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <Flame size={13} style={{ color: "#3B82F6" }} />
-                    <span style={{ fontSize: 13, color: "#555555" }}>5-day streak</span>
-                  </div>
-                </div>
-                {/* Right — coach */}
-                <div style={{ width: "50%", padding: 24, background: "#0d0d0d", borderLeft: "1px solid #1a1a1a" }}>
-                  <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.15em", color: "#3B82F6", textTransform: "uppercase", marginBottom: 12 }}>For Coaches</p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <span style={{ fontSize: 15, fontWeight: 600, color: "#f5f5f5" }}>Team Readiness</span>
-                    <span style={{ fontSize: 11, color: "#444444" }}>Today</span>
-                  </div>
-                  <p style={{ fontSize: 11, color: "#444444", marginBottom: 12 }}>4 of 5 players logged</p>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
-                    {[
-                      { name: "Jake M.", pos: "Pitcher", score: "8.4", label: "Ready", color: "#22C55E", opacity: 1 },
-                      { name: "Carlos R.", pos: "Pitcher", score: "7.1", label: "Good to Go", color: "#22C55E", opacity: 1 },
-                      { name: "Devon T.", pos: "Catcher", score: "5.8", label: "Caution", color: "#F59E0B", opacity: 1 },
-                      { name: "Malik W.", pos: "Infielder", score: null, label: "Not logged", color: "#333333", opacity: 0.4 },
-                    ].map((row) => (
-                      <div key={row.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#111111", borderRadius: 10, padding: "10px 12px", border: "1px solid #1a1a1a", opacity: row.opacity }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: "#f5f5f5" }}>{row.name}</span>
-                          <span style={{ fontSize: 10, color: "#555555", background: "#1a1a1a", padding: "2px 8px", borderRadius: 99, marginLeft: 8 }}>{row.pos}</span>
-                        </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          {row.score && <span style={{ fontSize: 13, fontWeight: 700, color: row.color, marginRight: 4 }}>{row.score}</span>}
-                          <span style={{ fontSize: 11, color: row.color }}>{row.label}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <button style={{ width: "100%", background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, border: "none", borderRadius: 10, padding: "8px 0", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                    <Bell size={14} />Notify Team
-                  </button>
-                </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom chin bar */}
-            <div style={{
-              width: "100%",
-              height: "20px",
-              background: "linear-gradient(180deg, #2e2e2e 0%, #222 100%)",
-              borderRadius: "0 0 3px 3px",
-              boxShadow: "0 1px 0 #111",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              {/* Trackpad hint line */}
-              <div style={{ width: "50px", height: "2px", background: "#3a3a3a", borderRadius: "1px" }} />
-            </div>
-
-            {/* Stand — trapezoid shape */}
-            <div style={{
-              width: "140px",
-              height: "16px",
-              background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
-              clipPath: "polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%)",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
-            }} />
-
-            {/* Stand foot */}
-            <div style={{
-              width: "220px",
-              height: "6px",
-              background: "linear-gradient(180deg, #222 0%, #1a1a1a 100%)",
-              borderRadius: "0 0 4px 4px",
-              boxShadow: "0 2px 12px rgba(0,0,0,0.5)",
-            }} />
-
-            {/* iPhone wrapper — absolute positioned bottom-left of MacBook */}
-            <div style={{
-              position: "absolute",
-              bottom: 22,
-              left: 48,
-              zIndex: 10,
-              width: "164px",
-              borderRadius: "38px",
-              background: "linear-gradient(180deg, #2a2a2a 0%, #1c1c1c 100%)",
-              border: "1.5px solid #404040",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.3)",
-              overflow: "hidden",
-            }}>
-              {/* Dynamic island */}
-              <div style={{
-                height: "44px",
-                background: "#0a0a0a",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-                <div style={{
-                  width: "80px",
-                  height: "24px",
+                background: "#000",
+                position: "relative",
+              }}
+            >
+              {/* Dynamic Island */}
+              <div
+                style={{
+                  position: "absolute",
+                  top: 14,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 88,
+                  height: 28,
                   background: "#000",
-                  borderRadius: "999px",
-                }} />
-              </div>
-
-              {/* Status bar */}
-              <div style={{
-                padding: "4px 18px 8px",
-                background: "#0a0a0a",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}>
-                <span style={{ fontSize: "11px", color: "#f5f5f5", fontWeight: 600, letterSpacing: "-0.02em" }}>9:41</span>
-                <div style={{ display: "flex", gap: "4px", alignItems: "center" }}>
-                  <div style={{ width: "14px", height: "8px", border: "1.5px solid #f5f5f5", borderRadius: "2px", position: "relative" }}>
-                    <div style={{ position: "absolute", right: "-4px", top: "50%", transform: "translateY(-50%)", width: "2px", height: "4px", background: "#f5f5f5", borderRadius: "0 1px 1px 0" }} />
-                    <div style={{ width: "8px", height: "4px", background: "#f5f5f5", borderRadius: "1px", margin: "1px" }} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Real screenshot */}
+                  borderRadius: 999,
+                  zIndex: 10,
+                }}
+              />
+              {/* Real dashboard screenshot */}
               <Image
                 src="/dashboard-preview.png"
-                width={164}
-                height={280}
+                width={260}
+                height={562}
                 alt="ArmTrack player dashboard"
+                priority
                 style={{ width: "100%", height: "auto", display: "block" }}
               />
-
-              {/* Home indicator */}
-              <div style={{
-                height: "24px",
-                background: "#0a0a0a",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}>
-                <div style={{ width: "44px", height: "4px", background: "#3a3a3a", borderRadius: "999px" }} />
-              </div>
             </div>
           </div>
         </motion.div>
