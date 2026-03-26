@@ -608,7 +608,6 @@ export default function LandingPage() {
 
         {/* iPhone 15 Pro mockup */}
         <motion.div
-          id="product"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.45, ease }}
@@ -713,7 +712,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "100px 20px" }}>
+      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
         <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <span
