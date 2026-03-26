@@ -550,8 +550,8 @@ export default function LandingPage() {
           transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.7 }}
           style={{ position: "absolute", right: 120, top: "37%", transform: "translateY(-50%)", zIndex: 3 }}
         >
-          {/* Blue rim glow around phone edges — very subtle */}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 340, height: 500, background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 65%)", pointerEvents: "none", zIndex: -1 }} />
+          {/* Blue glow all around phone */}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 380, height: 560, background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.22) 0%, rgba(59,130,246,0.08) 45%, transparent 70%)", pointerEvents: "none", zIndex: -1 }} />
           <div style={{
             width: 280,
             borderRadius: 52,
