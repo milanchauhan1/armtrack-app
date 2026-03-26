@@ -477,8 +477,9 @@ export default function LandingPage() {
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section style={{ background: "#000", minHeight: "88vh", position: "relative" }}>
 
-        {/* Blue circular glow — floats behind pitcher image, outside it */}
-        <div style={{ position: "absolute", top: "26vh", left: "50%", transform: "translateX(-50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+        {/* Blue rim glow around pitcher image edges — very subtle */}
+        <div style={{ position: "absolute", top: "4vh", left: "50%", transform: "translateX(-50%)", width: 700, height: 56, borderRadius: "50%", background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
+        <div style={{ position: "absolute", top: "52vh", left: "50%", transform: "translateX(-50%)", width: 700, height: 56, borderRadius: "50%", background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
 
         {/* Pitcher image — fades + scales in */}
         <motion.div
@@ -549,8 +550,8 @@ export default function LandingPage() {
           transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.7 }}
           style={{ position: "absolute", right: 120, top: "37%", transform: "translateY(-50%)", zIndex: 3 }}
         >
-          {/* Blue aura behind phone */}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 340, height: 500, background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.2) 0%, transparent 65%)", pointerEvents: "none", zIndex: -1 }} />
+          {/* Blue rim glow around phone edges — very subtle */}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 340, height: 500, background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 65%)", pointerEvents: "none", zIndex: -1 }} />
           <div style={{
             width: 280,
             borderRadius: 52,
