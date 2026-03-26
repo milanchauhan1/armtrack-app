@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
   AlertTriangle,
@@ -371,11 +371,17 @@ function BluePill({ children }: { children: React.ReactNode }) {
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
+  const [unveiled, setUnveiled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setUnveiled(true), 80);
+    return () => clearTimeout(t);
   }, []);
 
   return (
@@ -387,6 +393,18 @@ export default function LandingPage() {
         overflowX: "hidden",
       }}
     >
+      {/* ── Loading veil — fades out on mount ──────────────────────────────── */}
+      <AnimatePresence>
+        {!unveiled && (
+          <motion.div
+            key="veil"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{ position: "fixed", inset: 0, background: "#000", zIndex: 200, pointerEvents: "none" }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* ─────────────────────────────────── responsive overrides */}
       <style>{`
         @media (max-width: 768px) {
@@ -431,7 +449,7 @@ export default function LandingPage() {
         }}
       >
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", flexShrink: 0 }}>
-          <Image src="/icons/icon-192.png" width={72} height={72} alt="ArmTrack" style={{ borderRadius: 14 }} />
+          <Image src="/icons/icon-192.png" width={96} height={96} alt="ArmTrack" style={{ borderRadius: 18 }} />
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
@@ -461,63 +479,70 @@ export default function LandingPage() {
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
       <section style={{ background: "#000", minHeight: "92vh", position: "relative" }}>
 
-        {/* Pitcher image — 52vh, centered, edge fades */}
-        <div style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+        {/* Pitcher image — fades + scales in */}
+        <motion.div
+          initial={{ opacity: 0, scale: 1.06 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.4, delay: 0.2, ease }}
+          style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}
+        >
           <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center", height: "100%", width: "auto" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 15%, transparent 70%, #000 100%)", pointerEvents: "none" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 20%, transparent 80%, #000 100%)", pointerEvents: "none" }} />
-        </div>
+        </motion.div>
 
-        {/* Text block — left-of-center, overlaps image bottom */}
-        <motion.div
-          className="hero-text-block"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease }}
-          style={{ position: "relative", zIndex: 2, marginTop: "-65px", padding: "0 64px 60px 7%" }}
-        >
+        {/* Text block */}
+        <div className="hero-text-block" style={{ position: "relative", zIndex: 2, marginTop: "-85px", padding: "0 64px 60px 4%" }}>
           <div style={{ maxWidth: 520 }}>
-            <span style={{
-              display: "inline-block",
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: "0.15em",
-              color: "#3B82F6",
-              background: "rgba(59,130,246,0.08)",
-              border: "1px solid rgba(59,130,246,0.2)",
-              padding: "5px 14px",
-              borderRadius: 99,
-              textTransform: "uppercase",
-              marginBottom: 20,
-            }}>
-              Arm Care Platform
-            </span>
-            <h1 className="hero-headline" style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 20px" }}>
+
+            {/* Headline — sweeps up */}
+            <motion.h1
+              className="hero-headline"
+              initial={{ opacity: 0, y: 48 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.85, delay: 0.55, ease }}
+              style={{ fontSize: 60, fontWeight: 600, letterSpacing: "-0.04em", lineHeight: 1.05, color: "#f5f5f5", margin: "0 0 20px" }}
+            >
               Make smarter throwing decisions.
-            </h1>
-            <div style={{ borderLeft: "2px solid #3B82F6", paddingLeft: 16, marginBottom: 32 }}>
+            </motion.h1>
+
+            {/* Mission statement — fades in after headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.85, ease }}
+              style={{ borderLeft: "2px solid #3B82F6", paddingLeft: 16, marginBottom: 32 }}
+            >
               <p style={{ color: "#c0c0c0", fontSize: 17, lineHeight: 1.65, margin: 0 }}>
                 Arm readiness, workload, and recovery data —<br />so every throwing decision is smarter.
               </p>
-            </div>
-            <div className="hero-cta-row" style={{ display: "flex", gap: 12 }}>
+            </motion.div>
+
+            {/* CTAs — last to appear */}
+            <motion.div
+              className="hero-cta-row"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.05, ease }}
+              style={{ display: "flex", gap: 12 }}
+            >
               <a href="/signup" style={{ background: "white", color: "#000", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap" }}>
                 Get Started Free
               </a>
               <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
                 See the App
               </a>
-            </div>
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
 
-        {/* iPhone — absolute right, centered vertically, bleeds off edge */}
+        {/* iPhone — springs in from right */}
         <motion.div
           className="hero-phone-float"
-          initial={{ opacity: 0, x: 40 }}
+          initial={{ opacity: 0, x: 80 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.9, delay: 0.45, ease }}
-          style={{ position: "absolute", right: 16, top: "44%", transform: "translateY(-50%)", zIndex: 3 }}
+          transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.7 }}
+          style={{ position: "absolute", right: 80, top: "40%", transform: "translateY(-50%)", zIndex: 3 }}
         >
           <div style={{
             width: 280,
