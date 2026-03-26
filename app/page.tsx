@@ -534,8 +534,8 @@ export default function LandingPage() {
               <a href="/signup" style={{ background: "#3B82F6", color: "#ffffff", padding: "12px 28px", borderRadius: 999, fontSize: 15, fontWeight: 600, letterSpacing: "-0.01em", textDecoration: "none", display: "inline-block", whiteSpace: "nowrap", boxShadow: "0 0 24px rgba(59,130,246,0.5)" }}>
                 Get Started Free
               </a>
-              <a href="#product" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
-                See the App
+              <a href="/login" style={{ background: "transparent", color: "white", padding: "11px 27px", borderRadius: 999, fontSize: 15, fontWeight: 500, border: "1.5px solid rgba(255,255,255,0.3)", textDecoration: "none", display: "inline-block", backdropFilter: "blur(4px)", whiteSpace: "nowrap" }}>
+                Log in
               </a>
             </motion.div>
           </div>
@@ -603,7 +603,7 @@ export default function LandingPage() {
                 marginBottom: 48,
               }}
             >
-              Coaches are making throwing decisions blind.
+              Coaches are making throwing decisions without the full picture.
             </h2>
           </ScrollFade>
 
