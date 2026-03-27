@@ -455,15 +455,7 @@ export default function LandingPage() {
             <span style={{ color: "#3B82F6" }}>Track</span>
           </span>
         </Link>
-        <div className="hero-nav-center" style={{ display: "flex", alignItems: "center", gap: 24, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 999, padding: "8px 20px", backdropFilter: "blur(8px)", background: "rgba(255,255,255,0.04)" }}>
-          {["Features", "For Coaches", "For Players"].map((label) => (
-            <Link key={label} href={`#${label.toLowerCase().replace(/ /g, "-")}`}
-              style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", textDecoration: "none", whiteSpace: "nowrap", transition: "color 0.15s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(255,255,255,0.6)")}
-            >{label}</Link>
-          ))}
-        </div>
+        <div />
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
           <Link href="/login" className="hide-mobile"
             style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", textDecoration: "none", padding: "8px 16px", borderRadius: 999, background: "#111111", border: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}
