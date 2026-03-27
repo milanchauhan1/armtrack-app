@@ -550,8 +550,8 @@ export default function LandingPage() {
           transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.7 }}
           style={{ position: "absolute", right: 120, top: "37%", transform: "translateY(-50%)", zIndex: 3 }}
         >
-          {/* Blue bloom — radiates from phone center outward on all sides */}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.45) 0%, rgba(59,130,246,0.18) 40%, rgba(59,130,246,0.05) 65%, transparent 80%)", pointerEvents: "none", zIndex: -1 }} />
+          {/* Blue bloom — intense at phone edges, seamless fade to black */}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.55) 0%, rgba(59,130,246,0.38) 20%, rgba(59,130,246,0.18) 38%, rgba(59,130,246,0.07) 54%, rgba(59,130,246,0.02) 68%, transparent 82%)", pointerEvents: "none", zIndex: -1 }} />
           <div style={{
             width: 280,
             borderRadius: 52,
