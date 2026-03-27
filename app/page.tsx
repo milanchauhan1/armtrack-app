@@ -592,86 +592,6 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section id="product" style={{ background: "#000000", padding: "100px 20px", marginTop: "-80px", position: "relative", zIndex: 1 }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-          <ScrollFade>
-            <span
-              style={{
-                display: "inline-block",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.15em",
-                color: "#EF4444",
-                background: "rgba(239,68,68,0.08)",
-                border: "1px solid rgba(239,68,68,0.2)",
-                padding: "5px 12px",
-                borderRadius: 99,
-                marginBottom: 20,
-                textTransform: "uppercase",
-              }}
-            >
-              The Problem
-            </span>
-            <h2
-              style={{
-                fontSize: 40,
-                fontWeight: 800,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.15,
-                color: "#ffffff",
-                margin: 0,
-                marginBottom: 48,
-              }}
-            >
-              Coaches are making throwing decisions without the full picture.
-            </h2>
-          </ScrollFade>
-
-          <div className="problem-cards" style={{ display: "flex", gap: 20, marginBottom: 48 }}>
-            {[
-              { icon: AlertTriangle, text: "Players say 'I\u2019m fine' even when they're not" },
-              { icon: TrendingDown, text: "One fatigued arm away from a season-ending injury" },
-              { icon: EyeOff, text: "No visibility into how your roster actually feels" },
-            ].map(({ icon: Icon, text }, i) => (
-              <ScrollFade key={text} delay={i * 0.1} className="flex-1">
-                <div
-                  style={{
-                    background: "#111111",
-                    border: "1px solid #222222",
-                    borderLeft: "3px solid #EF4444",
-                    borderRadius: 16,
-                    padding: "24px 20px",
-                    textAlign: "left",
-                    height: "100%",
-                  }}
-                >
-                  <Icon size={22} style={{ color: "#EF4444", marginBottom: 12 }} />
-                  <p
-                    style={{
-                      color: "#ffffff",
-                      fontSize: 15,
-                      lineHeight: 1.5,
-                      fontWeight: 500,
-                      margin: 0,
-                    }}
-                  >
-                    {text}
-                  </p>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
-
-          <ScrollFade>
-            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, margin: 0 }}>
-              ArmTrack changes that. 60 seconds of daily logging gives coaches and players the data
-              to make smarter decisions — before injuries happen.
-            </p>
-          </ScrollFade>
-        </div>
-      </section>
-
       {/* ── HOW FAST ───────────────────────────────────────────────────────── */}
       <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
         <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
@@ -905,6 +825,86 @@ export default function LandingPage() {
               </div>
             </ScrollFade>
           </div>
+        </div>
+      </section>
+
+      {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
+      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <span
+              style={{
+                display: "inline-block",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: "0.15em",
+                color: "#EF4444",
+                background: "rgba(239,68,68,0.08)",
+                border: "1px solid rgba(239,68,68,0.2)",
+                padding: "5px 12px",
+                borderRadius: 99,
+                marginBottom: 20,
+                textTransform: "uppercase",
+              }}
+            >
+              The Problem
+            </span>
+            <h2
+              style={{
+                fontSize: 40,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.15,
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 48,
+              }}
+            >
+              Coaches are making throwing decisions without the full picture.
+            </h2>
+          </ScrollFade>
+
+          <div className="problem-cards" style={{ display: "flex", gap: 20, marginBottom: 48 }}>
+            {[
+              { icon: AlertTriangle, text: "Players say \u2018I\u2019m fine\u2019 even when they\u2019re not" },
+              { icon: TrendingDown, text: "One fatigued arm away from a season-ending injury" },
+              { icon: EyeOff, text: "No visibility into how your roster actually feels" },
+            ].map(({ icon: Icon, text }, i) => (
+              <ScrollFade key={text} delay={i * 0.1} className="flex-1">
+                <div
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #222222",
+                    borderLeft: "3px solid #EF4444",
+                    borderRadius: 16,
+                    padding: "24px 20px",
+                    textAlign: "left",
+                    height: "100%",
+                  }}
+                >
+                  <Icon size={22} style={{ color: "#EF4444", marginBottom: 12 }} />
+                  <p
+                    style={{
+                      color: "#ffffff",
+                      fontSize: 15,
+                      lineHeight: 1.5,
+                      fontWeight: 500,
+                      margin: 0,
+                    }}
+                  >
+                    {text}
+                  </p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+
+          <ScrollFade>
+            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, margin: 0 }}>
+              ArmTrack changes that. 60 seconds of daily logging gives coaches and players the data
+              to make smarter decisions — before injuries happen.
+            </p>
+          </ScrollFade>
         </div>
       </section>
 
