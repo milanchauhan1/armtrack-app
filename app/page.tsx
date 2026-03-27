@@ -442,7 +442,7 @@ export default function LandingPage() {
           background: scrolled ? "rgba(0,0,0,0.9)" : "transparent",
           backdropFilter: scrolled ? "blur(12px)" : "none",
           transition: "background 0.25s ease, backdrop-filter 0.25s ease",
-          padding: "20px 48px 20px 24px",
+          padding: "6px 48px 6px 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
