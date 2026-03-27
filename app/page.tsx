@@ -411,6 +411,7 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-brand-text { display: none !important; }
           .hero-nav-login { display: none !important; }
+          .hero-logo-img { width: 48px !important; height: 48px !important; border-radius: 12px !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
           .hero-nav-btn { padding: 6px 14px !important; font-size: 12px !important; }
@@ -445,11 +446,16 @@ export default function LandingPage() {
         }
       `}</style>
 
+      {/* ── ANNOUNCEMENT BANNER ─────────────────────────────────────────────── */}
+      <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 51, background: "#3B82F6", textAlign: "center", padding: "7px 16px", fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", color: "#ffffff" }}>
+        Coming to the App Store Soon
+      </div>
+
       {/* ── NAVBAR ─────────────────────────────────────────────────────────── */}
       <nav
         style={{
           position: "fixed",
-          top: 0,
+          top: 34,
           left: 0,
           right: 0,
           zIndex: 50,
@@ -464,7 +470,7 @@ export default function LandingPage() {
       >
         {/* Logo icon — top left */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none", flexShrink: 0 }}>
-          <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" style={{ borderRadius: 24 }} />
+          <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" className="hero-logo-img" style={{ borderRadius: 24 }} />
         </Link>
         {/* Brand text — absolutely centered */}
         <Link href="/" className="hero-brand-text" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textDecoration: "none" }}>
