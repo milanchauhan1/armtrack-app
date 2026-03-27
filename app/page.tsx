@@ -411,7 +411,7 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 48px !important; }
-          .hero-phone-float { display: none !important; }
+          .hero-nav-btn { padding: 6px 10px !important; font-size: 12px !important; }
         }
         @media (max-width: 640px) {
           .hide-mobile { display: none !important; }
@@ -460,10 +460,13 @@ export default function LandingPage() {
           </span>
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
-          <Link href="/login" className="hide-mobile"
+          <Link href="/login"
+            className="hero-nav-btn"
             style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", textDecoration: "none", padding: "8px 16px", borderRadius: 999, background: "#111111", border: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}
           >Log in</Link>
-          <Link href="/signup" style={{ background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "8px 16px", borderRadius: 999, whiteSpace: "nowrap", boxShadow: "0 0 16px rgba(59,130,246,0.4)" }}>
+          <Link href="/signup"
+            className="hero-nav-btn"
+            style={{ background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "8px 16px", borderRadius: 999, whiteSpace: "nowrap", boxShadow: "0 0 16px rgba(59,130,246,0.4)" }}>
             Get Started Free
           </Link>
         </div>
