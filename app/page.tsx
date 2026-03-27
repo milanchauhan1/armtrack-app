@@ -411,7 +411,7 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-brand-text { display: none !important; }
           .hero-nav-login { display: none !important; }
-          .hero-logo-img { width: 48px !important; height: 48px !important; border-radius: 12px !important; }
+          .hero-logo-img { width: 96px !important; height: 96px !important; border-radius: 20px !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
           .hero-nav-btn { padding: 6px 14px !important; font-size: 12px !important; }
