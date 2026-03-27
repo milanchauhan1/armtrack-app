@@ -411,6 +411,7 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-brand-text { display: none !important; }
           .hero-nav-login { display: none !important; }
+          .hero-nav-signup { display: none !important; }
           .hero-logo-img { width: 96px !important; height: 96px !important; border-radius: 20px !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
@@ -485,7 +486,7 @@ export default function LandingPage() {
             style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", textDecoration: "none", padding: "8px 16px", borderRadius: 999, background: "#111111", border: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}
           >Log in</Link>
           <Link href="/signup"
-            className="hero-nav-btn"
+            className="hero-nav-btn hero-nav-signup"
             style={{ background: "#3B82F6", color: "#ffffff", fontSize: 13, fontWeight: 600, textDecoration: "none", padding: "8px 16px", borderRadius: 999, whiteSpace: "nowrap", boxShadow: "0 0 16px rgba(59,130,246,0.4)" }}>
             Get Started Free
           </Link>
