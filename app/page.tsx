@@ -410,11 +410,23 @@ export default function LandingPage() {
         @media (max-width: 768px) {
           .hero-nav-center { display: none !important; }
           .hero-headline { font-size: 44px !important; }
-          .hero-text-block { padding: 0 24px 48px !important; }
+          .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
           .hero-nav-btn { padding: 6px 10px !important; font-size: 12px !important; }
+          .hero-image-block { height: 40vh !important; padding-top: 48px !important; }
+          .hero-phone-float {
+            position: relative !important;
+            right: auto !important;
+            top: auto !important;
+            transform: none !important;
+            display: flex !important;
+            justify-content: center !important;
+            margin-top: 8px !important;
+            margin-bottom: -30px !important;
+          }
+          .hero-phone-frame { width: 220px !important; border-radius: 41px !important; }
+          .hero-phone-float .hero-phone-frame > div { border-radius: 34px !important; }
         }
         @media (max-width: 640px) {
-          .hide-mobile { display: none !important; }
           .hero-headline { font-size: 34px !important; letter-spacing: -0.03em !important; }
           .hero-cta-row { flex-direction: column !important; align-items: stretch !important; }
           .hero-cta-row a { text-align: center !important; }
@@ -484,6 +496,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, scale: 1.06 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.4, delay: 0.2, ease }}
+          className="hero-image-block"
           style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", paddingTop: 72, zIndex: 1 }}
         >
           <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center 30%", height: "100%", width: "auto" }} />
@@ -550,7 +563,7 @@ export default function LandingPage() {
         >
           {/* Blue bloom — intense at phone edges, seamless fade to black */}
           <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.55) 0%, rgba(59,130,246,0.38) 20%, rgba(59,130,246,0.18) 38%, rgba(59,130,246,0.07) 54%, rgba(59,130,246,0.02) 68%, transparent 82%)", pointerEvents: "none", zIndex: -1 }} />
-          <div style={{
+          <div className="hero-phone-frame" style={{
             width: 280,
             borderRadius: 52,
             background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
