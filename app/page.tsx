@@ -448,14 +448,16 @@ export default function LandingPage() {
           justifyContent: "space-between",
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none", flexShrink: 0 }}>
+        {/* Spacer to balance right-side buttons */}
+        <div style={{ flex: 1 }} />
+        {/* Logo — absolutely centered */}
+        <Link href="/" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}>
           <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" style={{ borderRadius: 24 }} />
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
           </span>
         </Link>
-        <div />
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
           <Link href="/login" className="hide-mobile"
             style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", textDecoration: "none", padding: "8px 16px", borderRadius: 999, background: "#111111", border: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}
