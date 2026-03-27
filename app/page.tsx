@@ -409,10 +409,12 @@ export default function LandingPage() {
       <style>{`
         @media (max-width: 768px) {
           .hero-nav-center { display: none !important; }
+          .hero-brand-text { display: none !important; }
+          .hero-nav-login { display: none !important; }
           .hero-headline { font-size: 44px !important; }
           .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
-          .hero-nav-btn { padding: 6px 10px !important; font-size: 12px !important; }
-          .hero-image-block { height: 40vh !important; padding-top: 48px !important; }
+          .hero-nav-btn { padding: 6px 14px !important; font-size: 12px !important; }
+          .hero-image-block { height: 40vh !important; padding-top: 80px !important; }
           .hero-phone-float {
             position: relative !important;
             right: auto !important;
@@ -465,7 +467,7 @@ export default function LandingPage() {
           <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" style={{ borderRadius: 24 }} />
         </Link>
         {/* Brand text — absolutely centered */}
-        <Link href="/" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textDecoration: "none" }}>
+        <Link href="/" className="hero-brand-text" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textDecoration: "none" }}>
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
             <span style={{ color: "#3B82F6" }}>Track</span>
@@ -473,7 +475,7 @@ export default function LandingPage() {
         </Link>
         <div style={{ display: "flex", alignItems: "center", gap: 16, flexShrink: 0 }}>
           <Link href="/login"
-            className="hero-nav-btn"
+            className="hero-nav-btn hero-nav-login"
             style={{ fontSize: 13, fontWeight: 600, color: "#ffffff", textDecoration: "none", padding: "8px 16px", borderRadius: 999, background: "#111111", border: "1px solid rgba(255,255,255,0.1)", whiteSpace: "nowrap" }}
           >Log in</Link>
           <Link href="/signup"
