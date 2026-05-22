@@ -24,8 +24,6 @@ export async function scheduleArmLogReminder(): Promise<void> {
           repeats: true,
           allowWhileIdle: true,
         },
-        sound: undefined,
-        smallIcon: undefined,
         iconColor: "#3B82F6",
       },
     ],

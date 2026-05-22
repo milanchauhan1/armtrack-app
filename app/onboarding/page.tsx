@@ -855,7 +855,7 @@ export default function OnboardingPage() {
             localStorage.removeItem("pending_team_code");
           }
 
-          await scheduleArmLogReminder();
+          try { await scheduleArmLogReminder(); } catch { /* non-fatal */ }
           router.push("/log");
         } catch {
           setSaveError(true);
@@ -1002,7 +1002,6 @@ export default function OnboardingPage() {
             await supabase.from("profiles").upsert({ id: user.id, team_id: team.id });
           }
 
-          await scheduleArmLogReminder();
           router.push("/coach/dashboard");
         } catch {
           setSaveError(true);
