@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { scheduleArmLogReminder } from "@/lib/notifications";
 import {
   User,
   Users,
@@ -854,6 +855,7 @@ export default function OnboardingPage() {
             localStorage.removeItem("pending_team_code");
           }
 
+          await scheduleArmLogReminder();
           router.push("/log");
         } catch {
           setSaveError(true);
@@ -1000,6 +1002,7 @@ export default function OnboardingPage() {
             await supabase.from("profiles").upsert({ id: user.id, team_id: team.id });
           }
 
+          await scheduleArmLogReminder();
           router.push("/coach/dashboard");
         } catch {
           setSaveError(true);
