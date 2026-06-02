@@ -10,10 +10,37 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const SITE_URL = "https://armtrack.app";
+const TITLE = "ArmTrack — Protect the Arm. Extend the Career.";
+const DESCRIPTION =
+  "ArmTrack helps coaches and players track workload, soreness, and recovery — stopping arm injuries before they start.";
+
 export const metadata: Metadata = {
-  title: "ArmTrack — Protect the Arm. Extend the Career.",
-  description:
-    "ArmTrack helps coaches and players track workload, soreness, and recovery — stopping arm injuries before they start.",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "ArmTrack",
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "ArmTrack",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [
+      {
+        url: "/dashboard-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "ArmTrack arm health dashboard",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/dashboard-preview.png"],
+  },
 };
 
 export default function RootLayout({

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { DashboardSkeleton } from "@/components/Skeleton";
+import { scheduleArmLogReminder } from "@/lib/notifications";
 import {
   LineChart,
   Line,
@@ -25,6 +26,8 @@ import {
   getContextualInsights,
   getReadinessExplanation,
   computeLogScore,
+  daysSinceLatestLog,
+  READINESS_STALE_DAYS,
 } from "@/lib/readiness";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -375,7 +378,12 @@ export default function DashboardPage() {
         .select("date")
         .eq("user_id", user.id);
 
-      if (allDates) setStreak(computeStreak(allDates.map((l) => l.date)));
+      if (allDates) {
+        const currentStreak = computeStreak(allDates.map((l) => l.date));
+        setStreak(currentStreak);
+        // Re-arm the daily reminder so its copy reflects the live streak.
+        scheduleArmLogReminder(currentStreak).catch(() => {});
+      }
 
       const fourteenDaysAgo = new Date();
       fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
@@ -417,6 +425,8 @@ export default function DashboardPage() {
 
   const readiness = calculateEstimatedReadiness(logs7);
   const meta = readiness !== null ? getReadinessState(readiness) : null;
+  const staleDays = recentLog ? daysSinceLatestLog([recentLog]) : null;
+  const isStale = staleDays !== null && staleDays >= READINESS_STALE_DAYS;
 
   // Per-log base scores (most-recent first) for contextual insight checks
   const recentScores = logs7.slice(0, 3).map(computeLogScore);
@@ -478,16 +488,24 @@ export default function DashboardPage() {
           </p>
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-extrabold tracking-tight text-white">Arm Health Dashboard</h1>
-            {streak > 0 && (
+            {streak > 0 ? (
               <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-extrabold"
                 style={{
-                  backgroundColor: "rgba(249,115,22,0.10)",
-                  border: "1px solid rgba(249,115,22,0.25)",
+                  backgroundColor: "rgba(249,115,22,0.12)",
+                  border: "1px solid rgba(249,115,22,0.35)",
                   color: "#fb923c",
+                  boxShadow: "0 0 18px rgba(249,115,22,0.18)",
                 }}
               >
-                🔥 {streak}-day streak
+                <span style={{ fontSize: 16 }}>🔥</span> {streak}-day streak
+              </span>
+            ) : (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-bold"
+                style={{ backgroundColor: "#141414", border: "1px solid #252525", color: "#888888" }}
+              >
+                🔥 Start your streak today
               </span>
             )}
           </div>
@@ -515,7 +533,10 @@ export default function DashboardPage() {
                       pointerEvents: "none",
                     }}
                   />
-                  <span className="relative font-black tabular-nums leading-none" style={{ color: meta.color, fontSize: 88 }}>
+                  <span
+                    className="relative font-black tabular-nums leading-none"
+                    style={{ color: isStale ? "#6b7280" : meta.color, fontSize: 88, opacity: isStale ? 0.7 : 1 }}
+                  >
                     {readiness!.toFixed(1)}
                   </span>
                   <span className="relative text-lg text-gray-600 font-medium">/10</span>
@@ -526,11 +547,19 @@ export default function DashboardPage() {
                   <div className="flex flex-col gap-1">
                     <div
                       className="inline-flex self-start items-center rounded-full px-3 py-1.5 text-sm font-bold"
-                      style={{ backgroundColor: meta.bg, border: `1px solid ${meta.border}`, color: meta.color }}
+                      style={
+                        isStale
+                          ? { backgroundColor: "rgba(245,158,11,0.10)", border: "1px solid rgba(245,158,11,0.25)", color: "#F59E0B" }
+                          : { backgroundColor: meta.bg, border: `1px solid ${meta.border}`, color: meta.color }
+                      }
                     >
-                      {meta.label}
+                      {isStale ? "Needs a fresh log" : meta.label}
                     </div>
-                    <p className="text-xs text-gray-500 pl-1">Based on your recent logs</p>
+                    <p className="text-xs text-gray-500 pl-1">
+                      {isStale
+                        ? `Based on a log from ${staleDays} days ago — log today to refresh.`
+                        : "Based on your recent logs"}
+                    </p>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <ScoreBadge label="Pain" value={recentLog.pain_level} />

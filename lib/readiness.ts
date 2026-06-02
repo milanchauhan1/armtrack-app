@@ -176,3 +176,15 @@ export function getContextualInsights(logs: ArmLog[], recentScores: number[]): s
 export function getReadinessExplanation(): string {
   return "Estimated from pain, soreness, stiffness, and recent throwing load.";
 }
+
+// ── Staleness ───────────────────────────────────────────────────────────────
+
+/** Past this many days, the readiness number is based on old data and should not be trusted as "today's" reading. */
+export const READINESS_STALE_DAYS = 2;
+
+/** Whole days between today and the most recent log. Null when there are no logs. */
+export function daysSinceLatestLog(logs: ArmLog[]): number | null {
+  if (!logs.length) return null;
+  const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
+  return daysSince(sorted[0].date);
+}
