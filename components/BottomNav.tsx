@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { House, PlusCircle, BarChart2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { tapLight } from "@/lib/haptics";
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -52,6 +53,7 @@ export default function BottomNav() {
           <Link
             key={href}
             href={href}
+            onClick={() => tapLight()}
             className="flex flex-col items-center justify-center flex-1 relative"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >

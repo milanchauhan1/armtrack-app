@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import LogCelebration from "@/components/LogCelebration";
+import { tapLight, tapMedium, notifySuccess } from "@/lib/haptics";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -144,7 +145,10 @@ function ArmSlider({
         max={10}
         step={1}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => {
+          tapLight();
+          onChange(Number(e.target.value));
+        }}
         className="arm-slider w-full"
         style={{
           background: `linear-gradient(to right, ${color} ${pct}%, #252525 ${pct}%)`,
@@ -175,7 +179,10 @@ function MultiCard({
 }) {
   return (
     <motion.button
-      onClick={onClick}
+      onClick={() => {
+        tapLight();
+        onClick();
+      }}
       animate={{ scale: selected ? 1.04 : 1 }}
       whileTap={{ scale: 0.95 }}
       transition={{ duration: 0.12 }}
@@ -306,6 +313,7 @@ export default function LogPage() {
   }
 
   async function handleSubmit() {
+    tapMedium();
     setSubmitting(true);
     const today = getTodayString();
     const intensity = Math.round(
@@ -341,6 +349,7 @@ export default function LogPage() {
         ? computeStreak(freshLogs.map((l) => l.date))
         : streak;
 
+      notifySuccess();
       setSubmitting(false);
       setCelebrationStreak(freshStreak);
     }
@@ -602,7 +611,10 @@ export default function LogPage() {
                     {THROW_PRESETS.map((p) => (
                       <button
                         key={p}
-                        onClick={() => setForm((prev) => ({ ...prev, throws_count: p }))}
+                        onClick={() => {
+                          tapLight();
+                          setForm((prev) => ({ ...prev, throws_count: p }));
+                        }}
                         className="rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition-all duration-150"
                         style={{
                           backgroundColor: form.throws_count === p ? "#3B82F6" : "#181818",

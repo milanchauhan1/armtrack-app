@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { scheduleArmLogReminder } from "@/lib/notifications";
+import { tapLight, tapMedium } from "@/lib/haptics";
 import {
   User,
   Users,
@@ -144,7 +145,10 @@ function TapCard({
 }: TapCardProps) {
   return (
     <motion.button
-      onClick={onClick}
+      onClick={() => {
+        tapLight();
+        onClick();
+      }}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.13, ease: "easeOut" }}
       className="relative flex items-center gap-4 cursor-pointer outline-none w-full text-left"
@@ -242,7 +246,10 @@ function ContinueButton({
 }) {
   return (
     <motion.button
-      onClick={onClick}
+      onClick={() => {
+        tapMedium();
+        onClick();
+      }}
       disabled={disabled}
       whileTap={disabled ? {} : { scale: 0.97 }}
       className="w-full rounded-2xl bg-blue-500 text-base font-bold text-white transition-colors duration-150 hover:bg-blue-400 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
