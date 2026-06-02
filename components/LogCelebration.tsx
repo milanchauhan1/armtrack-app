@@ -16,8 +16,10 @@ function getStreakMessage(streak: number): string {
   if (streak === 3) return "Three straight. You're building something real.";
   if (streak === 7) return "One week. Most players never make it here.";
   if (streak === 14) return "Two weeks straight. Your data is telling a story.";
+  if (streak === 21) return "21 days. Arm care is officially a habit now.";
   if (streak === 30) return "30 days. Elite arm care.";
   if (streak === 60) return "60 days. Your arm has never been more protected.";
+  if (streak === 100) return "100 days. You're in rare air — true pro-level consistency.";
   return `Day ${streak}. Keep showing up.`;
 }
 
