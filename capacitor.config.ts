@@ -1,16 +1,23 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.armtrack.app',
+  appId: 'app.armtrack.www',
   appName: 'ArmTrack',
   webDir: 'out',
-  server: {
-    // Load live Vercel deployment — keeps auth, API routes, and Supabase working
-    url: 'https://armtrack.app',
-    cleartext: false,
-  },
   ios: {
     contentInset: 'automatic',
+    backgroundColor: '#000000',
+  },
+  plugins: {
+    SplashScreen: {
+      launchShowDuration: 3000,
+      launchAutoHide: true,
+      backgroundColor: '#000000',
+      showSpinner: false,
+      splashFullScreen: true,
+      splashImmersive: false,
+      fadeSplashScreenDuration: 400,
+    },
   },
 };
 

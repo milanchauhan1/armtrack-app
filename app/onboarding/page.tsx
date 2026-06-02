@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { scheduleArmLogReminder } from "@/lib/notifications";
 import {
   User,
   Users,
@@ -854,6 +855,7 @@ export default function OnboardingPage() {
             localStorage.removeItem("pending_team_code");
           }
 
+          try { await scheduleArmLogReminder(); } catch { /* non-fatal */ }
           router.push("/log");
         } catch {
           setSaveError(true);
