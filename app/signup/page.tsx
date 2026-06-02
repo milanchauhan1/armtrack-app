@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
@@ -23,6 +23,13 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmationSent, setConfirmationSent] = useState(false);
+  const [isNative, setIsNative] = useState(false);
+
+  useEffect(() => {
+    import("@capacitor/core").then(({ Capacitor }) => {
+      setIsNative(Capacitor.isNativePlatform());
+    }).catch(() => {});
+  }, []);
 
   async function handleEmailSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -108,22 +115,25 @@ export default function SignupPage() {
             Start protecting your arm today.
           </p>
 
-          {/* Google OAuth */}
-          <button
-            onClick={handleGoogleSignup}
-            disabled={loading}
-            className="mb-6 flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:border-white/30 hover:bg-white/[0.08] disabled:opacity-50 cursor-pointer"
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
+          {/* Google OAuth — web only, broken in Capacitor WebView without Universal Links */}
+          {!isNative && (
+            <>
+              <button
+                onClick={handleGoogleSignup}
+                disabled={loading}
+                className="mb-6 flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:border-white/30 hover:bg-white/[0.08] disabled:opacity-50 cursor-pointer"
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
 
-          {/* Divider */}
-          <div className="mb-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="text-xs text-gray-500">or</span>
-            <div className="h-px flex-1 bg-white/10" />
-          </div>
+              <div className="mb-6 flex items-center gap-3">
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-xs text-gray-500">or</span>
+                <div className="h-px flex-1 bg-white/10" />
+              </div>
+            </>
+          )}
 
           {/* Email/password form */}
           <form onSubmit={handleEmailSignup} className="flex flex-col gap-4">
