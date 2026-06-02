@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import LogCelebration from "@/components/LogCelebration";
-import { tapLight, tapMedium, notifySuccess } from "@/lib/haptics";
+import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
 
@@ -232,6 +232,7 @@ export default function LogPage() {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState<LogForm>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [celebrationStreak, setCelebrationStreak] = useState<number | null>(null);
 
   useEffect(() => {
@@ -316,6 +317,7 @@ export default function LogPage() {
 
   async function handleSubmit() {
     tapMedium();
+    setSaveError(null);
     setSubmitting(true);
     const today = getTodayString();
     const intensity = Math.round(
@@ -336,13 +338,28 @@ export default function LogPage() {
     };
 
     if (todayLog) {
-      await supabase.from("arm_logs").update(payload).eq("id", todayLog.id);
+      const { error } = await supabase
+        .from("arm_logs")
+        .update(payload)
+        .eq("id", todayLog.id);
+      if (error) {
+        notifyError();
+        setSaveError("Couldn't save your log. Check your connection and try again.");
+        setSubmitting(false);
+        return;
+      }
       notifySuccess();
       playBlip();
       setSubmitting(false);
       router.replace("/dashboard");
     } else {
-      await supabase.from("arm_logs").insert(payload);
+      const { error } = await supabase.from("arm_logs").insert(payload);
+      if (error) {
+        notifyError();
+        setSaveError("Couldn't save your log. Check your connection and try again.");
+        setSubmitting(false);
+        return;
+      }
 
       // Re-fetch logs after insert to get accurate post-insert streak
       const { data: freshLogs } = await supabase
@@ -705,6 +722,18 @@ export default function LogPage() {
               </Card>
 
               {/* ── Submit ───────────────────────────────────────────────── */}
+              {saveError && (
+                <p
+                  className="rounded-xl px-4 py-3 text-sm font-medium text-center"
+                  style={{
+                    backgroundColor: "rgba(239,68,68,0.12)",
+                    border: "1px solid rgba(239,68,68,0.35)",
+                    color: "#EF4444",
+                  }}
+                >
+                  {saveError}
+                </p>
+              )}
               <motion.button
                 onClick={handleSubmit}
                 disabled={submitting}

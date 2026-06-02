@@ -40,3 +40,14 @@ export async function notifySuccess() {
     /* non-fatal */
   }
 }
+
+/** Error buzz — a save or action failed. */
+export async function notifyError() {
+  if (!Capacitor.isNativePlatform()) return;
+  try {
+    const { Haptics, NotificationType } = await import("@capacitor/haptics");
+    await Haptics.notification({ type: NotificationType.Error });
+  } catch {
+    /* non-fatal */
+  }
+}
