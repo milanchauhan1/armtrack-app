@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import LogCelebration from "@/components/LogCelebration";
 import { tapLight, tapMedium, notifySuccess } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
+import { LogSkeleton } from "@/components/Skeleton";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -361,11 +362,7 @@ export default function LogPage() {
   // ── Loading ────────────────────────────────────────────────────────────────
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
-      </div>
-    );
+    return <LogSkeleton />;
   }
 
   // ── Celebration ────────────────────────────────────────────────────────────

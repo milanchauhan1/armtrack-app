@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { DashboardSkeleton } from "@/components/Skeleton";
 import {
   LineChart,
   Line,
@@ -409,11 +410,7 @@ export default function DashboardPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   // ── Derived values ───────────────────────────────────────────────────────────

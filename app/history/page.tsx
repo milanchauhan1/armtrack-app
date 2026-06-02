@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { HistorySkeleton } from "@/components/Skeleton";
 import { ArmLog, computeLogScore, getReadinessState } from "@/lib/readiness";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
@@ -327,11 +328,7 @@ export default function HistoryPage() {
   // ── Loading ───────────────────────────────────────────────────────────────────
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
-      </div>
-    );
+    return <HistorySkeleton />;
   }
 
   // ── Render ────────────────────────────────────────────────────────────────────
