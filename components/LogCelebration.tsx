@@ -3,6 +3,8 @@
 import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Flame } from "lucide-react";
+import { playWhoosh, playImpact, playSuccess } from "@/lib/sounds";
+import { tapMedium } from "@/lib/haptics";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -154,7 +156,19 @@ export default function LogCelebration({
 
   useEffect(() => {
     const t = setTimeout(onComplete, 3500);
-    return () => clearTimeout(t);
+    // Sound + haptic cues synced to the animation timeline
+    const sWhoosh = setTimeout(() => playWhoosh(), 600);
+    const sImpact = setTimeout(() => {
+      playImpact();
+      tapMedium();
+    }, 1000);
+    const sChime = setTimeout(() => playSuccess(), 1320);
+    return () => {
+      clearTimeout(t);
+      clearTimeout(sWhoosh);
+      clearTimeout(sImpact);
+      clearTimeout(sChime);
+    };
   }, [onComplete]);
 
   // ── Ball arc layout math ─────────────────────────────────────────────────

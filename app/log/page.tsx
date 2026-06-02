@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import LogCelebration from "@/components/LogCelebration";
 import { tapLight, tapMedium, notifySuccess } from "@/lib/haptics";
+import { playBlip } from "@/lib/sounds";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -335,6 +336,8 @@ export default function LogPage() {
 
     if (todayLog) {
       await supabase.from("arm_logs").update(payload).eq("id", todayLog.id);
+      notifySuccess();
+      playBlip();
       setSubmitting(false);
       router.replace("/dashboard");
     } else {
