@@ -1,9 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.armtrack.www',
+  appId: 'app.armtrack.app',
   appName: 'ArmTrack',
   webDir: 'out',
+  server: {
+    url: 'https://armtrack.app',
+    cleartext: false,
+  },
   ios: {
     contentInset: 'automatic',
     backgroundColor: '#000000',
