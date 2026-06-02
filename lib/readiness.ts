@@ -177,6 +177,39 @@ export function getReadinessExplanation(): string {
   return "Estimated from pain, soreness, stiffness, and recent throwing load.";
 }
 
+// ── Streak ──────────────────────────────────────────────────────────────────
+
+/** Today's date as a local-time YYYY-MM-DD string (timezone-safe). */
+function todayString(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Shift a YYYY-MM-DD string by n days, anchored at noon to dodge DST edges. */
+function shiftDay(dateStr: string, n: number): string {
+  const d = new Date(dateStr + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+}
+
+/**
+ * Consecutive-day logging streak ending today (or yesterday if not yet logged
+ * today). Returns 0 when the most recent log is older than yesterday.
+ */
+export function computeStreak(dates: string[]): number {
+  if (!dates.length) return 0;
+  const set = new Set(dates);
+  const today = todayString();
+  let cursor = set.has(today) ? today : shiftDay(today, -1);
+  if (!set.has(cursor)) return 0;
+  let streak = 0;
+  while (set.has(cursor)) {
+    streak++;
+    cursor = shiftDay(cursor, -1);
+  }
+  return streak;
+}
+
 // ── Staleness ───────────────────────────────────────────────────────────────
 
 /** Past this many days, the readiness number is based on old data and should not be trusted as "today's" reading. */

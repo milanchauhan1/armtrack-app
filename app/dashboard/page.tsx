@@ -26,6 +26,7 @@ import {
   getContextualInsights,
   getReadinessExplanation,
   computeLogScore,
+  computeStreak,
   daysSinceLatestLog,
   READINESS_STALE_DAYS,
 } from "@/lib/readiness";
@@ -52,25 +53,6 @@ function getGreeting(): string {
   if (h < 12) return "Good morning";
   if (h < 17) return "Good afternoon";
   return "Good evening";
-}
-
-function computeStreak(dates: string[]): number {
-  if (!dates.length) return 0;
-  const set = new Set(dates);
-  function shiftDay(dateStr: string, n: number): string {
-    const d = new Date(dateStr + "T12:00:00");
-    d.setDate(d.getDate() + n);
-    return d.toISOString().split("T")[0];
-  }
-  const today = getTodayString();
-  let cursor = set.has(today) ? today : shiftDay(today, -1);
-  if (!set.has(cursor)) return 0;
-  let streak = 0;
-  while (set.has(cursor)) {
-    streak++;
-    cursor = shiftDay(cursor, -1);
-  }
-  return streak;
 }
 
 function scoreColor(v: number): string {

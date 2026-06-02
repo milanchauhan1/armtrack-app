@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ArmLog, calculateEstimatedReadiness, getReadinessState } from "@/lib/readiness";
+import { ArmLog, calculateEstimatedReadiness, computeStreak, getReadinessState } from "@/lib/readiness";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -54,19 +54,6 @@ function shiftDay(dateStr: string, n: number): string {
   return d.toISOString().split("T")[0];
 }
 
-function computeStreak(dates: string[]): number {
-  if (!dates.length) return 0;
-  const set = new Set(dates);
-  const today = getTodayString();
-  let cursor = set.has(today) ? today : shiftDay(today, -1);
-  if (!set.has(cursor)) return 0;
-  let streak = 0;
-  while (set.has(cursor)) {
-    streak++;
-    cursor = shiftDay(cursor, -1);
-  }
-  return streak;
-}
 
 function daysSince(dateStr: string): number {
   const today = new Date();

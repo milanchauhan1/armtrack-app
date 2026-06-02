@@ -5,6 +5,7 @@ import {
   calculateEstimatedReadiness,
   getReadinessState,
   getContextualInsights,
+  computeStreak,
   daysSinceLatestLog,
   READINESS_STALE_DAYS,
 } from "./readiness";
@@ -155,6 +156,34 @@ describe("getContextualInsights", () => {
       log({ date: daysAgo(2), pain_level: 3 }),
     ];
     expect(getContextualInsights(logs, []).length).toBeLessThanOrEqual(2);
+  });
+});
+
+// ── computeStreak ────────────────────────────────────────────────────────────
+
+describe("computeStreak", () => {
+  it("returns 0 for no logs", () => {
+    expect(computeStreak([])).toBe(0);
+  });
+
+  it("counts consecutive days ending today", () => {
+    expect(computeStreak([daysAgo(0), daysAgo(1), daysAgo(2)])).toBe(3);
+  });
+
+  it("still counts a streak ending yesterday (today not yet logged)", () => {
+    expect(computeStreak([daysAgo(1), daysAgo(2)])).toBe(2);
+  });
+
+  it("breaks the streak on a gap", () => {
+    expect(computeStreak([daysAgo(0), daysAgo(2), daysAgo(3)])).toBe(1);
+  });
+
+  it("returns 0 when the most recent log is older than yesterday", () => {
+    expect(computeStreak([daysAgo(3), daysAgo(4)])).toBe(0);
+  });
+
+  it("is unaffected by duplicate dates and ordering", () => {
+    expect(computeStreak([daysAgo(1), daysAgo(0), daysAgo(0), daysAgo(2)])).toBe(3);
   });
 });
 

@@ -8,6 +8,7 @@ import LogCelebration from "@/components/LogCelebration";
 import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
+import { computeStreak } from "@/lib/readiness";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -79,28 +80,6 @@ function sliderLabel(v: number): string {
 function formatDateShort(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-
-function computeStreak(dates: string[]): number {
-  if (!dates.length) return 0;
-  const set = new Set(dates);
-
-  function shiftDay(dateStr: string, n: number): string {
-    const d = new Date(dateStr + "T12:00:00");
-    d.setDate(d.getDate() + n);
-    return d.toISOString().split("T")[0];
-  }
-
-  const today = getTodayString();
-  let cursor = set.has(today) ? today : shiftDay(today, -1);
-  if (!set.has(cursor)) return 0;
-
-  let streak = 0;
-  while (set.has(cursor)) {
-    streak++;
-    cursor = shiftDay(cursor, -1);
-  }
-  return streak;
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
