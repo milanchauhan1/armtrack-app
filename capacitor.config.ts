@@ -4,17 +4,13 @@ const config: CapacitorConfig = {
   appId: 'app.armtrack.app',
   appName: 'ArmTrack',
   webDir: 'out',
-  server: {
-    url: 'https://armtrack.app',
-    cleartext: false,
-  },
   ios: {
     contentInset: 'automatic',
     backgroundColor: '#000000',
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 3000,
+      launchShowDuration: 1200,
       launchAutoHide: true,
       backgroundColor: '#000000',
       showSpinner: false,
