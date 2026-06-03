@@ -421,28 +421,48 @@ export default function LandingPage() {
           .hero-nav-center { display: none !important; }
           .hero-brand-text { display: none !important; }
           .hero-nav-login { display: none !important; }
-          .hero-nav-signup { display: none !important; }
-          .hero-logo-img { width: 96px !important; height: 96px !important; border-radius: 20px !important; }
-          .hero-headline { font-size: 44px !important; }
-          .hero-text-block { padding: 0 24px 32px !important; text-align: center !important; }
+          .hero-logo-img { width: 40px !important; height: 40px !important; border-radius: 11px !important; }
+          .hero-logo-word { display: inline-block !important; }
+          .hero-headline { font-size: 44px !important; margin-bottom: 16px !important; }
           .hero-nav-btn { padding: 6px 14px !important; font-size: 12px !important; }
-          .hero-image-block { height: 40vh !important; padding-top: 80px !important; }
+          /* Mobile hero: drop pitcher photo, text left, sleek tilted phone on right, CTAs centered at bottom */
+          .hero-section { position: relative !important; min-height: 680px !important; padding-top: 96px !important; }
+          .hero-image-block { display: none !important; }
+          .hero-text-block { margin-top: 0 !important; padding: 72px 24px 0 !important; text-align: left !important; position: static !important; max-width: 58% !important; }
+          .hero-text-block > div { max-width: 100% !important; }
+          .hero-headline { position: relative !important; z-index: 2 !important; }
+          .hero-mission { display: none !important; }
           .hero-phone-float {
-            position: relative !important;
-            right: auto !important;
-            top: auto !important;
+            position: absolute !important;
+            right: 10px !important;
+            left: auto !important;
+            top: 150px !important;
             transform: none !important;
-            display: flex !important;
-            justify-content: center !important;
-            margin-top: 8px !important;
-            margin-bottom: -30px !important;
+            margin: 0 !important;
+            display: block !important;
+            z-index: 1 !important;
+            perspective: 1500px !important;
           }
-          .hero-phone-frame { width: 220px !important; border-radius: 41px !important; }
-          .hero-phone-float .hero-phone-frame > div { border-radius: 34px !important; }
+          .hero-phone-float > div:first-child { width: 420px !important; height: 420px !important; }
+          .hero-phone-frame {
+            width: 188px !important;
+            border-radius: 40px !important;
+            transform: rotateY(-14deg) rotateX(4deg) rotate(2deg) !important;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.12), -20px 36px 56px rgba(0,0,0,0.82), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+          }
+          .hero-phone-float .hero-phone-frame > div { border-radius: 32px !important; }
+          .hero-cta-row {
+            position: absolute !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 44px !important;
+            z-index: 5 !important;
+            padding: 0 24px !important;
+          }
         }
         @media (max-width: 640px) {
-          .hero-headline { font-size: 34px !important; letter-spacing: -0.03em !important; }
-          .hero-cta-row { flex-direction: column !important; align-items: stretch !important; }
+          .hero-headline { font-size: 39px !important; line-height: 1.3 !important; letter-spacing: -0.02em !important; }
+          .hero-cta-row { flex-direction: row !important; justify-content: center !important; align-items: center !important; gap: 10px !important; }
           .hero-cta-row a { text-align: center !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
@@ -480,8 +500,12 @@ export default function LandingPage() {
         }}
       >
         {/* Logo icon — top left */}
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 6, textDecoration: "none", flexShrink: 0 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", flexShrink: 0 }}>
           <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" className="hero-logo-img" style={{ borderRadius: 24 }} />
+          <span className="hero-logo-word" style={{ display: "none", fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>
+            <span style={{ color: "#f5f5f5" }}>Arm</span>
+            <span style={{ color: "#3B82F6" }}>Track</span>
+          </span>
         </Link>
         {/* Brand text — absolutely centered */}
         <Link href="/" className="hero-brand-text" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textDecoration: "none" }}>
@@ -504,7 +528,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000", minHeight: "88vh", position: "relative" }}>
+      <section className="hero-section" style={{ background: "#000", minHeight: "88vh", position: "relative" }}>
 
         {/* Blue rim glow around pitcher image edges — very subtle */}
         <div style={{ position: "absolute", top: "4vh", left: "50%", transform: "translateX(-50%)", width: 700, height: 56, borderRadius: "50%", background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
@@ -542,18 +566,6 @@ export default function LandingPage() {
               Make smarter throwing decisions.
             </motion.h1>
 
-            {/* Mission statement — fades in after headline */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.85, ease }}
-              style={{ borderLeft: "2px solid #3B82F6", paddingLeft: 16, marginBottom: 32 }}
-            >
-              <p style={{ color: "#c0c0c0", fontSize: 17, lineHeight: 1.65, margin: 0 }}>
-                Arm readiness, workload, and recovery data —<br />so every throwing decision is smarter.
-              </p>
-            </motion.div>
-
             {/* CTAs — last to appear */}
             <motion.div
               className="hero-cta-row"
@@ -587,8 +599,9 @@ export default function LandingPage() {
             borderRadius: 52,
             background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
             padding: 10,
-            boxShadow: "0 0 0 1px rgba(255,255,255,0.1), 0 40px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.07)",
+            boxShadow: "0 0 0 1px rgba(255,255,255,0.12), -30px 50px 80px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.08)",
             position: "relative",
+            transform: "perspective(1600px) rotateY(-18deg) rotateX(5deg) rotate(2deg)",
           }}>
             <div style={{ position: "absolute", left: -3, top: 72, width: 3, height: 28, background: "#222", borderRadius: "2px 0 0 2px" }} />
             <div style={{ position: "absolute", left: -3, top: 108, width: 3, height: 32, background: "#222", borderRadius: "2px 0 0 2px" }} />
@@ -683,7 +696,7 @@ export default function LandingPage() {
                   >
                     <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 800 }}>{num}</span>
                   </div>
-                  <Icon size={22} style={{ color: "#3B82F6", marginBottom: 10 }} />
+                  <Icon size={22} style={{ color: "#3B82F6", display: "block", margin: "0 auto 10px" }} />
                   <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
                     {title}
                   </p>
