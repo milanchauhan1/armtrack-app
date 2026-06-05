@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, ChevronDown, X } from "lucide-react";
+import { Bell, ChevronDown, X, Check } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ArmLog, calculateEstimatedReadiness, computeStreak, getReadinessState } from "@/lib/readiness";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
@@ -164,10 +164,16 @@ function PlayerCard({ entry }: { entry: PlayerEntry }) {
           </span>
         )}
         <p
-          className="text-[11px] mt-1"
+          className="text-[11px] mt-1 inline-flex items-center gap-1"
           style={{ color: entry.loggedToday ? "#22C55E" : "#555555" }}
         >
-          {entry.loggedToday ? "Logged today ✓" : "Awaiting log"}
+          {entry.loggedToday ? (
+            <>
+              Logged today <Check size={11} strokeWidth={2.5} />
+            </>
+          ) : (
+            "Awaiting log"
+          )}
         </p>
       </div>
 

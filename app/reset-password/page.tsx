@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { MailCheck } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -40,7 +41,12 @@ export default function ResetPasswordPage() {
         >
           {sent ? (
             <div className="text-center">
-              <div className="mb-4 text-4xl">📬</div>
+              <div
+                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl"
+                style={{ backgroundColor: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)" }}
+              >
+                <MailCheck size={26} strokeWidth={1.75} className="text-blue-500" />
+              </div>
               <h1 className="mb-3 text-xl font-extrabold text-white">Check your inbox</h1>
               <p className="text-sm text-gray-400">
                 We sent a password reset link to{" "}

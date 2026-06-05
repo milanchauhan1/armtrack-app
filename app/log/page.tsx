@@ -9,6 +9,7 @@ import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
 import { computeStreak } from "@/lib/readiness";
+import { Flame, Check } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -411,7 +412,7 @@ export default function LogPage() {
                   color: "#fb923c",
                 }}
               >
-                🔥 {streak}-day streak
+                <Flame size={13} strokeWidth={2.4} fill="currentColor" /> {streak}-day streak
               </div>
             )}
             <p className="text-xs italic text-gray-600">Your arm health matters.</p>
@@ -440,7 +441,7 @@ export default function LogPage() {
                       color: "#4ade80",
                     }}
                   >
-                    ✓ Logged today
+                    <Check size={13} strokeWidth={2.5} /> Logged today
                   </div>
                   <h2 className="text-xl font-extrabold text-white">Today&apos;s Session</h2>
                 </div>

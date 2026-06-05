@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { MailCheck } from "lucide-react";
 
 function GoogleIcon() {
   return (
@@ -81,7 +82,12 @@ export default function SignupPage() {
             className="w-full max-w-md rounded-2xl p-8 text-center"
             style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
           >
-            <div className="mb-4 text-4xl">📬</div>
+            <div
+              className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl"
+              style={{ backgroundColor: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)" }}
+            >
+              <MailCheck size={26} strokeWidth={1.75} className="text-blue-500" />
+            </div>
             <h1 className="mb-3 text-xl font-extrabold text-white">Check your inbox</h1>
             <p className="text-sm text-gray-400">
               We sent a confirmation link to <span className="text-white font-semibold">{email}</span>.

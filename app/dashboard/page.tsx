@@ -17,7 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { CheckCircle, Shield, MessageSquare } from "lucide-react";
+import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check } from "lucide-react";
 import {
   ArmLog,
   calculateEstimatedReadiness,
@@ -480,14 +480,14 @@ export default function DashboardPage() {
                   boxShadow: "0 0 18px rgba(249,115,22,0.18)",
                 }}
               >
-                <span style={{ fontSize: 16 }}>🔥</span> {streak}-day streak
+                <Flame size={15} strokeWidth={2.4} fill="currentColor" /> {streak}-day streak
               </span>
             ) : (
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-bold"
                 style={{ backgroundColor: "#141414", border: "1px solid #252525", color: "#888888" }}
               >
-                🔥 Start your streak today
+                <Flame size={14} strokeWidth={2} /> Start your streak today
               </span>
             )}
           </div>
@@ -553,7 +553,12 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center py-6 gap-3 text-center">
-                <p className="text-4xl">💪</p>
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+                >
+                  <Activity size={26} strokeWidth={1.75} className="text-blue-500" />
+                </div>
                 <p className="text-base font-bold text-white">No logs yet</p>
                 <p className="text-sm text-gray-400">Start logging to see your arm health score here.</p>
               </div>
@@ -673,7 +678,9 @@ export default function DashboardPage() {
                 className="rounded-2xl py-3.5 text-sm font-bold cursor-not-allowed"
                 style={{ backgroundColor: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", color: "#4ade80" }}
               >
-                Logged Today ✓
+                <span className="inline-flex items-center justify-center gap-1.5">
+                  <Check size={16} strokeWidth={2.5} /> Logged Today
+                </span>
               </button>
             ) : (
               <Link
@@ -731,7 +738,12 @@ export default function DashboardPage() {
               </ResponsiveContainer>
             ) : chartData.length < 2 ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
-                <p className="text-3xl">📈</p>
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+                >
+                  <TrendingUp size={26} strokeWidth={1.75} className="text-blue-500" />
+                </div>
                 <p className="text-sm font-semibold text-white">Log more sessions to see your trends</p>
                 <p className="text-xs text-gray-500">You need at least 2 logs to generate a chart.</p>
               </div>
@@ -762,7 +774,12 @@ export default function DashboardPage() {
           {logs7.length === 0 ? (
             <Card>
               <div className="flex flex-col items-center py-8 gap-3 text-center">
-                <p className="text-3xl">📋</p>
+                <div
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+                >
+                  <ClipboardList size={26} strokeWidth={1.75} className="text-blue-500" />
+                </div>
                 <p className="text-sm font-semibold text-white">No logs yet</p>
                 <p className="text-xs text-gray-500">Your logged sessions will appear here.</p>
                 <Link

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { HistorySkeleton } from "@/components/Skeleton";
 import { ArmLog, computeLogScore, computeStreak, getReadinessState } from "@/lib/readiness";
+import { Flame, Calendar, Activity } from "lucide-react";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -483,8 +484,14 @@ export default function HistoryPage() {
                 <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-600 leading-tight">
                   Day Streak
                 </span>
-                <span className="text-[9px] text-gray-700">
-                  {streak > 0 ? "Keep it going 🔥" : "Start logging"}
+                <span className="text-[9px] text-gray-700 inline-flex items-center gap-1">
+                  {streak > 0 ? (
+                    <>
+                      Keep it going <Flame size={9} strokeWidth={2.4} />
+                    </>
+                  ) : (
+                    "Start logging"
+                  )}
                 </span>
               </div>
             </div>
@@ -517,7 +524,12 @@ export default function HistoryPage() {
             >
               {selectedDate ? (
                 <>
-                  <p className="text-3xl">📅</p>
+                  <div
+                    className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                    style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+                  >
+                    <Calendar size={26} strokeWidth={1.75} className="text-blue-500" />
+                  </div>
                   <p className="text-sm font-semibold text-white">No log for this day</p>
                   <p className="text-xs text-gray-500">
                     You didn&apos;t log a session on {formatDateFull(selectedDate)}.
@@ -531,7 +543,12 @@ export default function HistoryPage() {
                 </>
               ) : (
                 <>
-                  <p className="text-4xl">💪</p>
+                  <div
+                    className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                    style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+                  >
+                    <Activity size={26} strokeWidth={1.75} className="text-blue-500" />
+                  </div>
                   <div>
                     <p className="text-base font-bold text-white mb-1">
                       No logs yet — start tracking your arm today
