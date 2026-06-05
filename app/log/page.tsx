@@ -9,7 +9,7 @@ import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
 import { computeStreak } from "@/lib/readiness";
-import { Flame, Check } from "lucide-react";
+import { Flame, Check, WifiOff } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -213,10 +213,12 @@ export default function LogPage() {
   const [form, setForm] = useState<LogForm>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [celebrationStreak, setCelebrationStreak] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadData() {
+      try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -281,6 +283,10 @@ export default function LogPage() {
       if (prev) setPrevLog(prev as PrevLog);
 
       setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
+      }
     }
     loadData();
   }, [router]);
@@ -357,6 +363,30 @@ export default function LogPage() {
   }
 
   // ── Loading ────────────────────────────────────────────────────────────────
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} className="text-gray-400" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load the log screen</p>
+          <p className="mt-1 text-sm text-gray-400">Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return <LogSkeleton />;

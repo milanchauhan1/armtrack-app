@@ -17,7 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check } from "lucide-react";
+import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check, WifiOff } from "lucide-react";
 import {
   ArmLog,
   calculateEstimatedReadiness,
@@ -265,6 +265,7 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
 export default function DashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [recentLog, setRecentLog] = useState<ArmLog | null>(null);
   const [logs14, setLogs14] = useState<ArmLog[]>([]);
@@ -292,6 +293,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function load() {
+      try {
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -390,6 +392,10 @@ export default function DashboardPage() {
       }
 
       setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
+      }
     }
     load();
   }, [router]);
@@ -397,6 +403,30 @@ export default function DashboardPage() {
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.replace("/login");
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} className="text-gray-400" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load your dashboard</p>
+          <p className="mt-1 text-sm text-gray-400">Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   if (loading) {

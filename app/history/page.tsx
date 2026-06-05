@@ -7,7 +7,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { HistorySkeleton } from "@/components/Skeleton";
 import { ArmLog, computeLogScore, computeStreak, getReadinessState } from "@/lib/readiness";
-import { Flame, Calendar, Activity } from "lucide-react";
+import { Flame, Calendar, Activity, WifiOff } from "lucide-react";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -247,30 +247,36 @@ function LogRow({ log, index }: { log: ArmLog; index: number }) {
 export default function HistoryPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [logs, setLogs] = useState<ArmLog[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const todayRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     async function load() {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) {
-        router.replace("/login");
-        return;
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          router.replace("/login");
+          return;
+        }
+
+        const { data } = await supabase
+          .from("arm_logs")
+          .select(
+            "id, date, pain_level, soreness_level, stiffness_level, throws_count, activity_type, recovery_done, notes"
+          )
+          .eq("user_id", user.id)
+          .order("date", { ascending: false });
+
+        setLogs((data ?? []) as ArmLog[]);
+        setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
       }
-
-      const { data } = await supabase
-        .from("arm_logs")
-        .select(
-          "id, date, pain_level, soreness_level, stiffness_level, throws_count, activity_type, recovery_done, notes"
-        )
-        .eq("user_id", user.id)
-        .order("date", { ascending: false });
-
-      setLogs((data ?? []) as ArmLog[]);
-      setLoading(false);
     }
     load();
   }, [router]);
@@ -313,6 +319,30 @@ export default function HistoryPage() {
     : logs;
 
   // ── Loading ───────────────────────────────────────────────────────────────────
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} className="text-gray-400" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load your history</p>
+          <p className="mt-1 text-sm text-gray-400">Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return <HistorySkeleton />;
