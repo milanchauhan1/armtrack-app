@@ -345,11 +345,15 @@ export default function OnboardingPage() {
     setData((prev) => ({ ...prev, [key]: value }));
   }
 
-  // Pre-fill team code from localStorage when reaching step 13
+  // Pre-fill team code from localStorage when reaching step 13.
+  // Accept either key: the manual /join page uses "pending_team_code" while
+  // the invite-link flow (JoinClient) stores "armtrack-pending-invite".
   useEffect(() => {
     if (step === 13) {
-      const saved = localStorage.getItem("pending_team_code");
-      if (saved) setPendingTeamCode(saved);
+      const saved =
+        localStorage.getItem("pending_team_code") ||
+        localStorage.getItem("armtrack-pending-invite");
+      if (saved) setPendingTeamCode(saved.toUpperCase());
     }
   }, [step]);
 
@@ -854,12 +858,20 @@ export default function OnboardingPage() {
               .eq("code", teamCode.trim().toUpperCase())
               .single();
             if (teamData) {
-              await supabase.from("team_members").insert({
-                team_id: teamData.id,
-                player_id: user.id,
-              });
+              await supabase
+                .from("team_members")
+                .upsert(
+                  { team_id: teamData.id, player_id: user.id },
+                  { onConflict: "team_id,player_id" }
+                );
+              // Keep profile.team_id in sync so coach/team messages reach this player.
+              await supabase
+                .from("profiles")
+                .update({ team_id: teamData.id })
+                .eq("id", user.id);
             }
             localStorage.removeItem("pending_team_code");
+            localStorage.removeItem("armtrack-pending-invite");
           }
 
           try { await scheduleArmLogReminder(); } catch { /* non-fatal */ }

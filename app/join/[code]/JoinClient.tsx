@@ -24,9 +24,11 @@ export default function JoinClient() {
   const [invalidCode, setInvalidCode] = useState(false);
   const [joining, setJoining] = useState(false);
   const [joined, setJoined] = useState(false);
+  const [joinError, setJoinError] = useState(false);
 
   useEffect(() => {
     async function load() {
+      try {
       const upperCode = rawCode.toUpperCase();
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -76,6 +78,10 @@ export default function JoinClient() {
         coach_name: coach?.first_name ?? "Coach",
       });
       setChecking(false);
+      } catch {
+        setInvalidCode(true);
+        setChecking(false);
+      }
     }
     load();
   }, [rawCode]);
@@ -83,23 +89,29 @@ export default function JoinClient() {
   async function handleJoin() {
     if (!teamInfo) return;
     setJoining(true);
+    setJoinError(false);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("No user");
 
-      await supabase
+      const { error: memberErr } = await supabase
         .from("team_members")
         .upsert({ team_id: teamInfo.id, player_id: user.id }, { onConflict: "team_id,player_id" });
+      if (memberErr) throw memberErr;
 
-      await supabase
+      const { error: profErr } = await supabase
         .from("profiles")
-        .upsert({ id: user.id, team_id: teamInfo.id });
+        .update({ team_id: teamInfo.id })
+        .eq("id", user.id);
+      if (profErr) throw profErr;
 
       localStorage.removeItem("armtrack-pending-invite");
+      localStorage.removeItem("pending_team_code");
       sessionStorage.setItem("toast", `You joined ${teamInfo.name}`);
       setJoined(true);
       setTimeout(() => router.replace("/dashboard"), 1200);
     } catch {
+      setJoinError(true);
       setJoining(false);
     }
   }
@@ -126,7 +138,7 @@ export default function JoinClient() {
             Arm<span className="text-blue-500">Track</span>
           </span>
 
-          {!loggedIn && (
+          {!loggedIn && !invalidCode && (
             <div className="flex flex-col gap-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-1">Team Invite</p>
@@ -161,7 +173,7 @@ export default function JoinClient() {
             </div>
           )}
 
-          {loggedIn && invalidCode && (
+          {invalidCode && (
             <div className="flex flex-col gap-4">
               <div>
                 <h1 className="text-xl font-extrabold tracking-tight text-white mb-1">Link not found</h1>
@@ -193,6 +205,11 @@ export default function JoinClient() {
                   <motion.button onClick={handleJoin} disabled={joining} whileTap={joining ? {} : { scale: 0.97 }} className="w-full rounded-2xl py-3.5 text-sm font-bold text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer" style={{ backgroundColor: "#3B82F6", boxShadow: "0 4px 28px rgba(59,130,246,0.35)" }}>
                     {joining ? "Joining..." : `Join ${teamInfo.name}`}
                   </motion.button>
+                  {joinError && (
+                    <p className="text-sm text-center" style={{ color: "#f87171" }}>
+                      Couldn&apos;t join the team. Check your connection and try again.
+                    </p>
+                  )}
                 </>
               )}
             </div>

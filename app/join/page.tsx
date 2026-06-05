@@ -71,7 +71,7 @@ export default function JoinPage() {
         .select("id")
         .eq("team_id", team.id)
         .eq("player_id", userId)
-        .single();
+        .maybeSingle();
 
       if (!existing) {
         const { error: insertErr } = await supabase
@@ -85,8 +85,12 @@ export default function JoinPage() {
         }
       }
 
-      // Clear any stored pending code
+      // Keep profile.team_id in sync so coach/team messages reach this player.
+      await supabase.from("profiles").update({ team_id: team.id }).eq("id", userId);
+
+      // Clear any stored pending code (both keys used across invite flows)
       localStorage.removeItem("pending_team_code");
+      localStorage.removeItem("armtrack-pending-invite");
 
       // Store toast for dashboard
       sessionStorage.setItem("toast", `You joined ${team.name}`);
