@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, ChevronDown, X, Check } from "lucide-react";
+import { Bell, ChevronDown, X, Check, WifiOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ArmLog, calculateEstimatedReadiness, computeStreak, getReadinessState } from "@/lib/readiness";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
@@ -318,17 +318,24 @@ function NotifyModal({
   );
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [sendError, setSendError] = useState(false);
 
   async function handleSend() {
     if (!message.trim() || sending) return;
     setSending(true);
-    await supabase.from("coach_messages").insert({
+    setSendError(false);
+    const { error } = await supabase.from("coach_messages").insert({
       team_id: team.id,
       coach_id: coachId,
       player_id: null,
       message: message.trim(),
       created_at: new Date().toISOString(),
     });
+    setSending(false);
+    if (error) {
+      setSendError(true);
+      return;
+    }
     setSent(true);
     setTimeout(onClose, 1200);
   }
@@ -416,6 +423,12 @@ function NotifyModal({
         >
           {sent ? "Sent!" : sending ? "Sending..." : "Send to Team"}
         </button>
+
+        {sendError && (
+          <p className="text-sm text-center -mt-2" style={{ color: "#f87171" }}>
+            Couldn&apos;t send. Check your connection and try again.
+          </p>
+        )}
       </motion.div>
     </motion.div>
   );
@@ -426,6 +439,7 @@ function NotifyModal({
 export default function CoachDashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [coachProfile, setCoachProfile] = useState<CoachProfile | null>(null);
   const [team, setTeam] = useState<Team | null>(null);
   const [teamLoaded, setTeamLoaded] = useState(false);
@@ -440,6 +454,7 @@ export default function CoachDashboardPage() {
 
   useEffect(() => {
     async function load() {
+      try {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -567,11 +582,39 @@ export default function CoachDashboardPage() {
 
       setRoster(entries);
       setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
+      }
     }
     load();
   }, [router, today]);
 
   // ── Loading ────────────────────────────────────────────────────────────────
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} style={{ color: "#888888" }} />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load your team</p>
+          <p className="mt-1 text-sm" style={{ color: "#888888" }}>Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

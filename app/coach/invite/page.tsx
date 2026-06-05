@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Copy, Check, RefreshCw } from "lucide-react";
+import { Copy, Check, RefreshCw, WifiOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
@@ -52,32 +52,38 @@ function CopyBtn({ text, label }: { text: string; label: string }) {
 export default function CoachInvitePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [team, setTeam] = useState<Team | null>(null);
   const [regenerating, setRegenerating] = useState(false);
 
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.replace("/login"); return; }
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { router.replace("/login"); return; }
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("onboarding_complete, role")
-        .eq("id", user.id)
-        .single();
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("onboarding_complete, role")
+          .eq("id", user.id)
+          .single();
 
-      if (!profile?.onboarding_complete) { router.replace("/onboarding"); return; }
-      if (profile?.role !== "coach") { router.replace("/dashboard"); return; }
+        if (!profile?.onboarding_complete) { router.replace("/onboarding"); return; }
+        if (profile?.role !== "coach") { router.replace("/dashboard"); return; }
 
-      const { data: teamData } = await supabase
-        .from("teams")
-        .select("id, code, name")
-        .eq("coach_id", user.id)
-        .single();
+        const { data: teamData } = await supabase
+          .from("teams")
+          .select("id, code, name")
+          .eq("coach_id", user.id)
+          .single();
 
-      if (!teamData) { router.replace("/coach/dashboard"); return; }
-      setTeam(teamData as Team);
-      setLoading(false);
+        if (!teamData) { router.replace("/coach/dashboard"); return; }
+        setTeam(teamData as Team);
+        setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
+      }
     }
     load();
   }, [router]);
@@ -92,6 +98,30 @@ export default function CoachInvitePage() {
       .eq("id", team.id);
     if (!error) setTeam({ ...team, code: newCode });
     setRegenerating(false);
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} style={{ color: "#888888" }} />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load your invite</p>
+          <p className="mt-1 text-sm" style={{ color: "#888888" }}>Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   if (loading) {

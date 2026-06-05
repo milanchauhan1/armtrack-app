@@ -20,7 +20,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { ArrowLeft, Shield, Send, MessageSquare } from "lucide-react";
+import { ArrowLeft, Shield, Send, MessageSquare, WifiOff } from "lucide-react";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -293,6 +293,7 @@ export default function PlayerDetailClient() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [logs, setLogs] = useState<ArmLog[]>([]);
   const [chartMounted, setChartMounted] = useState(false);
@@ -304,8 +305,10 @@ export default function PlayerDetailClient() {
   const [recNote, setRecNote] = useState("");
   const [sending, setSending] = useState(false);
   const [sendSuccess, setSendSuccess] = useState(false);
+  const [sendError, setSendError] = useState(false);
   const [msgText, setMsgText] = useState("");
   const [sendingMsg, setSendingMsg] = useState(false);
+  const [msgError, setMsgError] = useState(false);
 
   useEffect(() => {
     setChartMounted(true);
@@ -313,6 +316,7 @@ export default function PlayerDetailClient() {
 
   useEffect(() => {
     async function load() {
+      try {
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -382,6 +386,10 @@ export default function PlayerDetailClient() {
       setProfile(playerProfile ?? null);
       setLogs((logsData ?? []) as ArmLog[]);
       setLoading(false);
+      } catch {
+        setLoadError(true);
+        setLoading(false);
+      }
     }
     load();
   }, [router, id]);
@@ -389,6 +397,7 @@ export default function PlayerDetailClient() {
   async function handleSendRec() {
     if (!selectedOption || !coachId) return;
     setSending(true);
+    setSendError(false);
     const combined = recNote.trim()
       ? `${selectedOption} — ${recNote.trim()}`
       : selectedOption;
@@ -396,13 +405,18 @@ export default function PlayerDetailClient() {
     endOfDay.setHours(23, 59, 59, 999);
 
     if (activeRec) {
-      await supabase
+      const { error } = await supabase
         .from("coach_recommendations")
         .update({ recommendation: combined, expires_at: endOfDay.toISOString() })
         .eq("id", activeRec.id);
+      setSending(false);
+      if (error) {
+        setSendError(true);
+        return;
+      }
       setActiveRec({ ...activeRec, recommendation: combined });
     } else {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("coach_recommendations")
         .insert({
           coach_id: coachId,
@@ -412,10 +426,14 @@ export default function PlayerDetailClient() {
         })
         .select("id, recommendation, created_at")
         .single();
-      if (data) setActiveRec(data as CoachRec);
+      setSending(false);
+      if (error || !data) {
+        setSendError(true);
+        return;
+      }
+      setActiveRec(data as CoachRec);
     }
 
-    setSending(false);
     setSendSuccess(true);
     setSelectedOption(null);
     setRecNote("");
@@ -425,7 +443,8 @@ export default function PlayerDetailClient() {
   async function handleSendMsg() {
     if (!msgText.trim() || !coachId || !teamId) return;
     setSendingMsg(true);
-    const { data } = await supabase
+    setMsgError(false);
+    const { data, error } = await supabase
       .from("coach_messages")
       .insert({
         coach_id: coachId,
@@ -435,11 +454,37 @@ export default function PlayerDetailClient() {
       })
       .select("id, message, created_at")
       .single();
-    if (data) {
-      setMessages([data as CoachMsg, ...messages].slice(0, 3));
-    }
-    setMsgText("");
     setSendingMsg(false);
+    if (error || !data) {
+      setMsgError(true);
+      return;
+    }
+    setMessages([data as CoachMsg, ...messages].slice(0, 3));
+    setMsgText("");
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} style={{ color: "#888888" }} />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load this player</p>
+          <p className="mt-1 text-sm" style={{ color: "#888888" }}>Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   if (loading) {
@@ -620,6 +665,11 @@ export default function PlayerDetailClient() {
             <button onClick={handleSendRec} disabled={!selectedOption || sending} className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" style={{ backgroundColor: sendSuccess ? "rgba(34,197,94,0.15)" : "#3B82F6", border: sendSuccess ? "1px solid rgba(34,197,94,0.3)" : "none", color: sendSuccess ? "#22C55E" : "#ffffff", boxShadow: sendSuccess ? "none" : "0 4px 20px rgba(59,130,246,0.3)" }}>
               {sendSuccess ? "Recommendation sent" : (<><Send size={14} />{activeRec ? "Update Recommendation" : "Send to Player"}</>)}
             </button>
+            {sendError && (
+              <p className="text-sm text-center" style={{ color: "#f87171" }}>
+                Couldn&apos;t send. Check your connection and try again.
+              </p>
+            )}
           </div>
         </motion.div>
 
@@ -635,6 +685,11 @@ export default function PlayerDetailClient() {
                 <Send size={14} className="text-white" />
               </button>
             </div>
+            {msgError && (
+              <p className="text-sm" style={{ color: "#f87171" }}>
+                Couldn&apos;t send. Check your connection and try again.
+              </p>
+            )}
             {messages.length > 0 && (
               <div className="flex flex-col gap-2">
                 <p className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#444444" }}>Recent messages</p>
