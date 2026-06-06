@@ -32,6 +32,11 @@ import {
   Activity,
   Disc,
   Layers,
+  HeartPulse,
+  MapPin,
+  Trophy,
+  Hand,
+  type LucideIcon,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -60,6 +65,26 @@ function generateCode(): string {
 // ── Constants ────────────────────────────────────────────────────────────────
 
 const easing = [0.25, 0.46, 0.45, 0.94] as [number, number, number, number];
+
+// ── Step icons ──────────────────────────────────────────────────────────────
+// A distinct icon per step gives each screen its own identity.
+
+const STEP_ICONS: Record<number, LucideIcon> = {
+  0: Users,
+  1: User,
+  2: Activity,
+  3: Target,
+  4: Calendar,
+  5: HeartPulse,
+  6: MapPin,
+  7: Trophy,
+  8: Hand,
+  9: CheckCircle,
+  10: Disc,
+  11: Users,
+  12: CheckCircle,
+  13: Users,
+};
 
 const slideVariants = {
   enter: (dir: number) => ({ x: dir > 0 ? "60%" : "-60%", opacity: 0 }),
@@ -151,28 +176,42 @@ function TapCard({
       }}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.13, ease: "easeOut" }}
-      className="relative flex items-center gap-4 cursor-pointer outline-none w-full text-left"
+      className="relative flex items-center gap-3.5 cursor-pointer outline-none w-full text-left"
       style={{
-        minHeight: 72,
-        paddingLeft: 20,
-        paddingRight: selected ? 48 : 20,
-        paddingTop: 16,
-        paddingBottom: 16,
-        borderRadius: 16,
-        backgroundColor: selected ? "#0f1f30" : "#0d0d0d",
-        border: selected ? "1.5px solid rgba(59,130,246,0.5)" : "1.5px solid #1e1e1e",
-        borderLeft: selected ? "3px solid #3B82F6" : "1.5px solid #1e1e1e",
-        boxShadow: selected ? "0 0 20px rgba(59,130,246,0.15)" : "none",
-        transition: "background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease",
+        minHeight: 76,
+        paddingLeft: 16,
+        paddingRight: selected ? 44 : 16,
+        paddingTop: 14,
+        paddingBottom: 14,
+        borderRadius: 18,
+        backgroundImage: selected
+          ? "linear-gradient(180deg, rgba(59,130,246,0.16) 0%, rgba(59,130,246,0.04) 100%)"
+          : "linear-gradient(180deg, #181a20 0%, #101216 100%)",
+        border: selected ? "1.5px solid rgba(59,130,246,0.65)" : "1px solid #262932",
+        boxShadow: selected
+          ? "0 0 30px rgba(59,130,246,0.22), inset 0 1px 0 rgba(255,255,255,0.05)"
+          : "0 2px 14px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03)",
+        transition: "all 0.18s ease",
       }}
     >
-      <span className="flex-shrink-0" style={{ color: selected ? "#3B82F6" : "#555555" }}>
+      <span
+        className="flex items-center justify-center flex-shrink-0"
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 12,
+          backgroundImage:
+            "linear-gradient(135deg, rgba(59,130,246,0.22) 0%, rgba(59,130,246,0.06) 100%)",
+          border: "1px solid rgba(59,130,246,0.28)",
+          color: selected ? "#93c5fd" : "#60a5fa",
+        }}
+      >
         {icon}
       </span>
       <div className="flex flex-col gap-0.5">
-        <p className="text-sm font-bold text-white">{label}</p>
+        <p className="text-[15px] font-bold text-white">{label}</p>
         {subtitle && (
-          <p className="text-xs" style={{ color: "#555555" }}>
+          <p className="text-xs leading-snug" style={{ color: "#9aa0aa" }}>
             {subtitle}
           </p>
         )}
@@ -252,8 +291,13 @@ function ContinueButton({
       }}
       disabled={disabled}
       whileTap={disabled ? {} : { scale: 0.97 }}
-      className="w-full rounded-2xl bg-blue-500 text-base font-bold text-white transition-colors duration-150 hover:bg-blue-400 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
-      style={{ maxWidth: 340, height: 56, boxShadow: "0 4px 28px rgba(59,130,246,0.38)" }}
+      className="w-full rounded-2xl text-base font-bold text-white transition-all duration-150 disabled:opacity-35 disabled:cursor-not-allowed cursor-pointer"
+      style={{
+        maxWidth: 360,
+        height: 56,
+        backgroundImage: "linear-gradient(180deg, #5398ff 0%, #3b82f6 100%)",
+        boxShadow: "0 8px 38px rgba(59,130,246,0.6), 0 0 22px rgba(59,130,246,0.4)",
+      }}
     >
       {label}
     </motion.button>
@@ -405,7 +449,19 @@ export default function OnboardingPage() {
     return ((idx >= 0 ? idx + 1 : step + 1) / 11) * 100;
   }
 
+  function getStepInfo(): { current: number; total: number } {
+    if (data.role === "coach") {
+      const coachOrder = [0, 1, 10, 11, 12];
+      const idx = coachOrder.indexOf(step);
+      return { current: (idx >= 0 ? idx : 2) + 1, total: coachOrder.length };
+    }
+    const playerOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13];
+    const idx = playerOrder.indexOf(step);
+    return { current: (idx >= 0 ? idx : step) + 1, total: playerOrder.length };
+  }
+
   const progressPct = getProgressPct();
+  const { current: stepCurrent, total: stepTotal } = getStepInfo();
 
   // ── Step content ──────────────────────────────────────────────────────────
 
@@ -1069,66 +1125,86 @@ export default function OnboardingPage() {
   }
 
   const { question, content, canContinue, subText, hideContinue } = renderStep();
+  const StepIco = STEP_ICONS[step] ?? Activity;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-black">
+    <div className="fixed inset-0 flex flex-col overflow-hidden bg-black">
+      {/* Ambient gradient backdrop */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+        <div
+          className="absolute left-1/2 top-0"
+          style={{
+            width: 660,
+            height: 660,
+            transform: "translate(-50%, -52%)",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(59,130,246,0.18) 0%, transparent 62%)",
+            filter: "blur(28px)",
+          }}
+        />
+        <div
+          className="absolute left-1/2 bottom-0"
+          style={{
+            width: 520,
+            height: 420,
+            transform: "translate(-50%, 58%)",
+            borderRadius: "50%",
+            background: "radial-gradient(circle, rgba(59,130,246,0.10) 0%, transparent 70%)",
+            filter: "blur(30px)",
+          }}
+        />
+      </div>
+
       {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-50" style={{ height: 3, backgroundColor: "#111111" }}>
+      <div className="absolute top-0 left-0 right-0 z-50" style={{ height: 3, backgroundColor: "#101010" }}>
         <motion.div
           className="h-full"
-          style={{ backgroundColor: "#3B82F6", boxShadow: "0 0 10px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.4)" }}
+          style={{ backgroundColor: "#3B82F6", boxShadow: "0 0 10px rgba(59,130,246,0.9), 0 0 20px rgba(59,130,246,0.5)" }}
           initial={false}
           animate={{ width: `${progressPct}%` }}
           transition={{ duration: 0.5, ease: easing }}
         />
       </div>
 
-      {/* Micro-copy bar */}
-      <div
-        className="fixed top-3 left-0 right-0 z-40 flex items-center justify-center px-4"
-        style={{ height: 28 }}
+      {/* Header: back · wordmark · step count */}
+      <header
+        className="relative z-40 flex shrink-0 items-center justify-between px-5"
+        style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)", paddingBottom: 6 }}
       >
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={step}
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-            className="text-xs italic text-center"
-            style={{ color: "#888888" }}
-          >
-            {microCopy[step] ?? ""}
-          </motion.p>
-        </AnimatePresence>
-      </div>
+        <div style={{ width: 64 }}>
+          <AnimatePresence>
+            {step > 0 && (
+              <motion.button
+                key="back"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.18 }}
+                onClick={goBack}
+                className="flex items-center gap-1 text-sm font-medium cursor-pointer"
+                style={{ color: "#777777" }}
+              >
+                <ChevronLeft size={18} strokeWidth={2} />
+                Back
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
 
-      {/* Back button */}
-      <div className="fixed top-12 left-0 z-40 px-5" style={{ height: 36 }}>
-        <AnimatePresence>
-          {step > 0 && (
-            <motion.button
-              key="back"
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -8 }}
-              transition={{ duration: 0.18 }}
-              onClick={goBack}
-              className="flex items-center gap-1 text-sm font-medium transition-colors cursor-pointer"
-              style={{ color: "#555555" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#ffffff")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "#555555")}
-            >
-              <ChevronLeft size={16} strokeWidth={2} />
-              Back
-            </motion.button>
-          )}
-        </AnimatePresence>
-      </div>
+        <span className="text-base font-extrabold tracking-tight text-white">
+          Arm<span style={{ color: "#3B82F6" }}>Track</span>
+        </span>
 
-      {/* Main content */}
-      <main className="flex flex-1 items-center justify-center overflow-hidden pt-20 pb-10">
-        <div className="w-full" style={{ maxWidth: 560 }}>
+        <div style={{ width: 64 }} className="text-right">
+          <span className="text-xs font-semibold tabular-nums" style={{ color: "#555555" }}>
+            {stepCurrent} / {stepTotal}
+          </span>
+        </div>
+      </header>
+
+      {/* Middle — icon + question + options, centered, no page scroll */}
+      <main className="relative z-10 flex-1 overflow-y-auto px-5">
+        <div className="flex min-h-full flex-col justify-center py-3">
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={step}
@@ -1138,35 +1214,69 @@ export default function OnboardingPage() {
               animate="center"
               exit="exit"
               transition={{ type: "tween", ease: easing, duration: 0.3 }}
-              className="w-full"
+              className="mx-auto w-full"
+              style={{ maxWidth: 480 }}
             >
-              <div className="flex flex-col items-center gap-6 px-5">
-                {/* Question */}
+              <div className="flex flex-col items-center gap-6">
                 {question && (
-                  <div className="text-center">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-white leading-tight sm:text-4xl">
-                      {question}
-                    </h1>
-                    {subText && (
-                      <p className="mt-2 text-sm" style={{ color: "#666666" }}>
-                        {subText}
-                      </p>
-                    )}
-                  </div>
+                  <>
+                    {/* Step icon chip */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.85 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4, ease: easing, delay: 0.05 }}
+                      className="flex items-center justify-center"
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 18,
+                        backgroundImage:
+                          "linear-gradient(160deg, rgba(59,130,246,0.28) 0%, rgba(59,130,246,0.06) 100%)",
+                        border: "1px solid rgba(59,130,246,0.35)",
+                        boxShadow: "0 0 30px rgba(59,130,246,0.30), inset 0 1px 0 rgba(255,255,255,0.10)",
+                      }}
+                    >
+                      <StepIco size={26} strokeWidth={2} style={{ color: "#93c5fd" }} />
+                    </motion.div>
+
+                    {/* Question */}
+                    <div className="text-center">
+                      {microCopy[step] && (
+                        <p className="mb-2.5 text-xs italic" style={{ color: "#6b7280" }}>
+                          {microCopy[step]}
+                        </p>
+                      )}
+                      <h1 className="text-[30px] font-extrabold leading-[1.1] tracking-tight text-white">
+                        {question}
+                      </h1>
+                      {subText && (
+                        <p className="mt-2.5 text-sm" style={{ color: "#8b8f98" }}>
+                          {subText}
+                        </p>
+                      )}
+                    </div>
+                  </>
                 )}
 
-                {/* Cards / input */}
+                {/* Options / input */}
                 <div className="w-full">{content}</div>
-
-                {/* Continue button (hidden on confirmation steps that have their own) */}
-                {!hideContinue && (
-                  <ContinueButton disabled={!canContinue} onClick={goNext} />
-                )}
               </div>
             </motion.div>
           </AnimatePresence>
         </div>
       </main>
+
+      {/* Continue — bottom */}
+      {!hideContinue && (
+        <div
+          className="relative z-10 shrink-0 px-5 pt-2"
+          style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
+        >
+          <div className="mx-auto w-full" style={{ maxWidth: 480 }}>
+            <ContinueButton disabled={!canContinue} onClick={goNext} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

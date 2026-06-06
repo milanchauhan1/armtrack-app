@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Upload, PlusSquare, CheckCircle, X } from 'lucide-react';
+import { Capacitor } from '@capacitor/core';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -342,6 +343,8 @@ export default function InstallBanner() {
   const [showIOS, setShowIOS] = useState(false);
 
   useEffect(() => {
+    // Never show "add to home screen" web UI inside the native app — it IS the app.
+    if (Capacitor.isNativePlatform()) return;
     if (isInStandaloneMode()) return;
 
     // iOS: show guide on first visit

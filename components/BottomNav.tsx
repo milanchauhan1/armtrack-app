@@ -27,7 +27,11 @@ export default function BottomNav() {
     return () => subscription.unsubscribe();
   }, []);
 
-  if (!mounted || !hasSession) return null;
+  // Only show the player tab bar on the main app screens — never during
+  // onboarding, auth, join, or coach flows (which would cover their buttons).
+  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  const showNav = ["/dashboard", "/log", "/history"].includes(normalizedPath);
+  if (!mounted || !hasSession || !showNav) return null;
 
   const tabs = [
     { href: "/dashboard", icon: House, label: "Home" },

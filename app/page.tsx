@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
+import { Capacitor } from "@capacitor/core";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
@@ -375,11 +376,17 @@ export default function LandingPage() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [unveiled, setUnveiled] = useState(false);
+  const [nativeRedirecting, setNativeRedirecting] = useState(false);
 
-  // Redirect authenticated users straight to dashboard
+  // The marketing landing page is for the website only. Native app users have
+  // already installed — send them straight to login (or dashboard if signed in).
+  // Authenticated web users also skip the landing page.
   useEffect(() => {
+    const native = Capacitor.isNativePlatform();
+    if (native) setNativeRedirecting(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) router.replace("/dashboard");
+      else if (native) router.replace("/login");
     });
   }, [router]);
 
@@ -393,6 +400,12 @@ export default function LandingPage() {
     const t = setTimeout(() => setUnveiled(true), 80);
     return () => clearTimeout(t);
   }, []);
+
+  // On native, render nothing (matches the black splash) while redirecting,
+  // so the marketing page never flashes inside the app.
+  if (nativeRedirecting) {
+    return <div style={{ minHeight: "100vh", background: "#000000" }} />;
+  }
 
   return (
     <div
