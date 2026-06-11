@@ -1358,6 +1358,9 @@ export default function LandingPage() {
           style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
         >
           <span style={{ color: "#444444", fontSize: 13 }}>ArmTrack &copy; 2026</span>
+          <Link href="/blog" style={{ color: "#888888", fontSize: 13, textDecoration: "none" }}>
+            Guides
+          </Link>
           <span style={{ color: "#444444", fontSize: 13 }}>Built for baseball &amp; softball</span>
         </div>
       </footer>
