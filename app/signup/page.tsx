@@ -17,20 +17,46 @@ function GoogleIcon() {
   );
 }
 
+function EyeIcon({ open }: { open: boolean }) {
+  return open ? (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  ) : (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c6.5 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3.5 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+      <line x1="2" y1="2" x2="22" y2="22" />
+    </svg>
+  );
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmationSent, setConfirmationSent] = useState(false);
   const [isNative, setIsNative] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resent, setResent] = useState(false);
 
   useEffect(() => {
     import("@capacitor/core").then(({ Capacitor }) => {
       setIsNative(Capacitor.isNativePlatform());
     }).catch(() => {});
   }, []);
+
+  // Resend cooldown ticker
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
 
   async function handleEmailSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -69,6 +95,18 @@ export default function SignupPage() {
     }
   }
 
+  async function handleResend() {
+    if (resendCooldown > 0) return;
+    setResent(false);
+    try {
+      await supabase.auth.resend({ type: "signup", email });
+      setResent(true);
+      setResendCooldown(30);
+    } catch {
+      setError("Couldn't resend. Please try again in a moment.");
+    }
+  }
+
   if (confirmationSent) {
     return (
       <div className="flex min-h-screen flex-col bg-black">
@@ -93,6 +131,36 @@ export default function SignupPage() {
               We sent a confirmation link to <span className="text-white font-semibold">{email}</span>.
               Click the link to activate your account.
             </p>
+            <p className="mt-3 text-xs text-gray-500">
+              Can&apos;t find it? Check your spam or promotions folder.
+            </p>
+
+            {/* Resend */}
+            <button
+              onClick={handleResend}
+              disabled={resendCooldown > 0}
+              className="mt-6 w-full rounded-xl py-3 text-sm font-semibold text-white transition-all duration-150 disabled:opacity-50 cursor-pointer"
+              style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
+            >
+              {resendCooldown > 0
+                ? `Resend in ${resendCooldown}s`
+                : resent
+                ? "Email sent again ✓"
+                : "Resend confirmation email"}
+            </button>
+
+            {/* Change email */}
+            <button
+              onClick={() => {
+                setConfirmationSent(false);
+                setResent(false);
+                setResendCooldown(0);
+                setPassword("");
+              }}
+              className="mt-3 text-sm font-semibold text-blue-400 transition-colors hover:text-blue-300 cursor-pointer"
+            >
+              Use a different email
+            </button>
           </div>
         </div>
       </div>
@@ -115,10 +183,10 @@ export default function SignupPage() {
           style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
         >
           <h1 className="mb-2 text-2xl font-extrabold tracking-tight text-white">
-            Create your account
+            Create your free account
           </h1>
           <p className="mb-8 text-sm text-gray-400">
-            Start protecting your arm today.
+            Free for players and coaches. No credit card — takes about 30 seconds.
           </p>
 
           {/* Google OAuth — web only, broken in Capacitor WebView without Universal Links */}
@@ -144,12 +212,18 @@ export default function SignupPage() {
           {/* Email/password form */}
           <form onSubmit={handleEmailSignup} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Email
               </label>
               <input
+                id="email"
                 type="email"
                 required
+                autoFocus
+                autoComplete="email"
+                inputMode="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
@@ -158,19 +232,31 @@ export default function SignupPage() {
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-gray-400">
                 Password
               </label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Min. 6 characters"
-                className="rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 outline-none transition-all duration-150 focus:ring-2 focus:ring-blue-500"
-                style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  autoComplete="new-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="At least 6 characters"
+                  className="w-full rounded-xl px-4 py-3 pr-12 text-sm text-white placeholder-gray-600 outline-none transition-all duration-150 focus:ring-2 focus:ring-blue-500"
+                  style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition-colors hover:text-gray-300 cursor-pointer"
+                >
+                  <EyeIcon open={showPassword} />
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -190,7 +276,7 @@ export default function SignupPage() {
               disabled={loading}
               className="mt-2 rounded-xl bg-blue-500 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all duration-150 hover:bg-blue-400 disabled:opacity-50 cursor-pointer"
             >
-              {loading ? "Creating account…" : "Create Account"}
+              {loading ? "Creating account…" : "Create my free account"}
             </button>
           </form>
 

@@ -11,35 +11,59 @@ const inter = Inter({
 });
 
 const SITE_URL = "https://armtrack.app";
-const TITLE = "ArmTrack — Protect the Arm. Extend the Career.";
+const TITLE = "ArmTrack — Make Smarter Throwing Decisions";
 const DESCRIPTION =
-  "ArmTrack helps coaches and players track workload, soreness, and recovery — stopping arm injuries before they start.";
+  "ArmTrack helps baseball players and coaches track pain, soreness, and throwing workload in 60 seconds a day — turning daily check-ins into a readiness score you can act on.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: TITLE,
+  title: {
+    default: TITLE,
+    template: "%s · ArmTrack",
+  },
   description: DESCRIPTION,
   applicationName: "ArmTrack",
+  keywords: [
+    "arm health",
+    "baseball arm care",
+    "pitcher workload",
+    "throwing readiness",
+    "pitch count tracker",
+    "arm soreness tracking",
+    "baseball coach app",
+    "softball arm health",
+    "youth pitcher injury",
+  ],
+  authors: [{ name: "Milan" }],
+  creator: "Milan",
+  publisher: "ArmTrack",
+  category: "sports",
+  alternates: {
+    canonical: "/",
+  },
+  // Open Graph / Twitter images are supplied by app/opengraph-image.tsx
+  // (a branded 1200×630 card generated at build time).
   openGraph: {
     type: "website",
     url: SITE_URL,
     siteName: "ArmTrack",
     title: TITLE,
     description: DESCRIPTION,
-    images: [
-      {
-        url: "/dashboard-preview.png",
-        width: 1200,
-        height: 630,
-        alt: "ArmTrack arm health dashboard",
-      },
-    ],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: ["/dashboard-preview.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
   },
 };
 

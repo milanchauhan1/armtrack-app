@@ -15,16 +15,91 @@ import {
   Smartphone,
   Sliders,
   CheckCircle,
-  ClipboardList,
-  BarChart2,
-  MessageSquare,
-  Activity,
-  TrendingUp,
+  Flame,
+  Heart,
+  RotateCcw,
+  Gauge,
+  Quote,
 } from "lucide-react";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
+
+// ── Structured data (JSON-LD) — rich results + AI search ───────────────────────
+
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://armtrack.app/#organization",
+      name: "ArmTrack",
+      url: "https://armtrack.app",
+      logo: "https://armtrack.app/icons/icon-512.png",
+      founder: { "@type": "Person", name: "Milan" },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://armtrack.app/#website",
+      url: "https://armtrack.app",
+      name: "ArmTrack",
+      publisher: { "@id": "https://armtrack.app/#organization" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "ArmTrack",
+      applicationCategory: "HealthApplication",
+      operatingSystem: "iOS, Web",
+      description:
+        "Arm-health app for baseball and softball. Players log pain, soreness, stiffness, and throwing workload in about 60 seconds a day to get a readiness score and throwing recommendation. Coaches see their whole roster's readiness on one screen.",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      publisher: { "@id": "https://armtrack.app/#organization" },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is ArmTrack?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "ArmTrack is an arm-health app for baseball and softball. Players log pain, soreness, stiffness, and throwing volume in about 60 seconds a day and get a readiness score and a throwing recommendation. Coaches see their whole roster's readiness on one screen before practice.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "How long does a daily check-in take?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Most players finish a daily check-in in under 60 seconds — three sliders, a throw count, and an activity type.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Is ArmTrack free?",
+          acceptedAnswer: { "@type": "Answer", text: "ArmTrack is free for players." },
+        },
+        {
+          "@type": "Question",
+          name: "Does ArmTrack prevent injuries?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "No. ArmTrack surfaces trends in pain, soreness, recovery, and throwing workload to help players and coaches make informed throwing decisions. It does not diagnose, treat, or prevent injuries, and it is not a substitute for a coach, athletic trainer, or doctor.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Who is ArmTrack for?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Travel and high school baseball and softball coaches, baseball parents, and pitchers and position players ages 12–18.",
+          },
+        },
+      ],
+    },
+  ],
+};
 
 // ── ScrollFade — fires once when element enters viewport ──────────────────────
 
@@ -50,7 +125,57 @@ function ScrollFade({
   );
 }
 
-// ── CSS iPhone frame ───────────────────────────────────────────────────────────
+// ── Phone status bar (shared) ──────────────────────────────────────────────────
+
+function StatusBar() {
+  return (
+    <div
+      style={{
+        height: 44,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0 16px",
+      }}
+    >
+      <span style={{ color: "#ffffff", fontSize: 11, fontWeight: 600 }}>9:41</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 1.5 }}>
+          {[6, 9, 12, 15].map((h, i) => (
+            <div
+              key={i}
+              style={{ width: 3, height: h, background: i < 3 ? "#ffffff" : "#555555", borderRadius: 1 }}
+            />
+          ))}
+        </div>
+        <div
+          style={{
+            width: 22,
+            height: 11,
+            border: "1.5px solid #ffffff",
+            borderRadius: 3,
+            position: "relative",
+            marginLeft: 2,
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: 2,
+              top: 2,
+              width: "70%",
+              height: "calc(100% - 4px)",
+              background: "#ffffff",
+              borderRadius: 1,
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── CSS iPhone frame (compact) ─────────────────────────────────────────────────
 
 function IPhoneFrame({
   children,
@@ -72,7 +197,6 @@ function IPhoneFrame({
         ...style,
       }}
     >
-      {/* Notch */}
       <div
         style={{
           position: "absolute",
@@ -86,7 +210,6 @@ function IPhoneFrame({
           zIndex: 10,
         }}
       />
-      {/* Screen */}
       <div
         style={{
           borderRadius: 36,
@@ -97,143 +220,184 @@ function IPhoneFrame({
           position: "relative",
         }}
       >
-        {/* Status bar */}
-        <div
-          style={{
-            height: 44,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 16px",
-          }}
-        >
-          <span style={{ color: "#ffffff", fontSize: 11, fontWeight: 600 }}>9:41</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <div style={{ display: "flex", alignItems: "flex-end", gap: 1.5 }}>
-              {[6, 9, 12, 15].map((h, i) => (
-                <div
-                  key={i}
-                  style={{ width: 3, height: h, background: i < 3 ? "#ffffff" : "#555555", borderRadius: 1 }}
-                />
-              ))}
-            </div>
-            <div
-              style={{
-                width: 22,
-                height: 11,
-                border: "1.5px solid #ffffff",
-                borderRadius: 3,
-                position: "relative",
-                marginLeft: 2,
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  left: 2,
-                  top: 2,
-                  width: "70%",
-                  height: "calc(100% - 4px)",
-                  background: "#ffffff",
-                  borderRadius: 1,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  right: -4,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  width: 2.5,
-                  height: 5,
-                  background: "#ffffff",
-                  borderRadius: "0 1px 1px 0",
-                }}
-              />
-            </div>
-          </div>
-        </div>
+        <StatusBar />
         {children}
       </div>
     </div>
   );
 }
 
-// ── Player dashboard mockup ────────────────────────────────────────────────────
+// ── Premium phone — glassy frame with blue bloom, for product showcase ──────────
 
-function PlayerScreen() {
+function PremiumPhone({
+  children,
+  image,
+  imageAlt,
+  glow = true,
+  style,
+}: {
+  children?: React.ReactNode;
+  image?: string;
+  imageAlt?: string;
+  glow?: boolean;
+  style?: React.CSSProperties;
+}) {
   return (
-    <div style={{ padding: "0 14px 20px" }}>
-      <p style={{ color: "#888888", fontSize: 10, marginBottom: 12 }}>Good morning, Jake</p>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4 }}>
-        <span style={{ color: "#22C55E", fontSize: 42, fontWeight: 900, lineHeight: 1 }}>7.8</span>
-        <span style={{ color: "#555555", fontSize: 14, fontWeight: 500 }}>/10</span>
-      </div>
-      <span
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          borderRadius: 99,
-          padding: "3px 10px",
-          fontSize: 10,
-          fontWeight: 700,
-          background: "rgba(34,197,94,0.10)",
-          border: "1px solid rgba(34,197,94,0.25)",
-          color: "#22C55E",
-          marginBottom: 14,
-        }}
-      >
-        Good to Go
-      </span>
+    <div style={{ position: "relative", display: "inline-block", ...style }}>
+      {glow && (
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 520,
+            height: 520,
+            borderRadius: "50%",
+            background:
+              "radial-gradient(circle, rgba(59,130,246,0.40) 0%, rgba(59,130,246,0.20) 26%, rgba(59,130,246,0.07) 50%, transparent 72%)",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
+      )}
       <div
         style={{
-          background: "#111111",
-          border: "1px solid #222222",
-          borderLeft: "3px solid #22C55E",
-          borderRadius: 12,
-          padding: "10px 12px",
-          marginBottom: 12,
+          position: "relative",
+          zIndex: 1,
+          width: 268,
+          borderRadius: 52,
+          background: "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 60%, #141414 100%)",
+          padding: 10,
+          boxShadow:
+            "0 0 0 1px rgba(255,255,255,0.12), 0 40px 80px rgba(0,0,0,0.85), inset 0 1px 0 rgba(255,255,255,0.08)",
         }}
       >
-        <p
-          style={{
-            color: "#888888",
-            fontSize: 9,
-            marginBottom: 4,
-            fontWeight: 600,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-          }}
-        >
-          Today&apos;s Recommendation
-        </p>
-        <p style={{ color: "#ffffff", fontSize: 10, lineHeight: 1.5 }}>
-          Normal session today — stay within your plan.
-        </p>
-      </div>
-      <div style={{ display: "flex", gap: 6 }}>
-        {(
-          [
-            ["P", 3, "#22c55e"],
-            ["S", 4, "#f59e0b"],
-            ["St", 2, "#22c55e"],
-          ] as [string, number, string][]
-        ).map(([label, val, color]) => (
-          <span
-            key={label}
+        <div style={{ borderRadius: 44, overflow: "hidden", background: "#000", position: "relative" }}>
+          <div
             style={{
-              padding: "4px 8px",
-              borderRadius: 8,
-              fontSize: 10,
-              fontWeight: 700,
-              background: `${color}15`,
-              color,
+              position: "absolute",
+              top: 14,
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 88,
+              height: 26,
+              background: "#000",
+              borderRadius: 999,
+              zIndex: 10,
             }}
-          >
-            {label}
-            {val}
-          </span>
+          />
+          {image ? (
+            <Image
+              src={image}
+              width={268}
+              height={580}
+              alt={imageAlt || ""}
+              style={{ width: "100%", height: "auto", display: "block" }}
+            />
+          ) : (
+            <>
+              <StatusBar />
+              {children}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Daily check-in mockup (mirrors the real /log screen) ───────────────────────
+
+const CHECKIN_SLIDERS: { label: string; value: number; color: string; caption: string }[] = [
+  { label: "Pain", value: 2, color: "#22c55e", caption: "Feeling great" },
+  { label: "Soreness", value: 4, color: "#f59e0b", caption: "Mild discomfort" },
+  { label: "Stiffness", value: 1, color: "#22c55e", caption: "Feeling great" },
+];
+
+function CheckInScreen() {
+  return (
+    <div style={{ padding: "0 14px 18px" }}>
+      <p style={{ color: "#ffffff", fontSize: 12, fontWeight: 700, marginBottom: 2 }}>Daily Check-In</p>
+      <p style={{ color: "#555555", fontSize: 9, marginBottom: 14 }}>Takes about 45 seconds</p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 14 }}>
+        {CHECKIN_SLIDERS.map(({ label, value, color, caption }) => (
+          <div key={label}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
+              <span style={{ color: "#cccccc", fontSize: 10, fontWeight: 600 }}>{label}</span>
+              <span style={{ color, fontSize: 10, fontWeight: 700 }}>{caption}</span>
+            </div>
+            <div style={{ position: "relative", height: 5, borderRadius: 99, background: "#1e1e1e" }}>
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  height: "100%",
+                  width: `${value * 10}%`,
+                  borderRadius: 99,
+                  background: color,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: `calc(${value * 10}% - 7px)`,
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  width: 14,
+                  height: 14,
+                  borderRadius: 99,
+                  background: "#fff",
+                  border: `2px solid ${color}`,
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.5)",
+                }}
+              />
+            </div>
+          </div>
         ))}
+      </div>
+
+      <p style={{ color: "#888888", fontSize: 9, fontWeight: 600, marginBottom: 6 }}>How many throws today?</p>
+      <div style={{ display: "flex", gap: 5, marginBottom: 16 }}>
+        {[0, 25, 50, 75, 100].map((n) => {
+          const active = n === 50;
+          return (
+            <span
+              key={n}
+              style={{
+                flex: 1,
+                textAlign: "center",
+                padding: "6px 0",
+                borderRadius: 8,
+                fontSize: 10,
+                fontWeight: 700,
+                background: active ? "#3B82F6" : "#181818",
+                border: active ? "1px solid #3B82F6" : "1px solid #262626",
+                color: active ? "#fff" : "#6b7280",
+              }}
+            >
+              {n}
+            </span>
+          );
+        })}
+      </div>
+
+      <div
+        style={{
+          width: "100%",
+          padding: "10px 0",
+          textAlign: "center",
+          background: "#3B82F6",
+          borderRadius: 10,
+          color: "#fff",
+          fontSize: 11,
+          fontWeight: 700,
+          boxShadow: "0 4px 16px rgba(59,130,246,0.35)",
+        }}
+      >
+        Get my readiness
       </div>
     </div>
   );
@@ -262,8 +426,9 @@ function CoachScreen() {
           <motion.div
             key={row.name}
             initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, delay: 0.3 + i * 0.08, ease }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35, delay: 0.15 + i * 0.08, ease }}
             style={{
               display: "flex",
               justifyContent: "space-between",
@@ -290,65 +455,62 @@ function CoachScreen() {
           </motion.div>
         ))}
       </div>
-      <button
+      <div
         style={{
           marginTop: 12,
           width: "100%",
           padding: "8px 0",
+          textAlign: "center",
           background: "rgba(59,130,246,0.15)",
           border: "1px solid rgba(59,130,246,0.35)",
           borderRadius: 10,
           color: "#60a5fa",
           fontSize: 10,
           fontWeight: 700,
-          cursor: "pointer",
         }}
       >
         Notify Team
-      </button>
+      </div>
     </div>
   );
 }
 
-// ── Feature row helper ─────────────────────────────────────────────────────────
+// ── Mini trend sparkline (decorative) ──────────────────────────────────────────
 
-function FeatureRow({
-  icon: Icon,
-  title,
-  desc,
-}: {
-  icon: React.ElementType;
-  title: string;
-  desc: string;
-}) {
+function Sparkline({ points, color }: { points: number[]; color: string }) {
+  const w = 200;
+  const h = 48;
+  const max = Math.max(...points);
+  const min = Math.min(...points);
+  const range = max - min || 1;
+  const coords = points.map((p, i) => {
+    const x = (i / (points.length - 1)) * w;
+    const y = h - ((p - min) / range) * (h - 8) - 4;
+    return [x, y] as const;
+  });
+  const line = coords.map(([x, y]) => `${x},${y}`).join(" ");
+  const area = `0,${h} ${line} ${w},${h}`;
+  const id = `g-${color.replace("#", "")}`;
   return (
-    <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-      <div
-        style={{
-          flexShrink: 0,
-          width: 36,
-          height: 36,
-          borderRadius: 10,
-          background: "rgba(59,130,246,0.10)",
-          border: "1px solid rgba(59,130,246,0.2)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Icon size={16} style={{ color: "#3B82F6" }} />
-      </div>
-      <div>
-        <p style={{ color: "#ffffff", fontSize: 14, fontWeight: 700, marginBottom: 2 }}>{title}</p>
-        <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.5 }}>{desc}</p>
-      </div>
-    </div>
+    <svg viewBox={`0 0 ${w} ${h}`} width="100%" height="48" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.28" />
+          <stop offset="100%" stopColor={color} stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <polygon points={area} fill={`url(#${id})`} />
+      <polyline points={line} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {coords.length > 0 && (
+        <circle cx={coords[coords.length - 1][0]} cy={coords[coords.length - 1][1]} r="3" fill={color} />
+      )}
+    </svg>
   );
 }
 
 // ── Blue label pill ────────────────────────────────────────────────────────────
 
-function BluePill({ children }: { children: React.ReactNode }) {
+function BluePill({ children, color = "#3B82F6" }: { children: React.ReactNode; color?: string }) {
   return (
     <span
       style={{
@@ -356,9 +518,9 @@ function BluePill({ children }: { children: React.ReactNode }) {
         fontSize: 11,
         fontWeight: 700,
         letterSpacing: "0.15em",
-        color: "#3B82F6",
-        background: "rgba(59,130,246,0.08)",
-        border: "1px solid rgba(59,130,246,0.2)",
+        color,
+        background: `${color}14`,
+        border: `1px solid ${color}33`,
         padding: "5px 12px",
         borderRadius: 99,
         marginBottom: 20,
@@ -416,6 +578,9 @@ export default function LandingPage() {
         overflowX: "hidden",
       }}
     >
+      {/* Structured data for rich results + AI search */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
+
       {/* ── Loading veil — fades out on mount ──────────────────────────────── */}
       <AnimatePresence>
         {!unveiled && (
@@ -436,20 +601,19 @@ export default function LandingPage() {
           .hero-nav-login { display: none !important; }
           .hero-logo-img { width: 40px !important; height: 40px !important; border-radius: 11px !important; }
           .hero-logo-word { display: inline-block !important; }
-          .hero-headline { font-size: 44px !important; margin-bottom: 16px !important; }
+          .hero-headline { font-size: 44px !important; margin-bottom: 14px !important; }
           .hero-nav-btn { padding: 6px 14px !important; font-size: 12px !important; }
-          /* Mobile hero: drop pitcher photo, text left, sleek tilted phone on right, CTAs centered at bottom */
-          .hero-section { position: relative !important; min-height: 680px !important; padding-top: 96px !important; }
+          .hero-section { position: relative !important; min-height: 700px !important; padding-top: 96px !important; }
           .hero-image-block { display: none !important; }
-          .hero-text-block { margin-top: 0 !important; padding: 72px 24px 0 !important; text-align: left !important; position: static !important; max-width: 58% !important; }
+          .hero-text-block { margin-top: 0 !important; padding: 72px 24px 0 !important; text-align: left !important; position: static !important; max-width: 60% !important; }
           .hero-text-block > div { max-width: 100% !important; }
           .hero-headline { position: relative !important; z-index: 2 !important; }
-          .hero-mission { display: none !important; }
+          .hero-sub { font-size: 13px !important; max-width: 100% !important; }
           .hero-phone-float {
             position: absolute !important;
-            right: 10px !important;
+            right: 8px !important;
             left: auto !important;
-            top: 150px !important;
+            top: 156px !important;
             transform: none !important;
             margin: 0 !important;
             display: block !important;
@@ -458,7 +622,7 @@ export default function LandingPage() {
           }
           .hero-phone-float > div:first-child { width: 420px !important; height: 420px !important; }
           .hero-phone-frame {
-            width: 188px !important;
+            width: 180px !important;
             border-radius: 40px !important;
             transform: rotateY(-14deg) rotateX(4deg) rotate(2deg) !important;
             box-shadow: 0 0 0 1px rgba(255,255,255,0.12), -20px 36px 56px rgba(0,0,0,0.82), inset 0 1px 0 rgba(255,255,255,0.08) !important;
@@ -468,25 +632,30 @@ export default function LandingPage() {
             position: absolute !important;
             left: 0 !important;
             right: 0 !important;
-            bottom: 44px !important;
+            bottom: 40px !important;
             z-index: 5 !important;
             padding: 0 24px !important;
           }
+          .showcase-row { flex-direction: column !important; gap: 48px !important; }
+          .coach-value-row { flex-direction: column-reverse !important; align-items: center !important; gap: 40px !important; }
+          .founder-card { padding: 32px 24px !important; }
+          .founder-quote { font-size: 19px !important; }
         }
         @media (max-width: 640px) {
           .hero-headline { font-size: 39px !important; line-height: 1.3 !important; letter-spacing: -0.02em !important; }
+          .hero-sub { font-size: 12.5px !important; }
           .hero-cta-row { flex-direction: row !important; justify-content: center !important; align-items: center !important; gap: 10px !important; }
           .hero-cta-row a { text-align: center !important; }
           .problem-cards { flex-direction: column !important; }
           .steps-row { flex-direction: column !important; align-items: center !important; }
           .steps-line { display: none !important; }
-          .how-columns { flex-direction: column !important; }
-          .coach-section { flex-direction: column-reverse !important; align-items: center !important; }
-          .player-section { flex-direction: column-reverse !important; align-items: center !important; }
-          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .reality-strip { gap: 0 !important; }
+          .reality-stat { padding: 14px 8px !important; }
+          .reality-stat .reality-num { font-size: 26px !important; }
           .footer-inner { flex-direction: column !important; gap: 4px !important; text-align: center !important; }
           .cta-row { flex-direction: column !important; align-items: stretch !important; }
           .cta-row a { text-align: center !important; }
+          .testi-quote { font-size: 22px !important; }
         }
       `}</style>
 
@@ -512,7 +681,6 @@ export default function LandingPage() {
           justifyContent: "space-between",
         }}
       >
-        {/* Logo icon — top left */}
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", flexShrink: 0 }}>
           <Image src="/icons/icon-192.png" width={130} height={130} alt="ArmTrack" className="hero-logo-img" style={{ borderRadius: 24 }} />
           <span className="hero-logo-word" style={{ display: "none", fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>
@@ -520,7 +688,6 @@ export default function LandingPage() {
             <span style={{ color: "#3B82F6" }}>Track</span>
           </span>
         </Link>
-        {/* Brand text — absolutely centered */}
         <Link href="/" className="hero-brand-text" style={{ position: "absolute", left: "50%", transform: "translateX(-50%)", textDecoration: "none" }}>
           <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: "-0.01em" }}>
             <span style={{ color: "#f5f5f5" }}>Arm</span>
@@ -541,7 +708,7 @@ export default function LandingPage() {
       </nav>
 
       {/* ── HERO ───────────────────────────────────────────────────────────── */}
-      <section className="hero-section" style={{ background: "#000", minHeight: "88vh", position: "relative" }}>
+      <section className="hero-section" style={{ background: "#000", minHeight: "90vh", position: "relative" }}>
 
         {/* Blue rim glow around pitcher image edges — very subtle */}
         <div style={{ position: "absolute", top: "4vh", left: "50%", transform: "translateX(-50%)", width: 700, height: 56, borderRadius: "50%", background: "radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.09) 0%, transparent 70%)", pointerEvents: "none", zIndex: 0 }} />
@@ -556,30 +723,37 @@ export default function LandingPage() {
           style={{ position: "relative", height: "52vh", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", paddingTop: 72, zIndex: 1 }}
         >
           <Image src="/hero-pitcher.png" width={900} height={520} priority alt="" style={{ objectFit: "contain", objectPosition: "center 30%", height: "100%", width: "auto" }} />
-          {/* Top fade — less aggressive so pitcher head shows */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, #000 0%, transparent 22%, transparent 65%, #000 100%)", pointerEvents: "none" }} />
-          {/* Right edge — longer softer fade so mound doesn't hard-cut */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, #000 0%, transparent 18%, transparent 60%, rgba(0,0,0,0.4) 80%, #000 100%)", pointerEvents: "none" }} />
-          {/* Left fade */}
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to left, transparent 70%, #000 100%)", pointerEvents: "none" }} />
         </motion.div>
 
         {/* Text block */}
         <div className="hero-text-block" style={{ position: "relative", zIndex: 2, marginTop: "-85px", padding: "0 64px 60px 4%" }}>
-          <div style={{ maxWidth: 520 }}>
+          <div style={{ maxWidth: 540 }}>
 
-            {/* Headline — sweeps up */}
             <motion.h1
               className="hero-headline"
               initial={{ opacity: 0, y: 48 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, delay: 0.55, ease }}
-              style={{ fontSize: 60, fontWeight: 350, letterSpacing: "-0.03em", lineHeight: 1.08, color: "#f5f5f5", margin: "0 0 20px" }}
+              style={{ fontSize: 60, fontWeight: 350, letterSpacing: "-0.03em", lineHeight: 1.08, color: "#f5f5f5", margin: "0 0 18px" }}
             >
               Make smarter throwing decisions.
             </motion.h1>
 
-            {/* CTAs — last to appear */}
+            {/* "Why" subcopy — delivers the core message */}
+            <motion.p
+              className="hero-sub"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.85, ease }}
+              style={{ fontSize: 17, lineHeight: 1.6, color: "#a1a1aa", margin: "0 0 26px", maxWidth: 440, fontWeight: 400 }}
+            >
+              Small arm issues become big problems when nobody&apos;s tracking them. ArmTrack turns
+              60 seconds a day into a readiness score you can actually act on.
+            </motion.p>
+
             <motion.div
               className="hero-cta-row"
               initial={{ opacity: 0, y: 20 }}
@@ -605,7 +779,6 @@ export default function LandingPage() {
           transition={{ type: "spring", stiffness: 60, damping: 18, delay: 0.7 }}
           style={{ position: "absolute", right: 120, top: "37%", transform: "translateY(-50%)", zIndex: 3 }}
         >
-          {/* Blue bloom — intense at phone edges, seamless fade to black */}
           <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.55) 0%, rgba(59,130,246,0.38) 20%, rgba(59,130,246,0.18) 38%, rgba(59,130,246,0.07) 54%, rgba(59,130,246,0.02) 68%, transparent 82%)", pointerEvents: "none", zIndex: -1 }} />
           <div className="hero-phone-frame" style={{
             width: 280,
@@ -628,36 +801,390 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── HOW FAST ───────────────────────────────────────────────────────── */}
-      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
-        <div style={{ maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+      {/* ── REALITY STRIP — honest, citable stakes (above-the-fold social proof) ── */}
+      <section style={{ background: "#0a0a0a", borderTop: "1px solid #141414", borderBottom: "1px solid #141414", padding: "44px 20px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <ScrollFade>
+            <p style={{ textAlign: "center", color: "#71717a", fontSize: 13, letterSpacing: "0.04em", margin: "0 0 26px" }}>
+              The arm rarely fails overnight. It fails quietly — one ignored day at a time.
+            </p>
+          </ScrollFade>
+          <div
+            className="reality-strip"
+            style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", alignItems: "center" }}
+          >
+            {[
+              { num: "1 in 4", label: "youth pitchers report arm pain serious enough to stop throwing" },
+              { num: "36×", label: "higher injury risk when pitchers throw with fatigue" },
+              { num: "38.8%", label: "of MLB pitchers have undergone Tommy John surgery" },
+            ].map(({ num, label }, i) => (
+              <ScrollFade key={num} delay={i * 0.08}>
+                <div
+                  className="reality-stat"
+                  style={{
+                    textAlign: "center",
+                    padding: "8px 24px",
+                    borderLeft: i === 0 ? "none" : "1px solid #1f1f1f",
+                  }}
+                >
+                  <p className="reality-num" style={{ fontSize: 34, fontWeight: 900, color: "#f5f5f5", letterSpacing: "-0.02em", margin: "0 0 6px" }}>
+                    {num}
+                  </p>
+                  <p style={{ color: "#71717a", fontSize: 12.5, lineHeight: 1.45, margin: 0, maxWidth: 230, marginInline: "auto" }}>
+                    {label}
+                  </p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── WHY ARMTRACK EXISTS — founder story (Milan) ─────────────────────── */}
+      <section style={{ background: "#000000", padding: "110px 20px" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <ScrollFade>
+            <div style={{ textAlign: "center", marginBottom: 36 }}>
+              <BluePill>Why ArmTrack Exists</BluePill>
+            </div>
+          </ScrollFade>
+          <ScrollFade delay={0.05}>
+            <div
+              className="founder-card"
+              style={{
+                position: "relative",
+                background: "linear-gradient(160deg, #0e0e0e 0%, #0a0a0a 100%)",
+                border: "1px solid #1f1f1f",
+                borderRadius: 28,
+                padding: "48px 52px",
+                overflow: "hidden",
+              }}
+            >
+              <div style={{ position: "absolute", top: -80, right: -80, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+              <Quote size={28} style={{ color: "#3B82F6", marginBottom: 22, opacity: 0.9 }} />
+
+              <p className="founder-quote" style={{ fontSize: 23, lineHeight: 1.55, color: "#f5f5f5", fontWeight: 400, margin: "0 0 20px", letterSpacing: "-0.01em" }}>
+                I&apos;ve played baseball most of my life. As I started throwing harder, elbow pain
+                just became part of the routine — ibuprofen before practice, telling myself I was
+                fine. I never tracked my throwing volume, my soreness, or how I was recovering.
+              </p>
+              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#a1a1aa", margin: "0 0 16px" }}>
+                Eventually it caught up with me. I still deal with elbow pain that affects how I
+                throw, and I think about how different it might be if I&apos;d paid attention sooner.
+              </p>
+              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#e5e5e5", fontWeight: 500, margin: "0 0 32px" }}>
+                I built ArmTrack so the next player doesn&apos;t have to learn this the hard way.
+              </p>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                <div
+                  style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: 999,
+                    background: "linear-gradient(145deg, #3B82F6, #1d4ed8)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 18,
+                    flexShrink: 0,
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.4)",
+                  }}
+                >
+                  M
+                </div>
+                <div>
+                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, margin: 0 }}>Milan</p>
+                  <p style={{ color: "#71717a", fontSize: 13, margin: 0 }}>Founder, ArmTrack</p>
+                </div>
+              </div>
+            </div>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── THE PROBLEM — the core message ─────────────────────────────────── */}
+      <section id="why" style={{ background: "#0a0a0a", padding: "110px 20px" }}>
+        <div style={{ maxWidth: 840, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <BluePill color="#EF4444">The Problem</BluePill>
+            <h2
+              style={{
+                fontSize: 42,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.12,
+                color: "#ffffff",
+                margin: 0,
+                marginBottom: 52,
+              }}
+            >
+              Small arm issues become major problems when nobody&apos;s tracking them.
+            </h2>
+          </ScrollFade>
+
+          <div className="problem-cards" style={{ display: "flex", gap: 20, marginBottom: 44 }}>
+            {[
+              { icon: AlertTriangle, text: "Players say ‘I’m fine’ — even when they’re not" },
+              { icon: TrendingDown, text: "One fatigued outing away from a season-ending injury" },
+              { icon: EyeOff, text: "No visibility into how an arm actually feels day to day" },
+            ].map(({ icon: Icon, text }, i) => (
+              <ScrollFade key={text} delay={i * 0.1} className="flex-1">
+                <div
+                  style={{
+                    background: "#111111",
+                    border: "1px solid #222222",
+                    borderLeft: "3px solid #EF4444",
+                    borderRadius: 16,
+                    padding: "26px 22px",
+                    textAlign: "left",
+                    height: "100%",
+                  }}
+                >
+                  <Icon size={22} style={{ color: "#EF4444", marginBottom: 14 }} />
+                  <p style={{ color: "#ffffff", fontSize: 15, lineHeight: 1.5, fontWeight: 500, margin: 0 }}>
+                    {text}
+                  </p>
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+
+          <ScrollFade>
+            <p style={{ color: "#a1a1aa", fontSize: 17, lineHeight: 1.7, margin: "0 auto", maxWidth: 620 }}>
+              ArmTrack makes the invisible visible. Sixty seconds of daily logging turns scattered
+              aches into a clear pattern — on a screen, before it shows up in an injury.
+            </p>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── PRODUCT SHOWCASE — bigger visuals (player side) ─────────────────── */}
+      <section style={{ background: "#000000", padding: "120px 20px" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+          <ScrollFade>
+            <div style={{ textAlign: "center", marginBottom: 16 }}>
+              <BluePill>The Product</BluePill>
+            </div>
+            <h2
+              style={{
+                textAlign: "center",
+                fontSize: 42,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.12,
+                color: "#ffffff",
+                margin: "0 auto 14px",
+                maxWidth: 600,
+              }}
+            >
+              Your arm, in focus — before you throw.
+            </h2>
+            <p style={{ textAlign: "center", color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, margin: "0 auto 72px", maxWidth: 520 }}>
+              Two taps in the morning. A clear answer the moment you finish.
+            </p>
+          </ScrollFade>
+
+          <div
+            className="showcase-row"
+            style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: 80, flexWrap: "wrap" }}
+          >
+            <ScrollFade>
+              <div style={{ textAlign: "center" }}>
+                <PremiumPhone>
+                  <CheckInScreen />
+                </PremiumPhone>
+                <p style={{ color: "#ffffff", fontSize: 16, fontWeight: 700, margin: "32px 0 6px" }}>
+                  Daily check-in
+                </p>
+                <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
+                  Pain, soreness, stiffness, and throws — logged in under a minute.
+                </p>
+              </div>
+            </ScrollFade>
+
+            <ScrollFade delay={0.12}>
+              <div style={{ textAlign: "center" }}>
+                <PremiumPhone image="/dashboard-preview.png" imageAlt="ArmTrack athlete dashboard" />
+                <p style={{ color: "#ffffff", fontSize: 16, fontWeight: 700, margin: "32px 0 6px" }}>
+                  Readiness dashboard
+                </p>
+                <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
+                  Your score and today&apos;s recommendation, the second you check in.
+                </p>
+              </div>
+            </ScrollFade>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MORE THAN A DAILY CHECK-IN — trust / depth ─────────────────────── */}
+      <section style={{ background: "#0a0a0a", padding: "110px 20px" }}>
+        <div style={{ maxWidth: 1040, margin: "0 auto" }}>
+          <ScrollFade>
+            <div style={{ textAlign: "center", marginBottom: 14 }}>
+              <BluePill>Under the Score</BluePill>
+            </div>
+            <h2
+              style={{
+                textAlign: "center",
+                fontSize: 42,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.12,
+                color: "#ffffff",
+                margin: "0 auto 14px",
+                maxWidth: 560,
+              }}
+            >
+              More than a daily check-in.
+            </h2>
+            <p style={{ textAlign: "center", color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, margin: "0 auto 64px", maxWidth: 560 }}>
+              Every log feeds four signals ArmTrack watches over time — so one rough day reads
+              very differently than a rough week.
+            </p>
+          </ScrollFade>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
+            {[
+              { icon: Flame, color: "#EF4444", title: "Pain trends", desc: "Whether discomfort is fading or quietly climbing.", spark: [3, 4, 3, 5, 4, 6, 5] },
+              { icon: Heart, color: "#F59E0B", title: "Soreness trends", desc: "How your arm responds to back-to-back workloads.", spark: [5, 4, 6, 5, 7, 6, 4] },
+              { icon: RotateCcw, color: "#22C55E", title: "Recovery patterns", desc: "How quickly you bounce back between outings.", spark: [2, 5, 3, 6, 4, 7, 8] },
+              { icon: Gauge, color: "#3B82F6", title: "Throwing workload", desc: "Throw counts and intensity, day over day.", spark: [4, 6, 5, 8, 6, 9, 7] },
+            ].map(({ icon: Icon, color, title, desc, spark }, i) => (
+              <ScrollFade key={title} delay={i * 0.08}>
+                <div
+                  style={{
+                    background: "#0e0e0e",
+                    border: "1px solid #1f1f1f",
+                    borderRadius: 20,
+                    padding: "26px 22px 18px",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: 11,
+                      background: `${color}14`,
+                      border: `1px solid ${color}33`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <Icon size={17} style={{ color }} />
+                  </div>
+                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, margin: "0 0 6px" }}>{title}</p>
+                  <p style={{ color: "#71717a", fontSize: 13, lineHeight: 1.5, margin: "0 0 18px", flex: 1 }}>{desc}</p>
+                  <Sparkline points={spark} color={color} />
+                </div>
+              </ScrollFade>
+            ))}
+          </div>
+
+          <ScrollFade>
+            <p style={{ textAlign: "center", color: "#52525b", fontSize: 12.5, lineHeight: 1.6, margin: "40px auto 0", maxWidth: 560 }}>
+              ArmTrack surfaces trends to help you make informed decisions. It doesn&apos;t diagnose
+              injuries or replace a coach, athletic trainer, or doctor.
+            </p>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── COACH VALUE ────────────────────────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "120px 20px" }}>
+        <div
+          className="coach-value-row"
+          style={{ maxWidth: 1040, margin: "0 auto", display: "flex", alignItems: "center", gap: 72 }}
+        >
+          <div style={{ flex: 1 }}>
+            <ScrollFade>
+              <BluePill>For Coaches</BluePill>
+              <h2
+                style={{
+                  fontSize: 42,
+                  fontWeight: 800,
+                  letterSpacing: "-0.025em",
+                  lineHeight: 1.12,
+                  color: "#ffffff",
+                  margin: "0 0 18px",
+                }}
+              >
+                Know who&apos;s ready before practice starts.
+              </h2>
+              <p style={{ color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, marginBottom: 30 }}>
+                Open one screen and see your whole roster at a glance — who&apos;s good to throw,
+                who needs a light day, and who hasn&apos;t checked in yet.
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 36 }}>
+                {[
+                  "Caution flags surface low-readiness arms automatically",
+                  "Readiness trends across your whole week",
+                  "Daily roster visibility — see who logged and who didn’t",
+                ].map((item) => (
+                  <div key={item} style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
+                    <CheckCircle size={17} style={{ color: "#3B82F6", flexShrink: 0, marginTop: 1 }} />
+                    <span style={{ color: "#d4d4d8", fontSize: 15, lineHeight: 1.5 }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <Link
+                href="/signup"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  background: "#3B82F6",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  padding: "14px 24px",
+                  borderRadius: 12,
+                  boxShadow: "0 4px 20px rgba(59,130,246,0.35)",
+                }}
+              >
+                Start as a Coach →
+              </Link>
+            </ScrollFade>
+          </div>
+
+          <ScrollFade delay={0.1} className="flex-shrink-0">
+            <PremiumPhone glow>
+              <CoachScreen />
+            </PremiumPhone>
+          </ScrollFade>
+        </div>
+      </section>
+
+      {/* ── HOW FAST — 60-second logging (a proven strength) ───────────────── */}
+      <section style={{ background: "#0a0a0a", padding: "110px 20px" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <BluePill>Designed for Athletes</BluePill>
             <h2
               style={{
-                fontSize: 40,
+                fontSize: 42,
                 fontWeight: 800,
                 letterSpacing: "-0.025em",
-                lineHeight: 1.15,
+                lineHeight: 1.12,
                 color: "#ffffff",
-                margin: 0,
-                marginBottom: 60,
+                margin: "0 0 64px",
               }}
             >
               Log your arm in 60 seconds. Seriously.
             </h2>
           </ScrollFade>
 
-          <div
-            className="steps-row"
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              position: "relative",
-              marginBottom: 32,
-            }}
-          >
-            {/* Dashed connector */}
+          <div className="steps-row" style={{ display: "flex", alignItems: "flex-start", position: "relative", marginBottom: 32 }}>
             <div
               className="steps-line"
               style={{
@@ -671,29 +1198,12 @@ export default function LandingPage() {
               }}
             />
             {[
-              {
-                num: "01",
-                icon: Smartphone,
-                title: "Open ArmTrack",
-                desc: "From your home screen. No login required after setup.",
-              },
-              {
-                num: "02",
-                icon: Sliders,
-                title: "Rate your arm",
-                desc: "Three sliders. Throws count. Activity type. Done.",
-              },
-              {
-                num: "03",
-                icon: Shield,
-                title: "Get your call",
-                desc: "Your readiness score and today's recommendation. Instantly.",
-              },
+              { num: "01", icon: Smartphone, title: "Open ArmTrack", desc: "From your home screen. No login required after setup." },
+              { num: "02", icon: Sliders, title: "Rate your arm", desc: "Three sliders. Throws count. Activity type. Done." },
+              { num: "03", icon: Shield, title: "Get your call", desc: "Your readiness score and today’s recommendation. Instantly." },
             ].map(({ num, icon: Icon, title, desc }, i) => (
               <ScrollFade key={num} delay={i * 0.12} className="flex-1">
-                <div
-                  style={{ textAlign: "center", padding: "0 16px", position: "relative", zIndex: 1 }}
-                >
+                <div style={{ textAlign: "center", padding: "0 16px", position: "relative", zIndex: 1 }}>
                   <div
                     style={{
                       width: 48,
@@ -710,9 +1220,7 @@ export default function LandingPage() {
                     <span style={{ color: "#ffffff", fontSize: 13, fontWeight: 800 }}>{num}</span>
                   </div>
                   <Icon size={22} style={{ color: "#3B82F6", display: "block", margin: "0 auto 10px" }} />
-                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>
-                    {title}
-                  </p>
+                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, marginBottom: 6 }}>{title}</p>
                   <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.5 }}>{desc}</p>
                 </div>
               </ScrollFade>
@@ -727,418 +1235,64 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── STATS BAR ──────────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "80px 20px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <div
-            className="stats-grid"
-            style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}
-          >
-            {[
-              { stat: "1 in 4", label: "pitchers suffer a career arm injury" },
-              { stat: "36x", label: "higher risk when throwing fatigued" },
-              { stat: "38.8%", label: "of MLB pitchers have had Tommy John" },
-              { stat: "60 sec", label: "average time to log with ArmTrack" },
-            ].map(({ stat, label }, i) => (
-              <ScrollFade key={stat} delay={i * 0.1}>
-                <div
-                  style={{
-                    background: "#111111",
-                    border: "1px solid #222222",
-                    borderRadius: 16,
-                    padding: "28px 20px",
-                    textAlign: "center",
-                  }}
-                >
-                  <p
-                    style={{
-                      fontSize: 32,
-                      fontWeight: 900,
-                      color: "#3B82F6",
-                      letterSpacing: "-0.02em",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {stat}
-                  </p>
-                  <p style={{ color: "#888888", fontSize: 13, lineHeight: 1.4 }}>{label}</p>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ───────────────────────────────────────────────────── */}
-      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
-        <div style={{ maxWidth: 960, margin: "0 auto" }}>
-          <ScrollFade>
-            <div style={{ textAlign: "center", marginBottom: 60 }}>
-              <h2
-                style={{
-                  fontSize: 40,
-                  fontWeight: 800,
-                  letterSpacing: "-0.025em",
-                  color: "#ffffff",
-                  margin: 0,
-                  marginBottom: 12,
-                }}
-              >
-                Built for the whole program
-              </h2>
-              <p style={{ color: "#888888", fontSize: 16, margin: 0 }}>
-                Coaches get visibility. Players get accountability. Everyone gets healthier arms.
-              </p>
-            </div>
-          </ScrollFade>
-
-          <div className="how-columns" style={{ display: "flex", gap: 24 }}>
-            <ScrollFade delay={0} className="flex-1">
-              <div
-                style={{
-                  background: "#111111",
-                  border: "1px solid #222222",
-                  borderLeft: "3px solid #3B82F6",
-                  borderRadius: 20,
-                  padding: "32px 28px",
-                  height: "100%",
-                }}
-              >
-                <p style={{ color: "#ffffff", fontSize: 18, fontWeight: 800, marginBottom: 28 }}>
-                  For Coaches
-                </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                  <FeatureRow
-                    icon={ClipboardList}
-                    title="Create your team"
-                    desc="Set up in 60 seconds. Invite your roster with one link."
-                  />
-                  <FeatureRow
-                    icon={BarChart2}
-                    title="See your roster's readiness"
-                    desc="Every player's arm health score, color coded, before practice."
-                  />
-                  <FeatureRow
-                    icon={MessageSquare}
-                    title="Send recommendations"
-                    desc="Tell players to push or rest — right on their dashboard."
-                  />
-                </div>
-              </div>
-            </ScrollFade>
-
-            <ScrollFade delay={0.1} className="flex-1">
-              <div
-                style={{
-                  background: "#111111",
-                  border: "1px solid #222222",
-                  borderLeft: "3px solid #3B82F6",
-                  borderRadius: 20,
-                  padding: "32px 28px",
-                  height: "100%",
-                }}
-              >
-                <p style={{ color: "#ffffff", fontSize: 18, fontWeight: 800, marginBottom: 28 }}>
-                  For Players
-                </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-                  <FeatureRow
-                    icon={Activity}
-                    title="Log in 60 seconds"
-                    desc="Pain, soreness, stiffness, throws. Fast and effortless."
-                  />
-                  <FeatureRow
-                    icon={Shield}
-                    title="Get your recommendation"
-                    desc="ArmTrack estimates your readiness based on your recent trend."
-                  />
-                  <FeatureRow
-                    icon={TrendingUp}
-                    title="Track your arm over time"
-                    desc="14-day trend chart. Spot patterns before they become injuries."
-                  />
-                </div>
-              </div>
-            </ScrollFade>
-          </div>
-        </div>
-      </section>
-
-      {/* ── THE PROBLEM ────────────────────────────────────────────────────── */}
-      <section id="product" style={{ background: "#000000", padding: "100px 20px" }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
-          <ScrollFade>
-            <span
-              style={{
-                display: "inline-block",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "0.15em",
-                color: "#EF4444",
-                background: "rgba(239,68,68,0.08)",
-                border: "1px solid rgba(239,68,68,0.2)",
-                padding: "5px 12px",
-                borderRadius: 99,
-                marginBottom: 20,
-                textTransform: "uppercase",
-              }}
-            >
-              The Problem
-            </span>
-            <h2
-              style={{
-                fontSize: 40,
-                fontWeight: 800,
-                letterSpacing: "-0.025em",
-                lineHeight: 1.15,
-                color: "#ffffff",
-                margin: 0,
-                marginBottom: 48,
-              }}
-            >
-              Coaches are making throwing decisions without the full picture.
-            </h2>
-          </ScrollFade>
-
-          <div className="problem-cards" style={{ display: "flex", gap: 20, marginBottom: 48 }}>
-            {[
-              { icon: AlertTriangle, text: "Players say \u2018I\u2019m fine\u2019 even when they\u2019re not" },
-              { icon: TrendingDown, text: "One fatigued arm away from a season-ending injury" },
-              { icon: EyeOff, text: "No visibility into how your roster actually feels" },
-            ].map(({ icon: Icon, text }, i) => (
-              <ScrollFade key={text} delay={i * 0.1} className="flex-1">
-                <div
-                  style={{
-                    background: "#111111",
-                    border: "1px solid #222222",
-                    borderLeft: "3px solid #EF4444",
-                    borderRadius: 16,
-                    padding: "24px 20px",
-                    textAlign: "left",
-                    height: "100%",
-                  }}
-                >
-                  <Icon size={22} style={{ color: "#EF4444", marginBottom: 12 }} />
-                  <p
-                    style={{
-                      color: "#ffffff",
-                      fontSize: 15,
-                      lineHeight: 1.5,
-                      fontWeight: 500,
-                      margin: 0,
-                    }}
-                  >
-                    {text}
-                  </p>
-                </div>
-              </ScrollFade>
-            ))}
-          </div>
-
-          <ScrollFade>
-            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.7, margin: 0 }}>
-              ArmTrack changes that. 60 seconds of daily logging gives coaches and players the data
-              to make smarter decisions — before injuries happen.
-            </p>
-          </ScrollFade>
-        </div>
-      </section>
-
-      {/* ── COACH FEATURE ──────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "100px 20px" }}>
-        <div
-          className="coach-section"
-          style={{
-            maxWidth: 1000,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            gap: 60,
-          }}
-        >
-          <div style={{ flex: 1 }}>
-            <ScrollFade>
-              <BluePill>Coach Dashboard</BluePill>
-              <h2
-                style={{
-                  fontSize: 40,
-                  fontWeight: 800,
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.15,
-                  color: "#ffffff",
-                  margin: 0,
-                  marginBottom: 16,
-                }}
-              >
-                Your entire roster. One screen.
-              </h2>
-              <p
-                style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 28 }}
-              >
-                See which players are ready to throw, which need a light day, and who hasn&apos;t
-                logged yet — before practice starts.
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
-                {[
-                  "Readiness scores for every player, updated daily",
-                  "Subsections by position — pitchers, catchers, position players",
-                  "Recommendations and team messages in one tap",
-                ].map((item) => (
-                  <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <CheckCircle
-                      size={16}
-                      style={{ color: "#3B82F6", flexShrink: 0, marginTop: 2 }}
-                    />
-                    <span style={{ color: "#cccccc", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/signup"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "#3B82F6",
-                  color: "#ffffff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  padding: "13px 22px",
-                  borderRadius: 12,
-                  boxShadow: "0 4px 20px rgba(59,130,246,0.35)",
-                }}
-              >
-                Start as a Coach →
-              </Link>
-            </ScrollFade>
-          </div>
-
-          <ScrollFade delay={0.1} className="flex-shrink-0">
-            <IPhoneFrame>
-              <CoachScreen />
-            </IPhoneFrame>
-          </ScrollFade>
-        </div>
-      </section>
-
-      {/* ── PLAYER FEATURE ─────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "100px 20px" }}>
-        <div
-          className="player-section"
-          style={{
-            maxWidth: 1000,
-            margin: "0 auto",
-            display: "flex",
-            alignItems: "center",
-            gap: 60,
-          }}
-        >
-          <ScrollFade delay={0.1} className="flex-shrink-0">
-            <IPhoneFrame>
-              <PlayerScreen />
-            </IPhoneFrame>
-          </ScrollFade>
-
-          <div style={{ flex: 1 }}>
-            <ScrollFade>
-              <BluePill>For Players</BluePill>
-              <h2
-                style={{
-                  fontSize: 40,
-                  fontWeight: 800,
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.15,
-                  color: "#ffffff",
-                  margin: 0,
-                  marginBottom: 16,
-                }}
-              >
-                Know when to push. Know when to rest.
-              </h2>
-              <p
-                style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 28 }}
-              >
-                Log your arm daily and get a personalized recommendation based on your pain,
-                soreness, stiffness, and recent throwing load.
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 32 }}>
-                {[
-                  "Weighted readiness score — pain counts more than stiffness",
-                  "Position-aware recommendations for your role",
-                  "14-day trend chart to catch patterns early",
-                ].map((item) => (
-                  <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                    <CheckCircle
-                      size={16}
-                      style={{ color: "#3B82F6", flexShrink: 0, marginTop: 2 }}
-                    />
-                    <span style={{ color: "#cccccc", fontSize: 14, lineHeight: 1.5 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/signup"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  background: "#3B82F6",
-                  color: "#ffffff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  padding: "13px 22px",
-                  borderRadius: 12,
-                  boxShadow: "0 4px 20px rgba(59,130,246,0.35)",
-                }}
-              >
-                Start Tracking Free →
-              </Link>
-            </ScrollFade>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SOCIAL PROOF ───────────────────────────────────────────────────── */}
-      <section style={{ background: "#000000", padding: "80px 20px" }}>
-        <div style={{ maxWidth: 600, margin: "0 auto", textAlign: "center" }}>
+      {/* ── TESTIMONIAL — single, powerful ─────────────────────────────────── */}
+      <section style={{ background: "#000000", padding: "110px 20px" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
           <ScrollFade>
             <div
               style={{
-                fontSize: 64,
-                fontWeight: 900,
-                color: "#3B82F6",
-                opacity: 0.3,
-                lineHeight: 1,
-                marginBottom: 8,
-                fontFamily: "Georgia, serif",
+                position: "relative",
+                background: "linear-gradient(160deg, #0f1115 0%, #0a0a0a 100%)",
+                border: "1px solid #1f1f1f",
+                borderRadius: 28,
+                padding: "56px 56px 48px",
+                overflow: "hidden",
+                textAlign: "center",
               }}
             >
-              &ldquo;
+              <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 420, height: 240, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(59,130,246,0.16) 0%, transparent 70%)", pointerEvents: "none" }} />
+              <Quote size={32} style={{ color: "#3B82F6", margin: "0 auto 24px", opacity: 0.9 }} />
+              <p className="testi-quote" style={{ fontSize: 27, color: "#f5f5f5", fontWeight: 400, lineHeight: 1.45, letterSpacing: "-0.015em", margin: "0 0 28px", position: "relative" }}>
+                Finally I know which arms are ready before practice. It changes how I make throwing
+                decisions every single day.
+              </p>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "linear-gradient(145deg, #27272a, #18181b)",
+                    border: "1px solid #2a2a2a",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#a1a1aa",
+                    fontWeight: 700,
+                    fontSize: 14,
+                  }}
+                >
+                  HS
+                </div>
+                <div style={{ textAlign: "left" }}>
+                  <p style={{ color: "#ffffff", fontSize: 14, fontWeight: 700, margin: 0 }}>High school pitching coach</p>
+                  <p style={{ color: "#71717a", fontSize: 13, margin: 0 }}>Illinois</p>
+                </div>
+              </div>
             </div>
-            <p
-              style={{
-                fontSize: 22,
-                color: "#ffffff",
-                fontStyle: "italic",
-                lineHeight: 1.6,
-                marginBottom: 20,
-              }}
-            >
-              Finally know which arms are ready before practice. This changes how I make throwing
-              decisions every single day.
-            </p>
-            <p style={{ color: "#888888", fontSize: 14 }}>
-              — High school pitching coach, Illinois
+          </ScrollFade>
+
+          <ScrollFade delay={0.08}>
+            <p style={{ textAlign: "center", color: "#52525b", fontSize: 13, margin: "28px 0 0", letterSpacing: "0.02em" }}>
+              Built for everyone who touches the arm — more from coaches, parents, and athletes soon.
             </p>
           </ScrollFade>
         </div>
       </section>
 
       {/* ── FINAL CTA ──────────────────────────────────────────────────────── */}
-      <section style={{ background: "#0a0a0a", padding: "100px 20px" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+      <section style={{ background: "#0a0a0a", padding: "120px 20px" }}>
+        <div style={{ maxWidth: 660, margin: "0 auto", textAlign: "center" }}>
           <ScrollFade>
             <h2
               style={{
@@ -1147,25 +1301,16 @@ export default function LandingPage() {
                 letterSpacing: "-0.03em",
                 lineHeight: 1.1,
                 color: "#ffffff",
-                margin: 0,
-                marginBottom: 16,
+                margin: "0 0 16px",
               }}
             >
-              Protect your program. Start today.
+              Start paying attention early.
             </h2>
-            <p style={{ color: "#888888", fontSize: 16, lineHeight: 1.6, marginBottom: 36 }}>
-              Free for every player. Built for coaches who care about keeping their roster healthy.
+            <p style={{ color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, marginBottom: 38 }}>
+              Free for players and coaches. Built for the people who&apos;d rather catch it now
+              than wonder later.
             </p>
-            <div
-              className="cta-row"
-              style={{
-                display: "flex",
-                gap: 12,
-                justifyContent: "center",
-                flexWrap: "wrap",
-                marginBottom: 20,
-              }}
-            >
+            <div className="cta-row" style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginBottom: 20 }}>
               <Link
                 href="/signup"
                 style={{
@@ -1174,7 +1319,7 @@ export default function LandingPage() {
                   fontSize: 15,
                   fontWeight: 700,
                   textDecoration: "none",
-                  padding: "14px 24px",
+                  padding: "15px 26px",
                   borderRadius: 14,
                   boxShadow: "0 4px 24px rgba(59,130,246,0.4)",
                   whiteSpace: "nowrap",
@@ -1190,7 +1335,7 @@ export default function LandingPage() {
                   fontSize: 15,
                   fontWeight: 700,
                   textDecoration: "none",
-                  padding: "14px 24px",
+                  padding: "15px 26px",
                   borderRadius: 14,
                   border: "1px solid rgba(255,255,255,0.2)",
                   whiteSpace: "nowrap",
@@ -1207,18 +1352,10 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ─────────────────────────────────────────────────────────── */}
-      <footer
-        style={{ background: "#000000", borderTop: "1px solid #111111", padding: "24px 20px" }}
-      >
+      <footer style={{ background: "#000000", borderTop: "1px solid #111111", padding: "24px 20px" }}>
         <div
           className="footer-inner"
-          style={{
-            maxWidth: 1200,
-            margin: "0 auto",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}
         >
           <span style={{ color: "#444444", fontSize: 13 }}>ArmTrack &copy; 2026</span>
           <span style={{ color: "#444444", fontSize: 13 }}>Built for baseball &amp; softball</span>
