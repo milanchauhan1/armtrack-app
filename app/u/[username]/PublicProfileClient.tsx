@@ -43,8 +43,10 @@ export default function PublicProfileClient() {
     }
 
     (async () => {
+      // Reads from the public_profiles view, which exposes ONLY safe columns
+      // (never injury_history / pain_zones) and only non-private rows.
       const { data: prof } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select(
           "id, username, first_name, position, level, throws, team_name, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s"
         )
