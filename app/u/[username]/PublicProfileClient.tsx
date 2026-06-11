@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { computeProfileStats, formatTrackingSince, type ProfileStats } from "@/lib/profile";
 
 interface PublicProfile {
   id: string;
@@ -35,7 +34,6 @@ function handleFromPath(): string {
 export default function PublicProfileClient() {
   const [status, setStatus] = useState<"loading" | "ok" | "private" | "notfound">("loading");
   const [profile, setProfile] = useState<PublicProfile | null>(null);
-  const [stats, setStats] = useState<ProfileStats>({ streak: 0, totalLogs: 0, trackingSince: null });
 
   useEffect(() => {
     const handle = handleFromPath();
@@ -68,8 +66,6 @@ export default function PublicProfileClient() {
         document.head.appendChild(m);
       }
 
-      const { data: logs } = await supabase.from("arm_logs").select("date").eq("user_id", prof.id);
-      setStats(computeProfileStats((logs ?? []).map((l) => l.date as string)));
       setProfile(prof as PublicProfile);
       setStatus("ok");
     })();
@@ -111,12 +107,6 @@ export default function PublicProfileClient() {
     p.pr_pop_time_s != null ? { label: "Pop time", value: `${p.pr_pop_time_s}s` } : null,
     p.pr_sixty_time_s != null ? { label: "60-yd", value: `${p.pr_sixty_time_s}s` } : null,
   ].filter(Boolean) as { label: string; value: string }[];
-
-  const statItems = [
-    { label: "Day streak", value: String(stats.streak) },
-    { label: "Total logs", value: String(stats.totalLogs) },
-    { label: "Tracking since", value: formatTrackingSince(stats.trackingSince) || "—" },
-  ];
 
   return (
     <Centered>
@@ -163,14 +153,6 @@ export default function PublicProfileClient() {
             </div>
           )}
 
-          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
-            {statItems.map((s) => (
-              <div key={s.label}>
-                <p className="text-base font-extrabold text-white">{s.value}</p>
-                <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">{s.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className="mt-6 text-center">
