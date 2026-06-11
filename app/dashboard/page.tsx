@@ -26,10 +26,10 @@ import {
   getContextualInsights,
   getReadinessExplanation,
   computeLogScore,
-  computeStreak,
   daysSinceLatestLog,
   READINESS_STALE_DAYS,
 } from "@/lib/readiness";
+import { buildPublicStats } from "@/lib/profile";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -363,10 +363,22 @@ export default function DashboardPage() {
         .eq("user_id", user.id);
 
       if (allDates) {
-        const currentStreak = computeStreak(allDates.map((l) => l.date));
-        setStreak(currentStreak);
+        const stats = buildPublicStats(allDates.map((l) => l.date));
+        setStreak(stats.currentStreak);
         // Re-arm the daily reminder so its copy reflects the live streak.
-        scheduleArmLogReminder(currentStreak).catch(() => {});
+        scheduleArmLogReminder(stats.currentStreak).catch(() => {});
+        // Refresh the denormalized, public-safe stats on the profile row so the
+        // public profile can show them without ever reading raw arm_logs.
+        supabase
+          .from("profiles")
+          .update({
+            total_logs: stats.totalLogs,
+            current_streak: stats.currentStreak,
+            last_log_date: stats.lastLogDate,
+            first_log_date: stats.firstLogDate,
+          })
+          .eq("id", user.id)
+          .then(() => {}, () => {});
       }
 
       const fourteenDaysAgo = new Date();

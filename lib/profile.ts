@@ -53,3 +53,53 @@ export function formatTrackingSince(iso: string | null): string {
   if (!iso) return "";
   return new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "long", year: "numeric" });
 }
+
+// ── Denormalized public stats ────────────────────────────────────────────────
+// Aggregates stored on the profile row (public-safe) so the public profile never
+// has to read raw arm_logs. Refreshed whenever the player opens their dashboard.
+
+export interface PublicStats {
+  totalLogs: number;
+  currentStreak: number;
+  lastLogDate: string | null;
+  firstLogDate: string | null;
+}
+
+export function buildPublicStats(logDates: string[]): PublicStats {
+  if (logDates.length === 0) {
+    return { totalLogs: 0, currentStreak: 0, lastLogDate: null, firstLogDate: null };
+  }
+  const sorted = [...logDates].sort(); // YYYY-MM-DD sorts chronologically
+  return {
+    totalLogs: logDates.length,
+    currentStreak: computeStreak(logDates),
+    lastLogDate: sorted[sorted.length - 1],
+    firstLogDate: sorted[0],
+  };
+}
+
+function localToday(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function localShift(dateStr: string, n: number): string {
+  const d = new Date(dateStr + "T12:00:00");
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/**
+ * A stored current streak is only still valid if the most recent log was today
+ * or yesterday. Otherwise the streak has broken since it was stored, so display 0.
+ * `today` is injectable for testing.
+ */
+export function displayedStreak(
+  storedStreak: number,
+  lastLogDate: string | null,
+  today: string = localToday()
+): number {
+  if (!lastLogDate) return 0;
+  const yesterday = localShift(today, -1);
+  return lastLogDate === today || lastLogDate === yesterday ? storedStreak : 0;
+}

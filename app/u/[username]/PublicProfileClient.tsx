@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { displayedStreak, formatTrackingSince } from "@/lib/profile";
 
 interface PublicProfile {
   id: string;
@@ -17,6 +18,10 @@ interface PublicProfile {
   pr_velocity_mph: number | null;
   pr_pop_time_s: number | null;
   pr_sixty_time_s: number | null;
+  total_logs: number | null;
+  current_streak: number | null;
+  last_log_date: string | null;
+  first_log_date: string | null;
 }
 
 const LEVEL_LABEL: Record<string, string> = {
@@ -48,7 +53,7 @@ export default function PublicProfileClient() {
       const { data: prof } = await supabase
         .from("public_profiles")
         .select(
-          "id, username, first_name, position, level, throws, team_name, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s"
+          "id, username, first_name, position, level, throws, team_name, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s, total_logs, current_streak, last_log_date, first_log_date"
         )
         .ilike("username", handle)
         .maybeSingle();
@@ -110,6 +115,12 @@ export default function PublicProfileClient() {
     p.pr_sixty_time_s != null ? { label: "60-yd", value: `${p.pr_sixty_time_s}s` } : null,
   ].filter(Boolean) as { label: string; value: string }[];
 
+  const statItems = [
+    { label: "Day streak", value: String(displayedStreak(p.current_streak ?? 0, p.last_log_date)) },
+    { label: "Total logs", value: String(p.total_logs ?? 0) },
+    { label: "Tracking since", value: formatTrackingSince(p.first_log_date) || "—" },
+  ];
+
   return (
     <Centered>
       <div className="w-full max-w-md">
@@ -155,6 +166,14 @@ export default function PublicProfileClient() {
             </div>
           )}
 
+          <div className="mt-4 grid grid-cols-3 gap-2 border-t border-white/5 pt-4">
+            {statItems.map((s) => (
+              <div key={s.label}>
+                <p className="text-base font-extrabold text-white">{s.value}</p>
+                <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">{s.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-6 text-center">

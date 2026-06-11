@@ -9,7 +9,12 @@ alter table profiles
   add column if not exists visibility      text not null default 'public',
   add column if not exists pr_velocity_mph integer,
   add column if not exists pr_pop_time_s   numeric(3,1),
-  add column if not exists pr_sixty_time_s numeric(3,1);
+  add column if not exists pr_sixty_time_s numeric(3,1),
+  -- denormalized, public-safe activity stats (refreshed on dashboard load)
+  add column if not exists total_logs      integer not null default 0,
+  add column if not exists current_streak  integer not null default 0,
+  add column if not exists last_log_date   date,
+  add column if not exists first_log_date  date;
 
 -- 2. Unique, case-insensitive handle (NULL allowed = unclaimed) ---------------
 create unique index if not exists profiles_username_lower_idx
@@ -28,7 +33,8 @@ alter table profiles add constraint profiles_visibility_chk
 create or replace view public_profiles
   with (security_invoker = off) as
   select id, username, first_name, position, level, throws, team_name, bio,
-         visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s
+         visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s,
+         total_logs, current_streak, last_log_date, first_log_date
   from profiles
   where username is not null
     and visibility in ('public', 'unlisted');
