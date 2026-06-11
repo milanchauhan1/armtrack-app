@@ -840,72 +840,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── WHY ARMTRACK EXISTS — founder story (Milan) ─────────────────────── */}
-      <section style={{ background: "#000000", padding: "110px 20px" }}>
-        <div style={{ maxWidth: 760, margin: "0 auto" }}>
-          <ScrollFade>
-            <div style={{ textAlign: "center", marginBottom: 36 }}>
-              <BluePill>Why ArmTrack Exists</BluePill>
-            </div>
-          </ScrollFade>
-          <ScrollFade delay={0.05}>
-            <div
-              className="founder-card"
-              style={{
-                position: "relative",
-                background: "linear-gradient(160deg, #0e0e0e 0%, #0a0a0a 100%)",
-                border: "1px solid #1f1f1f",
-                borderRadius: 28,
-                padding: "48px 52px",
-                overflow: "hidden",
-              }}
-            >
-              <div style={{ position: "absolute", top: -80, right: -80, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
-
-              <Quote size={28} style={{ color: "#3B82F6", marginBottom: 22, opacity: 0.9 }} />
-
-              <p className="founder-quote" style={{ fontSize: 23, lineHeight: 1.55, color: "#f5f5f5", fontWeight: 400, margin: "0 0 20px", letterSpacing: "-0.01em" }}>
-                I&apos;ve played baseball most of my life. As I started throwing harder, elbow pain
-                just became part of the routine — ibuprofen before practice, telling myself I was
-                fine. I never tracked my throwing volume, my soreness, or how I was recovering.
-              </p>
-              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#a1a1aa", margin: "0 0 16px" }}>
-                Eventually it caught up with me. I still deal with elbow pain that affects how I
-                throw, and I think about how different it might be if I&apos;d paid attention sooner.
-              </p>
-              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#e5e5e5", fontWeight: 500, margin: "0 0 32px" }}>
-                I built ArmTrack so the next player doesn&apos;t have to learn this the hard way.
-              </p>
-
-              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                <div
-                  style={{
-                    width: 46,
-                    height: 46,
-                    borderRadius: 999,
-                    background: "linear-gradient(145deg, #3B82F6, #1d4ed8)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "#fff",
-                    fontWeight: 800,
-                    fontSize: 18,
-                    flexShrink: 0,
-                    boxShadow: "0 4px 16px rgba(59,130,246,0.4)",
-                  }}
-                >
-                  M
-                </div>
-                <div>
-                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, margin: 0 }}>Milan</p>
-                  <p style={{ color: "#71717a", fontSize: 13, margin: 0 }}>Founder, ArmTrack</p>
-                </div>
-              </div>
-            </div>
-          </ScrollFade>
-        </div>
-      </section>
-
       {/* ── THE PROBLEM — the core message ─────────────────────────────────── */}
       <section id="why" style={{ background: "#0a0a0a", padding: "110px 20px" }}>
         <div style={{ maxWidth: 840, margin: "0 auto", textAlign: "center" }}>
@@ -988,32 +922,16 @@ export default function LandingPage() {
             </p>
           </ScrollFade>
 
-          <div
-            className="showcase-row"
-            style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: 80, flexWrap: "wrap" }}
-          >
+          <div style={{ display: "flex", justifyContent: "center" }}>
             <ScrollFade>
               <div style={{ textAlign: "center" }}>
-                <PremiumPhone>
-                  <CheckInScreen />
-                </PremiumPhone>
-                <p style={{ color: "#ffffff", fontSize: 16, fontWeight: 700, margin: "32px 0 6px" }}>
-                  Daily check-in
-                </p>
-                <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
-                  Pain, soreness, stiffness, and throws — logged in under a minute.
-                </p>
-              </div>
-            </ScrollFade>
-
-            <ScrollFade delay={0.12}>
-              <div style={{ textAlign: "center" }}>
                 <PremiumPhone image="/dashboard-preview.png" imageAlt="ArmTrack athlete dashboard" />
-                <p style={{ color: "#ffffff", fontSize: 16, fontWeight: 700, margin: "32px 0 6px" }}>
+                <p style={{ color: "#ffffff", fontSize: 16, fontWeight: 700, margin: "34px 0 6px" }}>
                   Readiness dashboard
                 </p>
-                <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.5, maxWidth: 260, margin: "0 auto" }}>
-                  Your score and today&apos;s recommendation, the second you check in.
+                <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.5, maxWidth: 340, margin: "0 auto" }}>
+                  Log pain, soreness, and throws — and get your score and today&apos;s recommendation
+                  the moment you finish.
                 </p>
               </div>
             </ScrollFade>
@@ -1101,41 +1019,46 @@ export default function LandingPage() {
 
       {/* ── COACH VALUE ────────────────────────────────────────────────────── */}
       <section style={{ background: "#000000", padding: "120px 20px" }}>
-        <div
-          className="coach-value-row"
-          style={{ maxWidth: 1040, margin: "0 auto", display: "flex", alignItems: "center", gap: 72 }}
-        >
-          <div style={{ flex: 1 }}>
-            <ScrollFade>
-              <BluePill>For Coaches</BluePill>
-              <h2
-                style={{
-                  fontSize: 42,
-                  fontWeight: 800,
-                  letterSpacing: "-0.025em",
-                  lineHeight: 1.12,
-                  color: "#ffffff",
-                  margin: "0 0 18px",
-                }}
-              >
-                Know who&apos;s ready before practice starts.
-              </h2>
-              <p style={{ color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, marginBottom: 30 }}>
-                Open one screen and see your whole roster at a glance — who&apos;s good to throw,
-                who needs a light day, and who hasn&apos;t checked in yet.
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 36 }}>
-                {[
-                  "Caution flags surface low-readiness arms automatically",
-                  "Readiness trends across your whole week",
-                  "Daily roster visibility — see who logged and who didn’t",
-                ].map((item) => (
-                  <div key={item} style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
-                    <CheckCircle size={17} style={{ color: "#3B82F6", flexShrink: 0, marginTop: 1 }} />
-                    <span style={{ color: "#d4d4d8", fontSize: 15, lineHeight: 1.5 }}>{item}</span>
-                  </div>
-                ))}
-              </div>
+        <div style={{ maxWidth: 680, margin: "0 auto", textAlign: "center" }}>
+          <ScrollFade>
+            <BluePill>For Coaches</BluePill>
+            <h2
+              style={{
+                fontSize: 42,
+                fontWeight: 800,
+                letterSpacing: "-0.025em",
+                lineHeight: 1.12,
+                color: "#ffffff",
+                margin: "0 0 18px",
+              }}
+            >
+              Know who&apos;s ready before practice starts.
+            </h2>
+            <p style={{ color: "#a1a1aa", fontSize: 17, lineHeight: 1.6, margin: "0 auto 34px", maxWidth: 560 }}>
+              Open one screen and see your whole roster at a glance — who&apos;s good to throw,
+              who needs a light day, and who hasn&apos;t checked in yet.
+            </p>
+            <div
+              style={{
+                display: "inline-flex",
+                flexDirection: "column",
+                gap: 14,
+                marginBottom: 38,
+                textAlign: "left",
+              }}
+            >
+              {[
+                "Caution flags surface low-readiness arms automatically",
+                "Readiness trends across your whole week",
+                "Daily roster visibility — see who logged and who didn’t",
+              ].map((item) => (
+                <div key={item} style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
+                  <CheckCircle size={17} style={{ color: "#3B82F6", flexShrink: 0, marginTop: 1 }} />
+                  <span style={{ color: "#d4d4d8", fontSize: 15, lineHeight: 1.5 }}>{item}</span>
+                </div>
+              ))}
+            </div>
+            <div>
               <Link
                 href="/signup"
                 style={{
@@ -1154,13 +1077,7 @@ export default function LandingPage() {
               >
                 Start as a Coach →
               </Link>
-            </ScrollFade>
-          </div>
-
-          <ScrollFade delay={0.1} className="flex-shrink-0">
-            <PremiumPhone glow>
-              <CoachScreen />
-            </PremiumPhone>
+            </div>
           </ScrollFade>
         </div>
       </section>
@@ -1235,57 +1152,68 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── TESTIMONIAL — single, powerful ─────────────────────────────────── */}
+      {/* ── WHY ARMTRACK EXISTS — founder story (Milan) ─────────────────────── */}
       <section style={{ background: "#000000", padding: "110px 20px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto" }}>
           <ScrollFade>
+            <div style={{ textAlign: "center", marginBottom: 36 }}>
+              <BluePill>Why ArmTrack Exists</BluePill>
+            </div>
+          </ScrollFade>
+          <ScrollFade delay={0.05}>
             <div
+              className="founder-card"
               style={{
                 position: "relative",
-                background: "linear-gradient(160deg, #0f1115 0%, #0a0a0a 100%)",
+                background: "linear-gradient(160deg, #0e0e0e 0%, #0a0a0a 100%)",
                 border: "1px solid #1f1f1f",
                 borderRadius: 28,
-                padding: "56px 56px 48px",
+                padding: "48px 52px",
                 overflow: "hidden",
-                textAlign: "center",
               }}
             >
-              <div style={{ position: "absolute", top: -100, left: "50%", transform: "translateX(-50%)", width: 420, height: 240, borderRadius: "50%", background: "radial-gradient(ellipse, rgba(59,130,246,0.16) 0%, transparent 70%)", pointerEvents: "none" }} />
-              <Quote size={32} style={{ color: "#3B82F6", margin: "0 auto 24px", opacity: 0.9 }} />
-              <p className="testi-quote" style={{ fontSize: 27, color: "#f5f5f5", fontWeight: 400, lineHeight: 1.45, letterSpacing: "-0.015em", margin: "0 0 28px", position: "relative" }}>
-                Finally I know which arms are ready before practice. It changes how I make throwing
-                decisions every single day.
+              <div style={{ position: "absolute", top: -80, right: -80, width: 280, height: 280, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.14) 0%, transparent 70%)", pointerEvents: "none" }} />
+
+              <Quote size={28} style={{ color: "#3B82F6", marginBottom: 22, opacity: 0.9 }} />
+
+              <p className="founder-quote" style={{ fontSize: 23, lineHeight: 1.55, color: "#f5f5f5", fontWeight: 400, margin: "0 0 20px", letterSpacing: "-0.01em" }}>
+                I&apos;ve played baseball most of my life. As I started throwing harder, elbow pain
+                just became part of the routine — ibuprofen before practice, telling myself I was
+                fine. I never tracked my throwing volume, my soreness, or how I was recovering.
               </p>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#a1a1aa", margin: "0 0 16px" }}>
+                Eventually it caught up with me. I still deal with elbow pain that affects how I
+                throw, and I think about how different it might be if I&apos;d paid attention sooner.
+              </p>
+              <p style={{ fontSize: 17, lineHeight: 1.65, color: "#e5e5e5", fontWeight: 500, margin: "0 0 32px" }}>
+                I built ArmTrack so the next player doesn&apos;t have to learn this the hard way.
+              </p>
+
+              <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
                 <div
                   style={{
-                    width: 40,
-                    height: 40,
+                    width: 46,
+                    height: 46,
                     borderRadius: 999,
-                    background: "linear-gradient(145deg, #27272a, #18181b)",
-                    border: "1px solid #2a2a2a",
+                    background: "linear-gradient(145deg, #3B82F6, #1d4ed8)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#a1a1aa",
-                    fontWeight: 700,
-                    fontSize: 14,
+                    color: "#fff",
+                    fontWeight: 800,
+                    fontSize: 18,
+                    flexShrink: 0,
+                    boxShadow: "0 4px 16px rgba(59,130,246,0.4)",
                   }}
                 >
-                  HS
+                  M
                 </div>
-                <div style={{ textAlign: "left" }}>
-                  <p style={{ color: "#ffffff", fontSize: 14, fontWeight: 700, margin: 0 }}>High school pitching coach</p>
-                  <p style={{ color: "#71717a", fontSize: 13, margin: 0 }}>Illinois</p>
+                <div>
+                  <p style={{ color: "#ffffff", fontSize: 15, fontWeight: 700, margin: 0 }}>Milan</p>
+                  <p style={{ color: "#71717a", fontSize: 13, margin: 0 }}>Founder, ArmTrack</p>
                 </div>
               </div>
             </div>
-          </ScrollFade>
-
-          <ScrollFade delay={0.08}>
-            <p style={{ textAlign: "center", color: "#52525b", fontSize: 13, margin: "28px 0 0", letterSpacing: "0.02em" }}>
-              Built for everyone who touches the arm — more from coaches, parents, and athletes soon.
-            </p>
           </ScrollFade>
         </div>
       </section>
