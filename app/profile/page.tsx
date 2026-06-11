@@ -1,0 +1,314 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft, Share2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
+import { validateUsername } from "@/lib/profile";
+
+type Visibility = "public" | "unlisted" | "private";
+
+const VIS_OPTIONS: { value: Visibility; label: string; hint: string }[] = [
+  { value: "public", label: "Public", hint: "Anyone can find and view" },
+  { value: "unlisted", label: "Unlisted", hint: "Only people with the link" },
+  { value: "private", label: "Private", hint: "Only you" },
+];
+
+export default function ProfilePage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  const [username, setUsername] = useState("");
+  const [bio, setBio] = useState("");
+  const [velo, setVelo] = useState("");
+  const [pop, setPop] = useState("");
+  const [sixty, setSixty] = useState("");
+  const [visibility, setVisibility] = useState<Visibility>("public");
+
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [usernameOk, setUsernameOk] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [shareMsg, setShareMsg] = useState<string | null>(null);
+  const checkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Load auth + current profile
+  useEffect(() => {
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
+      setUserId(user.id);
+      const { data } = await supabase
+        .from("profiles")
+        .select("username, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s")
+        .eq("id", user.id)
+        .single();
+      if (data) {
+        setUsername(data.username ?? "");
+        setBio(data.bio ?? "");
+        setVisibility((data.visibility as Visibility) ?? "public");
+        setVelo(data.pr_velocity_mph != null ? String(data.pr_velocity_mph) : "");
+        setPop(data.pr_pop_time_s != null ? String(data.pr_pop_time_s) : "");
+        setSixty(data.pr_sixty_time_s != null ? String(data.pr_sixty_time_s) : "");
+        if (data.username) setUsernameOk(true);
+      }
+      setLoading(false);
+    });
+  }, [router]);
+
+  // Debounced username validation + availability
+  useEffect(() => {
+    setSaved(false);
+    if (!userId) return;
+    if (checkTimer.current) clearTimeout(checkTimer.current);
+
+    const v = validateUsername(username);
+    if (!v.ok) {
+      setUsernameOk(false);
+      setUsernameError(username.length === 0 ? null : v.error);
+      setChecking(false);
+      return;
+    }
+    setChecking(true);
+    setUsernameError(null);
+    setUsernameOk(false);
+    checkTimer.current = setTimeout(async () => {
+      const { data: taken } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("username", v.value)
+        .neq("id", userId)
+        .maybeSingle();
+      setChecking(false);
+      if (taken) {
+        setUsernameError("That username is taken.");
+        setUsernameOk(false);
+      } else {
+        setUsernameError(null);
+        setUsernameOk(true);
+      }
+    }, 350);
+    return () => {
+      if (checkTimer.current) clearTimeout(checkTimer.current);
+    };
+  }, [username, userId]);
+
+  async function handleSave() {
+    if (!userId) return;
+    const v = validateUsername(username);
+    if (!v.ok) {
+      setUsernameError(v.error);
+      return;
+    }
+    setSaving(true);
+    setSaved(false);
+    const { error } = await supabase
+      .from("profiles")
+      .update({
+        username: v.value,
+        bio: bio.trim() || null,
+        visibility,
+        pr_velocity_mph: velo ? Math.round(Number(velo)) : null,
+        pr_pop_time_s: pop ? Number(pop) : null,
+        pr_sixty_time_s: sixty ? Number(sixty) : null,
+      })
+      .eq("id", userId);
+    setSaving(false);
+    if (error) {
+      // 23505 = unique violation (username just taken)
+      if ((error as { code?: string }).code === "23505") {
+        setUsernameError("That username was just taken.");
+        setUsernameOk(false);
+      } else {
+        setUsernameError(error.message);
+      }
+      return;
+    }
+    setSaved(true);
+  }
+
+  async function handleShare() {
+    const v = validateUsername(username);
+    if (!v.ok) return;
+    const url = `${window.location.origin}/u/${v.value}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ url, title: "My ArmTrack profile" });
+        return;
+      } catch {
+        /* fall through to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareMsg("Link copied!");
+      setTimeout(() => setShareMsg(null), 2000);
+    } catch {
+      setShareMsg(url);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/10 border-t-blue-500" />
+      </div>
+    );
+  }
+
+  const canSave = usernameOk && !checking && !saving;
+
+  return (
+    <div className="flex min-h-screen flex-col bg-black">
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-5 sm:px-10">
+        <Link href="/dashboard" className="flex items-center gap-1.5 text-sm font-medium text-gray-400">
+          <ArrowLeft size={16} /> Back
+        </Link>
+        <Link href="/" className="text-lg font-extrabold tracking-tight text-white">
+          Arm<span className="text-blue-500">Track</span>
+        </Link>
+        <span className="w-12" />
+      </div>
+
+      <div className="flex flex-1 justify-center px-4 py-6">
+        <div className="w-full max-w-md">
+          <h1 className="mb-1 text-2xl font-extrabold tracking-tight text-white">Your profile</h1>
+          <p className="mb-7 text-sm text-gray-400">Claim your handle and show off your game.</p>
+
+          <div className="flex flex-col gap-5 rounded-2xl p-6" style={{ backgroundColor: "#111111", border: "1px solid #222222" }}>
+            {/* Username */}
+            <Field label="Username">
+              <div className="flex items-center gap-2 rounded-xl px-3" style={{ backgroundColor: "#1a1a1a", border: `1px solid ${usernameError ? "#7f1d1d" : "#2a2a2a"}` }}>
+                <span className="text-sm text-gray-500">armtrack.app/u/</span>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+                  placeholder="yourname"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  className="flex-1 bg-transparent py-3 text-sm text-white placeholder-gray-600 outline-none"
+                />
+                {checking && <span className="text-xs text-gray-500">checking…</span>}
+                {!checking && usernameOk && username && <span className="text-xs text-green-500">available</span>}
+              </div>
+              {usernameError && <p className="mt-1.5 text-xs text-red-400">{usernameError}</p>}
+            </Field>
+
+            {/* Bio */}
+            <Field label="Bio">
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value.slice(0, 160))}
+                placeholder="RHP · class of 2028 · chasing 90"
+                rows={2}
+                className="w-full resize-none rounded-xl px-4 py-3 text-sm text-white placeholder-gray-600 outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
+              />
+              <p className="mt-1 text-right text-[11px] text-gray-600">{bio.length}/160</p>
+            </Field>
+
+            {/* PRs */}
+            <Field label="Personal records (optional)">
+              <div className="grid grid-cols-3 gap-2">
+                <PrInput value={velo} onChange={setVelo} placeholder="82" unit="mph velo" step="1" />
+                <PrInput value={pop} onChange={setPop} placeholder="1.9" unit="s pop" step="0.1" />
+                <PrInput value={sixty} onChange={setSixty} placeholder="7.2" unit="s 60yd" step="0.1" />
+              </div>
+            </Field>
+
+            {/* Visibility */}
+            <Field label="Who can see it">
+              <div className="grid grid-cols-3 gap-2">
+                {VIS_OPTIONS.map((o) => {
+                  const active = visibility === o.value;
+                  return (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setVisibility(o.value)}
+                      className="rounded-xl px-2 py-2.5 text-center transition-colors"
+                      style={{
+                        backgroundColor: active ? "rgba(59,130,246,0.15)" : "#1a1a1a",
+                        border: `1px solid ${active ? "#3B82F6" : "#2a2a2a"}`,
+                      }}
+                    >
+                      <span className="block text-xs font-bold" style={{ color: active ? "#60a5fa" : "#fff" }}>
+                        {o.label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-1.5 text-[11px] text-gray-500">{VIS_OPTIONS.find((o) => o.value === visibility)!.hint}</p>
+            </Field>
+
+            {/* Save */}
+            <button
+              onClick={handleSave}
+              disabled={!canSave}
+              className="mt-1 rounded-xl bg-blue-500 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:bg-blue-400 disabled:opacity-50"
+            >
+              {saving ? "Saving…" : saved ? "Saved ✓" : "Save profile"}
+            </button>
+
+            {/* Share */}
+            {usernameOk && (
+              <button
+                onClick={handleShare}
+                className="flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white"
+                style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
+              >
+                <Share2 size={15} /> {shareMsg ?? "Share my profile"}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">{label}</label>
+      {children}
+    </div>
+  );
+}
+
+function PrInput({
+  value,
+  onChange,
+  placeholder,
+  unit,
+  step,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  unit: string;
+  step: string;
+}) {
+  return (
+    <div className="rounded-xl px-3 py-2" style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}>
+      <input
+        type="number"
+        inputMode="decimal"
+        step={step}
+        min="0"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className="w-full bg-transparent text-base font-bold text-white placeholder-gray-600 outline-none"
+      />
+      <span className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">{unit}</span>
+    </div>
+  );
+}

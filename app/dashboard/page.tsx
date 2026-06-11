@@ -484,12 +484,20 @@ export default function DashboardPage() {
         <span className="text-xl font-extrabold tracking-tight text-white">
           Arm<span className="text-blue-500">Track</span>
         </span>
-        <button
-          onClick={handleSignOut}
-          className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white cursor-pointer"
-        >
-          Sign out
-        </button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/profile"
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white"
+          >
+            Profile
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white cursor-pointer"
+          >
+            Sign out
+          </button>
+        </div>
       </nav>
 
       <div className="mx-auto max-w-2xl px-5 pt-8">
