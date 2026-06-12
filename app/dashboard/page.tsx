@@ -498,6 +498,12 @@ export default function DashboardPage() {
         </span>
         <div className="flex items-center gap-2">
           <Link
+            href="/discover"
+            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white"
+          >
+            Discover
+          </Link>
+          <Link
             href="/profile"
             className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white"
           >

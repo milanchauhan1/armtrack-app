@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { displayedStreak, formatTrackingSince } from "@/lib/profile";
+import FollowButton from "@/components/FollowButton";
 
 interface PublicProfile {
   id: string;
@@ -39,6 +40,8 @@ function handleFromPath(): string {
 export default function PublicProfileClient() {
   const [status, setStatus] = useState<"loading" | "ok" | "private" | "notfound">("loading");
   const [profile, setProfile] = useState<PublicProfile | null>(null);
+  const [followers, setFollowers] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
   useEffect(() => {
     const handle = handleFromPath();
@@ -75,6 +78,14 @@ export default function PublicProfileClient() {
 
       setProfile(prof as PublicProfile);
       setStatus("ok");
+
+      // Follower / following counts (public follow graph)
+      const [{ count: fc }, { count: gc }] = await Promise.all([
+        supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", prof.id),
+        supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", prof.id),
+      ]);
+      setFollowers(fc ?? 0);
+      setFollowingCount(gc ?? 0);
     })();
   }, []);
 
@@ -139,7 +150,23 @@ export default function PublicProfileClient() {
           </div>
           <h1 className="text-xl font-extrabold text-white">{p.first_name || "Player"}</h1>
           <p className="text-sm font-semibold text-blue-400">@{p.username}</p>
-          {p.bio && <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-gray-400">{p.bio}</p>}
+
+          {/* Follower / following counts */}
+          <div className="mt-3 flex items-center justify-center gap-5">
+            <span className="text-sm text-gray-400">
+              <span className="font-bold text-white">{followers}</span> follower{followers === 1 ? "" : "s"}
+            </span>
+            <span className="text-sm text-gray-400">
+              <span className="font-bold text-white">{followingCount}</span> following
+            </span>
+          </div>
+
+          {/* Follow button (hidden on own profile / prompts signup when logged out) */}
+          <div className="mt-4">
+            <FollowButton targetId={p.id} onCountChange={(d) => setFollowers((n) => Math.max(0, n + d))} />
+          </div>
+
+          {p.bio && <p className="mx-auto mt-4 max-w-xs text-sm leading-relaxed text-gray-400">{p.bio}</p>}
 
           {chips.length > 0 && (
             <div className="mt-4 flex flex-wrap justify-center gap-2">

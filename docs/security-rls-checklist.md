@@ -11,6 +11,7 @@ Supabase → **Table Editor** → click each table → confirm it shows **"RLS e
 - [ ] `arm_logs` — RLS enabled ← **most important** (the health data)
 - [ ] `teams` — RLS enabled
 - [ ] `team_members` — RLS enabled
+- [ ] `follows` — RLS enabled (its migration sets this; verify it stuck)
 
 A table with **RLS enabled but zero policies** = nobody can access it (safe but the app breaks). A table with **RLS disabled** = everybody can access everything (the real danger). You want enabled **with** correct policies.
 
