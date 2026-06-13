@@ -44,6 +44,7 @@ export default function SignupPage() {
   const [isNative, setIsNative] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resent, setResent] = useState(false);
+  const [ageOk, setAgeOk] = useState(false);
 
   useEffect(() => {
     import("@capacitor/core").then(({ Capacitor }) => {
@@ -60,6 +61,10 @@ export default function SignupPage() {
 
   async function handleEmailSignup(e: React.FormEvent) {
     e.preventDefault();
+    if (!ageOk) {
+      setError("Please confirm you're 13 or older to continue.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -81,6 +86,10 @@ export default function SignupPage() {
   }
 
   async function handleGoogleSignup() {
+    if (!ageOk) {
+      setError("Please confirm you're 13 or older to continue.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -185,16 +194,30 @@ export default function SignupPage() {
           <h1 className="mb-2 text-2xl font-extrabold tracking-tight text-white">
             Create your free account
           </h1>
-          <p className="mb-8 text-sm text-gray-400">
+          <p className="mb-6 text-sm text-gray-400">
             Free for players and coaches. No credit card — takes about 30 seconds.
           </p>
+
+          {/* Age gate (COPPA) — players under 13 need a parent/coach to set up the account */}
+          <label className="mb-6 flex cursor-pointer items-start gap-2.5 rounded-xl p-3" style={{ backgroundColor: "#161616", border: "1px solid #232323" }}>
+            <input
+              type="checkbox"
+              checked={ageOk}
+              onChange={(e) => setAgeOk(e.target.checked)}
+              className="mt-0.5 h-4 w-4 flex-shrink-0 accent-blue-500"
+            />
+            <span className="text-xs leading-relaxed text-gray-400">
+              I&apos;m <span className="font-semibold text-white">13 or older</span>. Players under 13 must
+              have a parent, guardian, or coach create and manage their account.
+            </span>
+          </label>
 
           {/* Google OAuth — web only, broken in Capacitor WebView without Universal Links */}
           {!isNative && (
             <>
               <button
                 onClick={handleGoogleSignup}
-                disabled={loading}
+                disabled={loading || !ageOk}
                 className="mb-6 flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white transition-all duration-150 hover:border-white/30 hover:bg-white/[0.08] disabled:opacity-50 cursor-pointer"
               >
                 <GoogleIcon />
@@ -288,6 +311,12 @@ export default function SignupPage() {
             >
               Log in
             </Link>
+          </p>
+
+          <p className="mt-4 text-center text-[11px] leading-relaxed text-gray-600">
+            By continuing you agree to our{" "}
+            <Link href="/terms" className="underline hover:text-gray-400">Terms</Link> and{" "}
+            <Link href="/privacy" className="underline hover:text-gray-400">Privacy Policy</Link>.
           </p>
         </div>
       </div>
