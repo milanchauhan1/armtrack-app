@@ -33,6 +33,9 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [shareMsg, setShareMsg] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const checkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load auth + current profile
@@ -153,6 +156,24 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleDelete() {
+    // Two-tap confirm
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setDeleting(true);
+    setDeleteError(null);
+    const { error } = await supabase.rpc("delete_my_account");
+    if (error) {
+      setDeleteError(error.message || "Couldn't delete your account. Please try again.");
+      setDeleting(false);
+      return;
+    }
+    await supabase.auth.signOut();
+    router.replace("/");
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
@@ -265,6 +286,36 @@ export default function ProfilePage() {
                 style={{ backgroundColor: "#1a1a1a", border: "1px solid #2a2a2a" }}
               >
                 <Share2 size={15} /> {shareMsg ?? "Share my profile"}
+              </button>
+            )}
+          </div>
+
+          {/* Danger zone — in-app account deletion (App Store requirement) */}
+          <div className="mt-6 rounded-2xl p-6" style={{ backgroundColor: "#140d0d", border: "1px solid #3b1a1a" }}>
+            <p className="text-sm font-bold text-white">Delete account</p>
+            <p className="mt-1 text-xs leading-relaxed text-gray-400">
+              Permanently deletes your account, profile, logs, and follows. This can&apos;t be undone.
+            </p>
+            {deleteError && <p className="mt-2 text-xs text-red-400">{deleteError}</p>}
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="mt-4 w-full rounded-xl py-3 text-sm font-bold transition-all disabled:opacity-50"
+              style={{
+                backgroundColor: confirmDelete ? "#dc2626" : "transparent",
+                color: confirmDelete ? "#fff" : "#f87171",
+                border: "1px solid #dc2626",
+              }}
+            >
+              {deleting
+                ? "Deleting…"
+                : confirmDelete
+                ? "Tap again to permanently delete"
+                : "Delete my account"}
+            </button>
+            {confirmDelete && !deleting && (
+              <button onClick={() => setConfirmDelete(false)} className="mt-2 w-full text-xs text-gray-500">
+                Cancel
               </button>
             )}
           </div>
