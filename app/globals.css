@@ -16,6 +16,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background-color: #000000;
   color: #ffffff;
 }
