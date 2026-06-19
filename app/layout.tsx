@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import InstallBanner from "@/components/InstallBanner";
@@ -8,6 +8,14 @@ import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+});
+
+// Landing display face — sporty/tactical "baseball" character for headlines
+// and readiness numerals. Body stays Inter for coherence with the in-app UI.
+const chakra = Chakra_Petch({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-chakra",
 });
 
 const SITE_URL = "https://armtrack.app";
@@ -83,7 +91,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="ArmTrack" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${chakra.variable} font-sans antialiased`}>
         {children}
         <BottomNav />
         <InstallBanner />
