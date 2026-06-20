@@ -47,7 +47,7 @@ export default function FinalCta() {
               boxShadow: "0 10px 28px rgba(46,107,255,.4)",
             }}
           >
-            Get your readiness — free
+            Get your readiness, free
           </Link>
           <p style={{ color: T.ink2, fontSize: 13, marginTop: 18 }}>No download required. Works on any device.</p>
         </ScrollFade>

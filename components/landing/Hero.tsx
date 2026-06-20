@@ -65,8 +65,9 @@ export default function Hero() {
             maxWidth: 470,
           }}
         >
-          <b style={{ color: T.ink, fontWeight: 700 }}>The free, 60-second daily check-in</b> that tells you whether
-          your arm is ready to throw — and flags the small stuff before it turns into an injury. No gear, no cost, no catch.
+          <b style={{ color: T.ink, fontWeight: 700 }}>Free and easy to use.</b> Most arm injuries don’t happen
+          overnight. They build up throw after throw. ArmTrack helps you catch the warning signs before they become
+          months on the sideline.
         </motion.p>
 
         <motion.div
@@ -94,7 +95,7 @@ export default function Hero() {
               boxShadow: "0 10px 26px rgba(46,107,255,.4)",
             }}
           >
-            Get your readiness — free
+            Get your readiness, free
           </Link>
           <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: T.ink, textDecoration: "none" }}>
             Log in →
@@ -102,7 +103,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Phone — slides in from the right */}
+      {/* Phone slides in from the right */}
       <div style={{ flex: "0 1 310px", minWidth: 270, display: "flex", justifyContent: "center", position: "relative" }}>
         <div
           aria-hidden="true"

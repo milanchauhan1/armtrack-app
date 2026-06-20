@@ -5,7 +5,7 @@ import { ScrollFade, Eyebrow, T } from "./primitives";
 const STATS = [
   { num: "1 in 4", label: "youth pitchers report arm pain serious enough to stop throwing" },
   { num: "36×", label: "higher injury risk when pitchers throw with fatigue" },
-  { num: "~50%", label: "of these injuries are overuse — meaning preventable" },
+  { num: "~50%", label: "of these injuries are overuse, meaning preventable" },
 ];
 
 export default function Stakes() {
@@ -17,7 +17,7 @@ export default function Stakes() {
             <Eyebrow color={T.red}>The stakes</Eyebrow>
           </div>
           <p style={{ textAlign: "center", color: T.ink2, fontSize: 15, margin: "0 0 30px" }}>
-            The arm rarely fails overnight. It fails quietly — one ignored day at a time.
+            The warning signs show up early. Most players just never track them.
           </p>
         </ScrollFade>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 12 }}>

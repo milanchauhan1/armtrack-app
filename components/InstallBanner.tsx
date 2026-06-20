@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Upload, PlusSquare, CheckCircle, X } from 'lucide-react';
 import { Capacitor } from '@capacitor/core';
 
@@ -341,11 +342,14 @@ export default function InstallBanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showAndroid, setShowAndroid] = useState(false);
   const [showIOS, setShowIOS] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     // Never show "add to home screen" web UI inside the native app — it IS the app.
     if (Capacitor.isNativePlatform()) return;
     if (isInStandaloneMode()) return;
+    // Don't interrupt the marketing landing page with an install prompt.
+    if (pathname === '/') return;
 
     // iOS: show guide on first visit
     if (isIOS() && !isIOSInstallShown()) {
@@ -362,7 +366,7 @@ export default function InstallBanner() {
       window.addEventListener('beforeinstallprompt', handler);
       return () => window.removeEventListener('beforeinstallprompt', handler);
     }
-  }, []);
+  }, [pathname]);
 
   function dismissIOS() {
     setShowIOS(false);

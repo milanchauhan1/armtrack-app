@@ -45,7 +45,7 @@ export default function TrendBand() {
         <ScrollFade>
           <Card>
             <div style={lbl}>Pain trend · 7 days</div>
-            <div style={cap}>Catch it climbing — quietly.</div>
+            <div style={cap}>Catch it climbing, quietly.</div>
             <Sparkline points={PAIN_POINTS} gradientId="trendPain" />
           </Card>
         </ScrollFade>

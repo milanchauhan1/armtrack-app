@@ -31,7 +31,7 @@ export default function TryIt() {
               See your readiness
             </h2>
             <p style={{ fontSize: 15, lineHeight: 1.6, color: T.ink2, maxWidth: 380, margin: 0 }}>
-              Drag the sliders — your score, state, and recommendation update instantly, using the exact same math the app uses.
+              Drag the sliders. Your score, state, and recommendation update instantly, using the exact same math the app uses.
             </p>
           </div>
           <ReadinessDemo />

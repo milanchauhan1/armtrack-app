@@ -26,12 +26,12 @@ export default function FounderStory() {
           <Quote size={28} style={{ color: T.blue, marginBottom: 20, opacity: 0.9 }} />
           <p style={{ fontSize: "clamp(18px, 2.4vw, 23px)", lineHeight: 1.55, color: T.ink, fontWeight: 500, margin: "0 0 18px", letterSpacing: "-0.01em" }}>
             I’ve played baseball most of my life. As I started throwing harder, elbow pain just became part of the
-            routine — ibuprofen before practice, telling myself I was fine. I never tracked my throwing volume,
+            routine. Ibuprofen before practice, telling myself I was fine. I never tracked my throwing volume,
             my soreness, or how I was recovering.
           </p>
           <p style={{ fontSize: 16.5, lineHeight: 1.65, color: T.ink2, margin: "0 0 16px" }}>
-            Eventually it caught up with me. I built ArmTrack so the next player doesn’t have to learn it the hard way —
-            and I made it free, with no ads and no selling your data, because this isn’t about money.
+            Eventually it caught up with me. I built ArmTrack so the next player doesn’t have to learn it the hard way.
+            I made it free, with no ads and no selling your data, because this isn’t about money.
           </p>
           <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 26 }}>
             <div
