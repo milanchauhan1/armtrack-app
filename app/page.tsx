@@ -14,6 +14,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import CoachBand from "@/components/landing/CoachBand";
 import FounderStory from "@/components/landing/FounderStory";
 import FinalCta from "@/components/landing/FinalCta";
+import Waitlist from "@/components/landing/Waitlist";
 import Footer from "@/components/landing/Footer";
 
 // ── Structured data (JSON-LD) — rich results + AI search ───────────────────────
@@ -134,6 +135,7 @@ export default function LandingPage() {
       <CoachBand />
       <FounderStory />
       <FinalCta />
+      <Waitlist />
       <Footer />
     </div>
   );
