@@ -102,11 +102,46 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  /* The document itself never scrolls — that stops the iOS WebView rubber-band
+     from bouncing the whole page (and dragging the fixed bottom nav with it).
+     All scrolling happens inside `.app-shell` below. */
+  overflow: hidden;
+  overscroll-behavior: none;
   background-color: #000000;
   color: #ffffff;
+}
+
+/* The single app scroll container. Vertical scroll lives here, not on the
+   document, so there's nothing for the WebView to over-scroll/bounce. */
+.app-shell {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safety net: no page may exceed the viewport width or scroll sideways. `clip`
+   (not `hidden`/`auto`) doesn't create a scroll container, so sticky headers and
+   intentional inner overflow-x-auto strips keep working. */
+.app-shell > * {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Hide scrollbars app-wide — scrolling still works, just no visible bar/gutter. */
+html {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;      /* old Edge/IE */
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;                 /* Chrome / Safari / iOS WebView */
 }
 
 /* ── Range slider ──────────────────────────────────────────────────────────── */
@@ -118,6 +153,9 @@ body {
   border-radius: 999px;
   outline: none;
   cursor: pointer;
+  /* Let the thumb own horizontal drags instead of the page treating the touch
+     as a scroll gesture — without this, the thumb only jumps on tap. */
+  touch-action: none;
 }
 
 .arm-slider::-webkit-slider-thumb {

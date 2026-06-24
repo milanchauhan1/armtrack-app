@@ -244,13 +244,26 @@ export default function LogPage() {
 
       const today = getTodayString();
 
-      const { data: existing } = await supabase
-        .from("arm_logs")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("date", today)
-        .maybeSingle();
+      // These three reads are independent — fetch them in parallel.
+      const [existingRes, logsRes, prevRes] = await Promise.all([
+        supabase
+          .from("arm_logs")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("date", today)
+          .maybeSingle(),
+        supabase.from("arm_logs").select("date").eq("user_id", user.id),
+        supabase
+          .from("arm_logs")
+          .select("date, pain_level, soreness_level, stiffness_level")
+          .eq("user_id", user.id)
+          .lt("date", today)
+          .order("date", { ascending: false })
+          .limit(1)
+          .maybeSingle(),
+      ]);
 
+      const existing = existingRes.data;
       if (existing) {
         setTodayLog(existing as ArmLog);
         setForm({
@@ -264,23 +277,9 @@ export default function LogPage() {
         });
       }
 
-      const { data: logs } = await supabase
-        .from("arm_logs")
-        .select("date")
-        .eq("user_id", user.id);
+      if (logsRes.data) setStreak(computeStreak(logsRes.data.map((l) => l.date)));
 
-      if (logs) setStreak(computeStreak(logs.map((l) => l.date)));
-
-      const { data: prev } = await supabase
-        .from("arm_logs")
-        .select("date, pain_level, soreness_level, stiffness_level")
-        .eq("user_id", user.id)
-        .lt("date", today)
-        .order("date", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (prev) setPrevLog(prev as PrevLog);
+      if (prevRes.data) setPrevLog(prevRes.data as PrevLog);
 
       setLoading(false);
       } catch {

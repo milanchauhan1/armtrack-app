@@ -17,7 +17,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check, WifiOff } from "lucide-react";
+import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check, WifiOff, Compass, User } from "lucide-react";
 import {
   ArmLog,
   calculateEstimatedReadiness,
@@ -316,52 +316,64 @@ export default function DashboardPage() {
 
       setProfile(prof);
 
-      // Fetch active coach recommendation for today
       const nowIso = new Date().toISOString();
-      const { data: recData } = await supabase
-        .from("coach_recommendations")
-        .select("recommendation")
-        .eq("player_id", user.id)
-        .gt("expires_at", nowIso)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const fourteenDaysAgo = new Date();
+      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
+      const cutoff = fourteenDaysAgo.toISOString().split("T")[0];
 
-      if (recData) setCoachRec((recData as { recommendation: string }).recommendation);
-
-      // Fetch most recent team message from last 24h
-      if (prof?.team_id) {
-        const yesterday = new Date();
-        yesterday.setHours(yesterday.getHours() - 24);
-        const { data: msgRows } = await supabase
-          .from("coach_messages")
-          .select("message, created_at, coach_id")
-          .eq("team_id", prof.team_id)
-          .or(`player_id.eq.${user.id},player_id.is.null`)
-          .gte("created_at", yesterday.toISOString())
+      // Everything below only depends on the profile, not on each other — run
+      // them in parallel so the dashboard waits on one round-trip, not five.
+      const [recRes, teamMsgInfo, allDatesRes, recent14Res] = await Promise.all([
+        // Active coach recommendation for today
+        supabase
+          .from("coach_recommendations")
+          .select("recommendation")
+          .eq("player_id", user.id)
+          .gt("expires_at", nowIso)
           .order("created_at", { ascending: false })
-          .limit(1);
-
-        if (msgRows && msgRows.length > 0) {
+          .limit(1)
+          .maybeSingle(),
+        // Most recent team message from the last 24h (+ coach's name), if on a team
+        (async () => {
+          if (!prof?.team_id) return null;
+          const yesterday = new Date();
+          yesterday.setHours(yesterday.getHours() - 24);
+          const { data: msgRows } = await supabase
+            .from("coach_messages")
+            .select("message, created_at, coach_id")
+            .eq("team_id", prof.team_id)
+            .or(`player_id.eq.${user.id},player_id.is.null`)
+            .gte("created_at", yesterday.toISOString())
+            .order("created_at", { ascending: false })
+            .limit(1);
+          if (!msgRows || msgRows.length === 0) return null;
           const latest = msgRows[0] as { message: string; created_at: string; coach_id: string };
           const { data: coachProf } = await supabase
             .from("profiles")
             .select("first_name")
             .eq("id", latest.coach_id)
             .single();
-          setTeamMsg({
+          return {
             message: latest.message,
             coach_name: (coachProf as { first_name: string } | null)?.first_name ?? "Coach",
             created_at: latest.created_at,
-          });
-        }
-      }
+          };
+        })(),
+        // All log dates (for streak/stats)
+        supabase.from("arm_logs").select("date").eq("user_id", user.id),
+        // Last 14 days of detail (for readiness + trends)
+        supabase
+          .from("arm_logs")
+          .select("id, date, pain_level, soreness_level, stiffness_level, throws_count, activity_type, recovery_done, notes")
+          .eq("user_id", user.id)
+          .gte("date", cutoff)
+          .order("date", { ascending: false }),
+      ]);
 
-      const { data: allDates } = await supabase
-        .from("arm_logs")
-        .select("date")
-        .eq("user_id", user.id);
+      if (recRes.data) setCoachRec((recRes.data as { recommendation: string }).recommendation);
+      if (teamMsgInfo) setTeamMsg(teamMsgInfo);
 
+      const allDates = allDatesRes.data;
       if (allDates) {
         const stats = buildPublicStats(allDates.map((l) => l.date));
         setStreak(stats.currentStreak);
@@ -381,18 +393,7 @@ export default function DashboardPage() {
           .then(() => {}, () => {});
       }
 
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
-      const cutoff = fourteenDaysAgo.toISOString().split("T")[0];
-
-      const { data: recent14 } = await supabase
-        .from("arm_logs")
-        .select("id, date, pain_level, soreness_level, stiffness_level, throws_count, activity_type, recovery_done, notes")
-        .eq("user_id", user.id)
-        .gte("date", cutoff)
-        .order("date", { ascending: false });
-
-      const logs = (recent14 ?? []) as ArmLog[];
+      const logs = (recent14Res.data ?? []) as ArmLog[];
       setLogs14([...logs].sort((a, b) => a.date.localeCompare(b.date)));
       setLogs7(logs.slice(0, 7));
 
@@ -411,11 +412,6 @@ export default function DashboardPage() {
     }
     load();
   }, [router]);
-
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    router.replace("/login");
-  }
 
   if (loadError) {
     return (
@@ -490,31 +486,29 @@ export default function DashboardPage() {
 
       {/* Nav */}
       <nav
-        className="sticky top-0 z-20 flex items-center justify-between bg-black px-5 py-4 sm:px-10"
-        style={{ borderBottom: "1px solid #111" }}
+        className="sticky top-0 z-20 flex items-center justify-between gap-3 px-5 py-3.5 sm:px-10"
+        style={{ backgroundColor: "rgba(0,0,0,0.8)", borderBottom: "1px solid #1a1a1a", backdropFilter: "blur(12px)" }}
       >
-        <span className="text-xl font-extrabold tracking-tight text-white">
+        <span className="shrink-0 text-xl font-extrabold tracking-tight text-white">
           Arm<span className="text-blue-500">Track</span>
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5">
           <Link
             href="/discover"
-            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white"
+            aria-label="Discover"
+            className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 px-2.5 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/25 hover:bg-white/5 hover:text-white sm:px-3.5"
           >
-            Discover
+            <Compass size={17} strokeWidth={2} />
+            <span className="hidden sm:inline">Discover</span>
           </Link>
           <Link
             href="/profile"
-            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white"
+            aria-label="Profile"
+            className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 px-2.5 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/25 hover:bg-white/5 hover:text-white sm:px-3.5"
           >
-            Profile
+            <User size={17} strokeWidth={2} />
+            <span className="hidden sm:inline">Profile</span>
           </Link>
-          <button
-            onClick={handleSignOut}
-            className="rounded-lg border border-white/15 px-4 py-2 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/30 hover:text-white cursor-pointer"
-          >
-            Sign out
-          </button>
         </div>
       </nav>
 

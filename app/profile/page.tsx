@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Share2, LogOut } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { validateUsername } from "@/lib/profile";
 
@@ -156,6 +156,11 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    router.replace("/login");
+  }
+
   async function handleDelete() {
     // Two-tap confirm
     if (!confirmDelete) {
@@ -289,6 +294,15 @@ export default function ProfilePage() {
               </button>
             )}
           </div>
+
+          {/* Sign out */}
+          <button
+            onClick={handleSignOut}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/5"
+            style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+          >
+            <LogOut size={16} /> Sign out
+          </button>
 
           {/* Danger zone — in-app account deletion (App Store requirement) */}
           <div className="mt-6 rounded-2xl p-6" style={{ backgroundColor: "#140d0d", border: "1px solid #3b1a1a" }}>

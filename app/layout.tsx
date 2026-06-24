@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
 import InstallBanner from "@/components/InstallBanner";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import NativeSplash from "@/components/NativeSplash";
+import ScrollReset from "@/components/ScrollReset";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,6 +24,15 @@ const SITE_URL = "https://armtrack.app";
 const TITLE = "ArmTrack — Make Smarter Throwing Decisions";
 const DESCRIPTION =
   "ArmTrack helps baseball players and coaches track pain, soreness, and throwing workload in 60 seconds a day — turning daily check-ins into a readiness score you can act on.";
+
+// Lock the WebView to the device width — no pinch-zoom, no sideways panning.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -92,10 +103,14 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className={`${inter.variable} ${chakra.variable} font-sans antialiased`}>
-        {children}
+        <div id="app-shell" className="app-shell">
+          {children}
+        </div>
         <BottomNav />
         <InstallBanner />
         <ServiceWorkerRegister />
+        <NativeSplash />
+        <ScrollReset />
       </body>
     </html>
   );

@@ -67,6 +67,9 @@ Readiness states: 8.5–10 Ready (green) · 7.0–8.4 Good to Go (green) · 5.5�
 - Use Windows Terminal for git, not VS Code terminal
 - Never commit: `nul`, `.env.local`
 
+## Communication
+- CAVEMAN MODE (default): reply in extremely simple, plain, token-minimal language. No preamble/summary/fluff. Only explain in depth when the user explicitly asks.
+
 ## Working Rules
 - Read existing files before editing them
 - Make targeted edits — don't rewrite entire files unless necessary

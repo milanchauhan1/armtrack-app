@@ -10,13 +10,15 @@ const config: CapacitorConfig = {
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 1200,
-      launchAutoHide: true,
+      // Keep the splash up until the web app mounts and calls hide() itself —
+      // otherwise it auto-hides before the WebView finishes its cold start
+      // (~3s on first launch) and the user sees a black screen in the gap.
+      launchAutoHide: false,
       backgroundColor: '#000000',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: false,
-      fadeSplashScreenDuration: 400,
+      launchFadeOutDuration: 300,
     },
   },
 };
