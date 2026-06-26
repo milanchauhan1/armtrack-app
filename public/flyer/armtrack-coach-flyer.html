@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ArmTrack — Coach / Team Flyer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Chakra+Petch:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: letter; margin: 0.5in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Inter, system-ui, sans-serif; color: #15171C; background: #fff; }
+  .sheet { max-width: 760px; margin: 0 auto; padding: 40px 44px; }
+  .disp { font-family: 'Chakra Petch', sans-serif; }
+  .top { display: flex; align-items: center; gap: 12px; margin-bottom: 26px; }
+  .top .logo { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg,#2E6BFF,#6E9BFF); }
+  .top .wm { font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:26px; }
+  .top .wm .t { color:#2E6BFF; }
+  .free { margin-left:auto; font-weight:700; font-size:13px; color:#0a7a55; background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3); padding:6px 13px; border-radius:99px; }
+  h1 { font-family:'Chakra Petch',sans-serif; font-weight:700; text-transform:uppercase; font-size:44px; line-height:.98; letter-spacing:-.01em; margin-bottom:6px; }
+  h1 .blue { color:#2E6BFF; }
+  .sub { font-size:17px; color:#3C424D; line-height:1.5; margin-bottom:24px; max-width:560px; }
+  .row { display:flex; gap:24px; align-items:flex-start; }
+  .col { flex:1; }
+  .pt { display:flex; gap:10px; margin-bottom:14px; }
+  .pt .n { flex:0 0 26px; height:26px; border-radius:7px; background:#2E6BFF; color:#fff; font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+  .pt b { font-size:15px; } .pt p { font-size:13.5px; color:#3C424D; line-height:1.45; }
+  .qr { flex:0 0 168px; text-align:center; border:1px solid #E4E7EC; border-radius:14px; padding:14px; }
+  .qr img { width:140px; height:140px; display:block; margin:0 auto 8px; }
+  .qr .u { font-family:'Chakra Petch',sans-serif; font-weight:700; font-size:15px; }
+  .qr .s { font-size:11px; color:#3C424D; }
+  .band { margin-top:24px; background:#0B0C0F; color:#fff; border-radius:14px; padding:18px 22px; display:flex; flex-wrap:wrap; gap:8px 20px; align-items:center; }
+  .band b { color:#fff; } .band .g { color:#34d39e; font-weight:700; }
+  .band .item { font-size:13.5px; }
+  .foot { margin-top:18px; font-size:11px; color:#888; text-align:center; }
+  @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <div class="logo"></div>
+    <div class="wm"><span>Arm</span><span class="t">Track</span></div>
+    <div class="free">100% FREE</div>
+  </div>
+
+  <h1>Protect the arm.<br><span class="blue">Extend the career.</span></h1>
+  <p class="sub">The free 60-second daily arm-readiness check for baseball &amp; softball players — and a one-screen readiness view for coaches.</p>
+
+  <div class="row">
+    <div class="col">
+      <div class="pt"><div class="n">1</div><div><b>The problem</b><p>Most arm injuries don't happen overnight. They build up throw after throw — and nobody's tracking it.</p></div></div>
+      <div class="pt"><div class="n">2</div><div><b>What players do</b><p>Log pain, soreness, stiffness &amp; throws in under a minute. Get a readiness score and a clear call: throw, light day, or rest.</p></div></div>
+      <div class="pt"><div class="n">3</div><div><b>What coaches get</b><p>One dashboard with every player's readiness before practice — who's good, who needs a light day, who hasn't checked in.</p></div></div>
+    </div>
+    <div class="qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&amp;margin=0&amp;data=https%3A%2F%2Farmtrack.app" alt="Scan for armtrack.app" />
+      <div class="u">armtrack.app</div>
+      <div class="s">Scan to get started free</div>
+    </div>
+  </div>
+
+  <div class="band">
+    <span class="item"><span class="g">✓</span> <b>Free forever</b></span>
+    <span class="item"><span class="g">✓</span> No ads, no data sold</span>
+    <span class="item"><span class="g">✓</span> Works on any phone — no download needed</span>
+    <span class="item"><span class="g">✓</span> Built by a player</span>
+  </div>
+
+  <p class="foot">Estimated readiness based on self-reported data. Not medical advice; not a substitute for a coach, athletic trainer, or physician. · armtrack.app</p>
+</div>
+</body>
+</html>
