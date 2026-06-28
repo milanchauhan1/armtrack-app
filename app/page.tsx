@@ -79,14 +79,15 @@ export default function LandingPage() {
   const router = useRouter();
   const [nativeRedirecting, setNativeRedirecting] = useState(false);
 
-  // Marketing page is web-only. Native users have already installed — send them
-  // to login (or dashboard if signed in). Authenticated web users skip it too.
+  // Marketing page is web-only. Native users have already installed — first-time
+  // users go straight to onboarding (no login wall; an anonymous account is
+  // created when they tap "Get started"). Signed-in users skip to the dashboard.
   useEffect(() => {
     const native = Capacitor.isNativePlatform();
     if (native) setNativeRedirecting(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) router.replace("/dashboard");
-      else if (native) router.replace("/login");
+      else if (native) router.replace("/onboarding");
     });
   }, [router]);
 

@@ -273,6 +273,7 @@ export default function DashboardPage() {
   const [streak, setStreak] = useState(0);
   const [loggedToday, setLoggedToday] = useState(false);
   const [chartMounted, setChartMounted] = useState(false);
+  const [isAnon, setIsAnon] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [coachRec, setCoachRec] = useState<string | null>(null);
   const [teamMsg, setTeamMsg] = useState<{
@@ -302,6 +303,7 @@ export default function DashboardPage() {
         return;
       }
       const user = session.user;
+      setIsAnon(user.is_anonymous ?? false);
 
       const { data: prof } = await supabase
         .from("profiles")
@@ -513,6 +515,22 @@ export default function DashboardPage() {
       </nav>
 
       <div className="mx-auto max-w-2xl px-5 pt-8">
+        {/* Save-progress nudge — only for anonymous users (no email yet) */}
+        {isAnon && (
+          <Link
+            href="/save"
+            className="mb-6 flex items-center gap-3 rounded-2xl px-4 py-3.5"
+            style={{ backgroundColor: "rgba(59,130,246,0.10)", border: "1px solid rgba(59,130,246,0.35)" }}
+          >
+            <Shield size={20} className="shrink-0 text-blue-400" />
+            <span className="flex-1 text-sm leading-snug text-white">
+              <span className="font-bold">Save your progress.</span>{" "}
+              <span className="text-gray-300">Add an email to keep your streak and sync across devices.</span>
+            </span>
+            <span className="shrink-0 text-sm font-bold text-blue-400">Save →</span>
+          </Link>
+        )}
+
         {/* ── Header ──────────────────────────────────────────────────────────── */}
         <motion.div custom={0} variants={fadeUp} initial="hidden" animate="show" className="mb-8">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-400 mb-1">

@@ -351,6 +351,8 @@ export default function OnboardingPage() {
   const [authChecking, setAuthChecking] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [startingAnon, setStartingAnon] = useState(false);
+  const [anonError, setAnonError] = useState(false);
   const [pendingTeamCode, setPendingTeamCode] = useState("");
   const [data, setData] = useState<OnboardingData>({
     role: null,
@@ -368,8 +370,11 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data: { user } }) => {
+      // No session yet → show the welcome screen. We create an anonymous account
+      // only when they tap "Get started", so there's no login wall.
       if (!user) {
-        router.replace("/login");
+        setStep(-1);
+        setAuthChecking(false);
         return;
       }
       const { data: profile } = await supabase
@@ -384,6 +389,22 @@ export default function OnboardingPage() {
       setAuthChecking(false);
     });
   }, [router]);
+
+  // Welcome → create an anonymous session, then drop into step 0. Their data
+  // persists immediately and can be claimed later by adding email/Apple.
+  async function startAnonymously() {
+    setStartingAnon(true);
+    setAnonError(false);
+    const { error } = await supabase.auth.signInAnonymously();
+    if (error) {
+      setAnonError(true);
+      setStartingAnon(false);
+      return;
+    }
+    setDirection(1);
+    setStep(0);
+    setStartingAnon(false);
+  }
 
   function set<K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) {
     setData((prev) => ({ ...prev, [key]: value }));
@@ -429,6 +450,88 @@ export default function OnboardingPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/10 border-t-blue-500" />
+      </div>
+    );
+  }
+
+  // ── Welcome (first open — no account yet) ─────────────────────────────────
+  if (step === -1) {
+    return (
+      <div
+        className="fixed inset-0 flex flex-col items-center overflow-hidden bg-black px-7"
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 56px)",
+          paddingBottom: "calc(env(safe-area-inset-bottom) + 28px)",
+        }}
+      >
+        {/* Ambient glow — centered behind the tagline so the logo sits on pure
+            black and blends (no visible square edge). */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+          <div
+            className="absolute left-1/2 top-1/2"
+            style={{
+              width: 620,
+              height: 620,
+              transform: "translate(-50%, -50%)",
+              borderRadius: "50%",
+              background: "radial-gradient(circle, rgba(59,130,246,0.16) 0%, transparent 64%)",
+              filter: "blur(30px)",
+            }}
+          />
+        </div>
+
+        {/* Logo — top, the real brand mark */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/icons/logo.png"
+          alt="ArmTrack"
+          width={156}
+          height={156}
+          className="relative z-10"
+        />
+
+        {/* Tagline — centered in the middle of the screen */}
+        <div className="relative z-10 flex flex-1 items-center justify-center">
+          <h1 className="text-center text-[34px] font-extrabold leading-[1.12] tracking-tight text-white">
+            Protect the arm.
+            <br />
+            Extend the career.
+          </h1>
+        </div>
+
+        {/* CTA — bottom */}
+        <div className="relative z-10 flex w-full flex-col items-center text-center" style={{ maxWidth: 380 }}>
+          {anonError && (
+            <p className="mb-4 text-sm text-red-400">
+              Couldn&apos;t start. Check your connection and try again.
+            </p>
+          )}
+
+          <motion.button
+            onClick={() => {
+              tapMedium();
+              startAnonymously();
+            }}
+            disabled={startingAnon}
+            whileTap={startingAnon ? {} : { scale: 0.97 }}
+            className="w-full rounded-2xl text-base font-bold text-white transition-all duration-150 disabled:opacity-60 cursor-pointer"
+            style={{
+              height: 56,
+              backgroundImage: "linear-gradient(180deg, #5398ff 0%, #3b82f6 100%)",
+              boxShadow: "0 8px 38px rgba(59,130,246,0.55), 0 0 22px rgba(59,130,246,0.4)",
+            }}
+          >
+            {startingAnon ? "Starting…" : "Get started"}
+          </motion.button>
+
+          <button
+            onClick={() => router.push("/login")}
+            className="mt-4 text-sm cursor-pointer"
+            style={{ color: "#7a818c" }}
+          >
+            I already have an account
+          </button>
+        </div>
       </div>
     );
   }
