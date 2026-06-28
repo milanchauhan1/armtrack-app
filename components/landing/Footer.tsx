@@ -20,6 +20,7 @@ export default function Footer() {
         <span style={{ color: T.ink2, fontSize: 13 }}>ArmTrack © 2026</span>
         <div style={{ display: "flex", gap: 18, alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
           <Link href="/blog" style={{ color: T.ink2, fontSize: 13, textDecoration: "none" }}>Guides</Link>
+          <Link href="/methodology" style={{ color: T.ink2, fontSize: 13, textDecoration: "none" }}>Methodology</Link>
           <Link href="/privacy" style={{ color: T.ink2, fontSize: 13, textDecoration: "none" }}>Privacy</Link>
           <Link href="/terms" style={{ color: T.ink2, fontSize: 13, textDecoration: "none" }}>Terms</Link>
         </div>

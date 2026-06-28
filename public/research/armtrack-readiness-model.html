@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ArmTrack Readiness Model — White Paper</title>
+<style>
+  @page { size: letter; margin: 1in; }
+  :root { --ink:#111; --muted:#444; --line:#ccc; --code:#f3f3f3; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--ink); line-height: 1.5; max-width: 720px; margin: 40px auto; padding: 0 24px;
+    font-size: 12pt;
+  }
+  .title { text-align: center; margin-bottom: 6px; font-size: 19pt; line-height: 1.25; font-weight: 700; }
+  .subtitle { text-align: center; color: var(--muted); font-size: 12pt; font-style: italic; margin-bottom: 14px; }
+  .byline { text-align: center; color: var(--muted); font-size: 10.5pt; margin-bottom: 6px; }
+  .meta { text-align: center; color: var(--muted); font-size: 9.5pt; margin-bottom: 24px; }
+  h2 { font-size: 13pt; margin: 22px 0 8px; border-bottom: 1px solid var(--line); padding-bottom: 3px; }
+  h3 { font-size: 11.5pt; margin: 14px 0 4px; }
+  p { margin: 0 0 11px; text-align: justify; }
+  .abstract { font-size: 11pt; background: #fafafa; border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin-bottom: 8px; }
+  .abstract b { font-variant: small-caps; }
+  pre { background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px;
+    font-family: "Courier New", monospace; font-size: 10pt; line-height: 1.45; white-space: pre-wrap; margin: 0 0 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 11pt; margin: 4px 0 14px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); }
+  th { border-bottom: 1.5px solid #999; }
+  .foot { margin-top: 26px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 9.5pt; color: var(--muted); }
+  @media print { body { margin: 0; } a { color: inherit; text-decoration: none; } }
+</style>
+</head>
+<body>
+  <div class="title">Estimating Daily Throwing Readiness in Youth Baseball</div>
+  <div class="subtitle">A transparent, literature-informed risk model with a path to a learned system</div>
+  <div class="byline">Milan Chauhan</div>
+  <div class="meta">ArmTrack · armtrack.app · White paper (preprint), v1</div>
+
+  <div class="abstract">
+    <p><b>Abstract.</b> Arm injuries in youth baseball are common, costly, and substantially preventable: a
+    large share trace to cumulative overuse rather than a single acute event, yet most young players track
+    nothing day to day. ArmTrack is a free mobile application that converts a sub-60-second daily self-report
+    — pain, soreness, stiffness, and throwing workload — into an interpretable readiness score (0–10) and a
+    plain-language throwing recommendation, and aggregates a team&rsquo;s scores into a single coach view.
+    This paper documents the v1 readiness model: a transparent, weighted, evidence-informed scoring function
+    with workload- and trend-based modifiers, chosen deliberately over a black-box model because at zero user
+    data, interpretability and clinical defensibility matter more than predictive complexity. We specify the
+    model, its rationale, its limitations, and a staged validation and machine-learning roadmap that activates
+    as longitudinal data accrues.</p>
+  </div>
+
+  <h2>1. Problem and motivation</h2>
+  <p>Overuse-pattern arm injuries — including UCL tears requiring &ldquo;Tommy John&rdquo; reconstruction —
+  have risen sharply among adolescents, with a large fraction of cases concentrated in the 15&ndash;19 age
+  band, and fatigue is a well-documented amplifier of injury risk. The actionable gap is <i>visibility</i>:
+  the early signal (rising soreness, incomplete recovery, climbing workload) is available daily but
+  uncaptured. ArmTrack&rsquo;s thesis is that a frictionless daily measurement, surfaced as one number a
+  player and coach will actually look at, can move behavior earlier than pitch-count-at-the-game tools that
+  miss the bullpens, lessons, and long-toss that constitute most arm stress.</p>
+
+  <h2>2. Design principles</h2>
+  <p><i>Interpretability over opacity.</i> With no training data, a learned model would be unvalidated and
+  unexplainable to a 13-year-old or a parent; a transparent weighted model can be reasoned about, audited,
+  and trusted. <i>Frictionless input:</i> three 0&ndash;10 self-reports and a throw count — daily adherence
+  beats sensor precision nobody sustains. <i>Conservative and non-diagnostic:</i> the score is explicitly
+  estimated readiness, never a medical claim; the system never says &ldquo;do not throw,&rdquo; only
+  &ldquo;throwing not recommended,&rdquo; and defers to a coach, athletic trainer, or physician.</p>
+
+  <h2>3. The model</h2>
+  <h3>3.1 Per-log base score</h3>
+  <p>Each daily log yields a base score from three subjective signals, weighted by their hypothesized
+  association with tissue stress (pain weighted highest):</p>
+  <pre>weighted  = (pain&middot;3 + soreness&middot;2 + stiffness&middot;1) / 6     # each in [0,10]
+baseScore = clamp(10 - weighted, 0, 10)                # higher = more ready</pre>
+  <p>Pain is weighted 3&times;, soreness 2&times;, stiffness 1&times; — encoding the clinical prior that
+  sharp, located pain is a stronger warning than general stiffness.</p>
+
+  <h3>3.2 Workload and trend modifiers</h3>
+  <p>The full estimate adjusts the most recent base score for cumulative load and direction of travel:</p>
+  <pre>score = baseScore(latest)
+  - 0.5  if latest throws &gt; 100                 # high single-day volume
+  - 0.5  if last two logs both &gt; 75 throws      # back-to-back heavy load
+  - 0.5  if pain rose across the last 3 logs    # rising-pain trend
+score = clamp(score, 0, 10)</pre>
+
+  <h3>3.3 Banding and recommendation</h3>
+  <table>
+    <tr><th>Score</th><th>State</th></tr>
+    <tr><td>&ge; 8.5</td><td>Ready</td></tr>
+    <tr><td>7.0 &ndash; 8.4</td><td>Good to Go</td></tr>
+    <tr><td>5.5 &ndash; 6.9</td><td>Proceed with Caution</td></tr>
+    <tr><td>4.0 &ndash; 5.4</td><td>Light Day</td></tr>
+    <tr><td>2.0 &ndash; 3.9</td><td>Rest Recommended</td></tr>
+    <tr><td>&lt; 2.0</td><td>Throwing Not Recommended</td></tr>
+  </table>
+  <p>Recommendations are position-aware (pitcher / catcher / fielder). The system also computes a
+  consecutive-day logging streak and a staleness guard (readiness older than two days is flagged as not
+  reflecting &ldquo;today&rdquo;).</p>
+
+  <h2>4. Why not machine learning yet?</h2>
+  <p>A supervised model predicting injury would require labeled outcomes across many athlete-seasons — data
+  that does not exist at launch and is ethically and practically slow to collect for minors. Deploying an
+  unvalidated black box for an injury-adjacent decision would be irresponsible. The v1 heuristic is the
+  correct cold-start choice: safe, explainable, and good enough to drive the behavior change — daily
+  attention — that is itself the primary intervention.</p>
+
+  <h2>5. Validation plan</h2>
+  <p>As data accrues: (1) measure adherence and self-report reliability; (2) test construct validity (does
+  the score track behavior such as rest taken after low scores, and self-reported &ldquo;felt-off&rdquo;
+  days); (3) test predictive validity longitudinally (do declining trajectories <i>lead</i> reported pain
+  spikes); (4) calibrate the band thresholds against observed outcomes.</p>
+
+  <h2>6. Roadmap to a learned model</h2>
+  <p>The transparent scorecard becomes the baseline and safety rail for a data-driven successor: re-fit
+  feature weights and band cutoffs to data (logistic/ordinal models, preserving interpretability); add
+  acute:chronic workload ratio (ACWR) and exponentially-weighted load features; personalize via per-athlete
+  baselines (hierarchical / mixed-effects models); and, once trajectories are rich, evaluate time-series
+  methods — always benchmarked against, and constrained by, the explainable baseline.</p>
+
+  <h2>7. Limitations</h2>
+  <p>Subjective self-report is noisy and gameable; the v1 weights and modifiers are expert priors, not
+  empirically fit; the score is not a medical device and does not diagnose, treat, or prevent injury. The
+  model&rsquo;s value at this stage is behavioral — it makes the invisible visible daily — with predictive
+  rigor as an explicit, staged goal.</p>
+
+  <h2>8. Conclusion</h2>
+  <p>ArmTrack v1 is a deliberately transparent, literature-informed readiness model deployed in a shipped,
+  free iOS/web product for a population where overuse injury is common and largely preventable. Its
+  contribution is not algorithmic novelty but the engineering and product discipline to make a defensible
+  daily measurement frictionless and usable — and a clear, honest path from an explainable cold-start
+  heuristic to a validated, data-driven system.</p>
+
+  <div class="foot">
+    Informed by USA Baseball / MLB Pitch Smart guidance and published work on pitching fatigue and adolescent
+    UCL injury. ArmTrack provides estimated readiness based on self-reported data; it is not medical advice
+    and is not a substitute for a coach, athletic trainer, or physician. Correspondence: armtrack.app.
+  </div>
+</body>
+</html>
