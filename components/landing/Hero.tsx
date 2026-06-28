@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { T, ease } from "./primitives";
+import AppStoreBadge from "./AppStoreBadge";
+import { APP_STORE_URL, APP_STORE_LIVE } from "@/lib/appStore";
 
 export default function Hero() {
   return (
@@ -74,32 +76,43 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.36, ease }}
-          style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap", marginTop: 26 }}
+          style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginTop: 26 }}
         >
-          <Link
-            href="/signup"
-            className="lp-shine"
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: T.blue,
-              color: "#fff",
-              fontWeight: 700,
-              fontSize: 15,
-              borderRadius: 99,
-              padding: "15px 28px",
-              textDecoration: "none",
-              boxShadow: "0 10px 26px rgba(46,107,255,.4)",
-            }}
-          >
-            Get your readiness, free
-          </Link>
-          <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: T.ink, textDecoration: "none" }}>
-            Log in →
-          </Link>
+          {APP_STORE_LIVE ? (
+            <>
+              <AppStoreBadge live href={APP_STORE_URL} />
+              <Link href="/signup" style={{ fontWeight: 600, fontSize: 15, color: T.ink, textDecoration: "none" }}>
+                or use it free in your browser →
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/signup"
+                className="lp-shine"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: T.blue,
+                  color: "#fff",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  borderRadius: 99,
+                  padding: "15px 28px",
+                  textDecoration: "none",
+                  boxShadow: "0 10px 26px rgba(46,107,255,.4)",
+                }}
+              >
+                Get your readiness, free
+              </Link>
+              <Link href="/login" style={{ fontWeight: 600, fontSize: 15, color: T.ink, textDecoration: "none" }}>
+                Log in →
+              </Link>
+            </>
+          )}
         </motion.div>
       </div>
 
