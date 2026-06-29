@@ -87,26 +87,9 @@ const STEP_ICONS: Record<number, LucideIcon> = {
 };
 
 const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? "60%" : "-60%", opacity: 0 }),
+  enter: (dir: number) => ({ x: dir > 0 ? 36 : -36, opacity: 0 }),
   center: { x: 0, opacity: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? "-60%" : "60%", opacity: 0 }),
-};
-
-const microCopy: Record<number, string> = {
-  0: "Takes 60 seconds. Built for serious players.",
-  1: "Your data stays private and is only used to personalize your experience.",
-  2: "Position affects how we read your workload and soreness patterns.",
-  3: "Your goal shapes every recommendation ArmTrack gives you.",
-  4: "Throw frequency helps us detect when your arm needs recovery.",
-  5: "Injury history helps ArmTrack flag concerning patterns earlier.",
-  6: "Knowing your problem zones helps ArmTrack give smarter feedback.",
-  7: "Level helps us contextualize your workload.",
-  8: "Almost there — your profile is nearly complete.",
-  9: "",
-  10: "Your team's arm health starts here.",
-  11: "We'll use this to personalize your coaching dashboard.",
-  12: "",
-  13: "Optional — you can always join later from the Join page.",
+  exit: (dir: number) => ({ x: dir > 0 ? -36 : 36, opacity: 0 }),
 };
 
 // Arm zones for pain diagram (front-facing right arm, shoulder → wrist)
@@ -422,13 +405,18 @@ export default function OnboardingPage() {
     }
   }, [step]);
 
+  // Player flow is intentionally short: role → name → position → goal →
+  // injury history → level → confirmation. We skip throw-frequency (4),
+  // pain-zones (6), throws (8), and the team-join step (13).
   function goNext() {
     setDirection(1);
     setStep((s) => {
-      // Coach track: after name (step 1), skip player steps and go to coach steps
       if (data.role === "coach" && s === 1) return 10;
-      // Player track: after confirmation (step 9), go to team join step
-      if (data.role === "player" && s === 9) return 13;
+      if (data.role === "player") {
+        if (s === 3) return 5; // skip throw frequency
+        if (s === 5) return 7; // skip pain zones
+        if (s === 7) return 9; // skip throws
+      }
       return s + 1;
     });
   }
@@ -436,12 +424,41 @@ export default function OnboardingPage() {
   function goBack() {
     setDirection(-1);
     setStep((s) => {
-      // Coach track: back from first coach step returns to name
       if (data.role === "coach" && s === 10) return 1;
-      // Team join step: back goes to confirmation
-      if (s === 13) return 9;
+      if (data.role === "player") {
+        if (s === 9) return 7;
+        if (s === 7) return 5;
+        if (s === 5) return 3;
+      }
       return s - 1;
     });
+  }
+
+  // Player onboarding finishes at the confirmation screen — save the profile and
+  // go straight to the first log (no team-join step).
+  async function handlePlayerFinish() {
+    setSaving(true);
+    setSaveError(false);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("No user");
+      const { error } = await supabase.from("profiles").upsert({
+        id: user.id,
+        first_name: data.name,
+        role: data.role,
+        position: data.position,
+        goal: data.goal,
+        injury_history: data.injuryHistory,
+        level: data.level,
+        onboarding_complete: true,
+      });
+      if (error) throw error;
+      try { await scheduleArmLogReminder(); } catch { /* non-fatal */ }
+      router.push("/log");
+    } catch {
+      setSaveError(true);
+      setSaving(false);
+    }
   }
 
   // ── Auth loading ──────────────────────────────────────────────────────────
@@ -547,24 +564,12 @@ export default function OnboardingPage() {
       return ((displayIdx + 1) / 5) * 100;
     }
     // Player has 11 effective steps: 0–9 + 13
-    const playerOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13];
+    const playerOrder = [0, 1, 2, 3, 5, 7, 9];
     const idx = playerOrder.indexOf(step);
-    return ((idx >= 0 ? idx + 1 : step + 1) / 11) * 100;
-  }
-
-  function getStepInfo(): { current: number; total: number } {
-    if (data.role === "coach") {
-      const coachOrder = [0, 1, 10, 11, 12];
-      const idx = coachOrder.indexOf(step);
-      return { current: (idx >= 0 ? idx : 2) + 1, total: coachOrder.length };
-    }
-    const playerOrder = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 13];
-    const idx = playerOrder.indexOf(step);
-    return { current: (idx >= 0 ? idx : step) + 1, total: playerOrder.length };
+    return ((idx >= 0 ? idx + 1 : step + 1) / playerOrder.length) * 100;
   }
 
   const progressPct = getProgressPct();
-  const { current: stepCurrent, total: stepTotal } = getStepInfo();
 
   // ── Step content ──────────────────────────────────────────────────────────
 
@@ -971,10 +976,19 @@ export default function OnboardingPage() {
               </p>
             )}
 
+            {saveError && (
+              <p className="text-sm text-red-400">
+                Something went wrong.{" "}
+                <button onClick={handlePlayerFinish} className="underline cursor-pointer">
+                  Try again
+                </button>
+              </p>
+            )}
+
             <ContinueButton
-              disabled={false}
-              onClick={goNext}
-              label="Continue →"
+              disabled={saving}
+              onClick={handlePlayerFinish}
+              label={saving ? "Saving…" : "Start tracking →"}
             />
 
             <p className="text-xs" style={{ color: "#444444" }}>
@@ -1298,11 +1312,7 @@ export default function OnboardingPage() {
           Arm<span style={{ color: "#3B82F6" }}>Track</span>
         </span>
 
-        <div style={{ width: 64 }} className="text-right">
-          <span className="text-xs font-semibold tabular-nums" style={{ color: "#555555" }}>
-            {stepCurrent} / {stepTotal}
-          </span>
-        </div>
+        <div style={{ width: 64 }} />
       </header>
 
       {/* Middle — icon + question + options, centered, no page scroll */}
@@ -1316,7 +1326,7 @@ export default function OnboardingPage() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: "tween", ease: easing, duration: 0.3 }}
+              transition={{ type: "tween", ease: [0.22, 1, 0.36, 1], duration: 0.28 }}
               className="mx-auto w-full"
               style={{ maxWidth: 480 }}
             >
@@ -1344,11 +1354,6 @@ export default function OnboardingPage() {
 
                     {/* Question */}
                     <div className="text-center">
-                      {microCopy[step] && (
-                        <p className="mb-2.5 text-xs italic" style={{ color: "#6b7280" }}>
-                          {microCopy[step]}
-                        </p>
-                      )}
                       <h1 className="text-[30px] font-extrabold leading-[1.1] tracking-tight text-white">
                         {question}
                       </h1>

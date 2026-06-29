@@ -45,7 +45,7 @@ export default function BottomNav() {
       style={{
         backgroundColor: "#0a0a0a",
         borderTop: "1px solid #222222",
-        height: "calc(64px + env(safe-area-inset-bottom))",
+        height: "calc(52px + env(safe-area-inset-bottom))",
         paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
@@ -80,7 +80,7 @@ export default function BottomNav() {
             )}
 
             <Icon
-              size={isLog ? 28 : 22}
+              size={isLog ? 25 : 20}
               strokeWidth={isActive || isLog ? 2.2 : 1.8}
               style={{
                 color: isLog || isActive ? "#3B82F6" : "#888888",

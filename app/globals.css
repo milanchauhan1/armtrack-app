@@ -164,12 +164,13 @@ html {
 .arm-slider {
   -webkit-appearance: none;
   appearance: none;
-  height: 10px;
+  height: 24px;
   border-radius: 999px;
   outline: none;
   cursor: pointer;
-  /* Let the thumb own horizontal drags instead of the page treating the touch
-     as a scroll gesture — without this, the thumb only jumps on tap. */
+  /* The input must be tall enough to actually grab the 26px thumb — at 10px the
+     hit area was thinner than the thumb, so it only jumped on tap and couldn't
+     be dragged. touch-action:none keeps the page from stealing the drag. */
   touch-action: none;
 }
 

@@ -1,4 +1,5 @@
 import type { CapacitorConfig } from '@capacitor/cli';
+import { KeyboardResize } from '@capacitor/keyboard';
 
 const config: CapacitorConfig = {
   appId: 'app.armtrack.app',
@@ -9,6 +10,11 @@ const config: CapacitorConfig = {
     backgroundColor: '#000000',
   },
   plugins: {
+    Keyboard: {
+      // Don't resize the WebView when the keyboard opens — it just overlays the
+      // bottom, so the screen stays fixed and only the keyboard slides up.
+      resize: KeyboardResize.None,
+    },
     SplashScreen: {
       // Keep the splash up until the web app mounts and calls hide() itself —
       // otherwise it auto-hides before the WebView finishes its cold start
