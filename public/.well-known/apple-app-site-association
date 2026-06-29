@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["HWK9KPQ69J.app.armtrack.app"],
+        "components": [
+          { "/": "/join/*", "comment": "Team invite links open the ArmTrack app" }
+        ]
+      }
+    ]
+  }
+}

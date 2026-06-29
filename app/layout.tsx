@@ -6,6 +6,7 @@ import InstallBanner from "@/components/InstallBanner";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import NativeSplash from "@/components/NativeSplash";
 import ScrollReset from "@/components/ScrollReset";
+import DeepLinks from "@/components/DeepLinks";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -111,6 +112,7 @@ export default function RootLayout({
         <ServiceWorkerRegister />
         <NativeSplash />
         <ScrollReset />
+        <DeepLinks />
       </body>
     </html>
   );

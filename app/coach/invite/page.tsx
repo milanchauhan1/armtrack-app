@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Copy, Check, RefreshCw, WifiOff } from "lucide-react";
+import QRCode from "react-qr-code";
 import { supabase } from "@/lib/supabase";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
@@ -170,8 +171,43 @@ export default function CoachInvitePage() {
               Invite Your Players
             </h1>
             <p className="text-sm" style={{ color: "#888888" }}>
-              Share this link or code with your players to add them to your team.
+              Hold this up at practice — your players scan it to join {team.name}.
             </p>
+          </div>
+
+          {/* QR card — the main way players join */}
+          <div
+            className="rounded-2xl p-6 flex flex-col items-center gap-5"
+            style={{ backgroundColor: "#111111", border: "1px solid #222222" }}
+          >
+            <div className="rounded-2xl bg-white p-4">
+              <QRCode value={inviteUrl} size={208} bgColor="#ffffff" fgColor="#000000" />
+            </div>
+            <div className="w-full">
+              <p className="mb-3 text-center text-sm font-bold text-white">
+                How your players join — share this at practice:
+              </p>
+              <ol className="flex flex-col gap-2">
+                {[
+                  "Download ArmTrack (free) from the App Store",
+                  "Open the app and scan this QR code",
+                  `They instantly join ${team.name}`,
+                ].map((step, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "#b0b4bd" }}>
+                    <span
+                      className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                      style={{ backgroundColor: "rgba(59,130,246,0.15)", color: "#60a5fa" }}
+                    >
+                      {i + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-3 text-center text-xs" style={{ color: "#555555" }}>
+                Tip: have everyone download first, then scan — takes about a minute.
+              </p>
+            </div>
           </div>
 
           {/* Invite link card */}

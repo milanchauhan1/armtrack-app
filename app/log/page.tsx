@@ -9,6 +9,7 @@ import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
 import { computeStreak } from "@/lib/readiness";
+import { maybeRequestReview } from "@/lib/review";
 import { Flame, Check, WifiOff } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -358,6 +359,9 @@ export default function LogPage() {
       notifySuccess();
       setSubmitting(false);
       setCelebrationStreak(freshStreak);
+
+      // After a few logged sessions, ask for an App Store review (once, native).
+      maybeRequestReview(freshLogs?.length ?? 0);
     }
   }
 
