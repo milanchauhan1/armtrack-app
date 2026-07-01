@@ -265,6 +265,249 @@ export function PostBody({ blocks }: { blocks: Block[] }) {
 
 export const POSTS: Post[] = [
   {
+    slug: "baseball-arm-pain-what-it-means-and-when-to-rest",
+    title: "Baseball Arm Pain: What It Means and When to Rest",
+    description:
+      "Not all baseball arm pain is the same. How to tell normal throwing soreness from a warning sign, what usually causes arm pain in pitchers, and when to rest or see a doctor.",
+    excerpt:
+      "Some arm soreness is normal after throwing — some is your arm waving a red flag. A plain-English guide to telling them apart, what causes baseball arm pain, and when to rest.",
+    keywords: [
+      "baseball arm pain",
+      "arm pain after pitching",
+      "pitching arm pain",
+      "baseball arm pain causes",
+      "sore arm after throwing",
+      "when to rest baseball arm",
+      "inner elbow pain pitcher",
+    ],
+    datePublished: "2026-07-01",
+    dateModified: "2026-07-01",
+    author: "Milan",
+    readingMinutes: 6,
+    category: "Soreness & Recovery",
+    blocks: [
+      {
+        type: "p",
+        text: "**Baseball arm pain** is one of the most common — and most confusing — things a young pitcher deals with. Some soreness is a normal part of throwing hard. Some of it is your arm waving a red flag. Telling the two apart is the whole game, because the injuries that end seasons almost always start as pain that got ignored.",
+      },
+      {
+        type: "p",
+        text: "Here's a plain-English guide to what baseball arm pain usually means, what causes it, and when to rest — or stop and get it checked.",
+      },
+      { type: "h2", text: "Normal soreness vs. pain that matters" },
+      {
+        type: "p",
+        text: "After a hard outing, some muscle soreness is expected — especially in the back of the shoulder and the meat of the forearm. The problem is when 'sore' quietly turns into something more. Use this rough guide:",
+      },
+      {
+        type: "table",
+        caption: "A general guide, not a diagnosis. When in doubt, rest and get it checked.",
+        head: ["Usually normal", "Worth paying attention to"],
+        rows: [
+          ["Dull, general muscle soreness", "Sharp or pinpoint pain"],
+          ["Fades within a day or two", "Lingers 3+ days or gets worse"],
+          ["In the muscle (back of shoulder, forearm)", "In the joint — inner elbow or front of shoulder"],
+          ["Loosens up as you warm up", "Hurts at rest or the next morning"],
+          ["No effect on how you throw", "Velocity drop, lost command, or a lower arm slot"],
+        ],
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "The one to take most seriously",
+        text: "Pain on the **inner elbow** is the signal to respect most in young pitchers — it's the area involved in most overuse elbow injuries, including UCL (Tommy John) problems. Aching there is not something to throw through.",
+      },
+      { type: "h2", text: "What actually causes baseball arm pain" },
+      {
+        type: "p",
+        text: "Most youth arm pain isn't from one bad throw — it builds up over weeks. The usual culprits:",
+      },
+      {
+        type: "ul",
+        items: [
+          "**Too much throwing, too soon.** Spikes in workload — a jump from 40 to 90 pitches, or a heavy tournament weekend — are a leading cause.",
+          "**Not enough rest between outings.** The arm rebuilds on recovery days; stacking throwing on tired tissue is where trouble starts.",
+          "**Year-round pitching with no off-season.** Single-sport specialization removes the built-in rest that used to protect young arms.",
+          "**Chasing velocity.** Max-effort throwing and weighted-ball work without recovery ramps the load fast.",
+          "**Throwing while already fatigued.** A tired arm changes its mechanics, which piles extra stress on the elbow and shoulder.",
+        ],
+      },
+      { type: "h2", text: "When to rest — and when to stop" },
+      {
+        type: "p",
+        text: "A simple rule: **soreness gets a rest day; pain gets attention.**",
+      },
+      {
+        type: "ol",
+        items: [
+          "**Mild muscle soreness that fades:** take your normal rest days and ease back in with catch and light long toss.",
+          "**Soreness that lingers past 2–3 days:** back off throwing until it's gone. Don't test it in a game.",
+          "**Joint pain, sharp pain, or pain at rest:** stop throwing and see a physician or athletic trainer. This is beyond 'tired.'",
+        ],
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Get it checked if…",
+        text: "You have **sharp pain, pain at rest, numbness or tingling, swelling, or soreness that doesn't improve with rest.** These are signals to stop throwing and see a medical professional — not to push through.",
+      },
+      { type: "h2", text: "The best way to keep pain from becoming an injury" },
+      {
+        type: "p",
+        text: "Almost every serious arm injury is preceded by weeks of small signals — a little more soreness, a little less velocity, a workload that quietly crept up. The players who stay healthy are the ones who **notice the trend early.** That means tracking how the arm feels and how much you're throwing, every day, so a slow build doesn't sneak up on you.",
+      },
+      {
+        type: "cta",
+        text: "ArmTrack turns that into a 60-second daily habit: log your throwing and how your arm feels, and it flags when the trend is heading the wrong way — before pain becomes an injury. Free for players and coaches.",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Not medical advice",
+        text: "This article is general information, not a diagnosis or treatment plan — it can't tell you whether your specific pain is serious. For any pain that is sharp, lingering, or worrying, see a physician or athletic trainer.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is it normal for my arm to hurt after pitching?",
+        a: "Mild muscle soreness in the back of the shoulder or forearm that fades within a day or two is common after throwing. Sharp pain, joint pain (especially the inner elbow), or soreness that lasts several days is not typical and is a signal to rest and, if it continues, get it checked.",
+      },
+      {
+        q: "How long should baseball arm pain last?",
+        a: "Normal throwing soreness usually eases within 24–72 hours. Pain that lasts longer than a few days, gets worse, or moves into the joint should be rested and evaluated by a medical professional.",
+      },
+      {
+        q: "Should I throw through arm pain?",
+        a: "No. Muscle soreness can be managed with rest, but you should never throw through sharp pain, joint pain, or pain that lingers — that's how minor issues become serious injuries. When in doubt, rest and get it checked.",
+      },
+      {
+        q: "What does inner elbow pain in pitchers mean?",
+        a: "Inner (medial) elbow pain is the area involved in most youth overuse elbow injuries, including UCL problems that can lead to Tommy John surgery. It should be taken seriously — stop throwing and see a physician or athletic trainer rather than pitching through it.",
+      },
+    ],
+  },
+  {
+    slug: "does-my-pitching-arm-need-a-day-off",
+    title: "How to Tell If Your Pitching Arm Needs a Day Off",
+    description:
+      "A simple self-check for pitchers: green light, yellow light, or red light? How to know when your arm needs rest, what real recovery looks like, and when to stop throwing.",
+    excerpt:
+      "Not sure if you should throw today? Run this quick green-light / yellow-light / red-light check on your arm — and learn what real recovery actually looks like.",
+    keywords: [
+      "does my arm need rest",
+      "pitching arm needs a day off",
+      "when to rest pitching arm",
+      "arm recovery baseball",
+      "should i throw today baseball",
+      "pitcher rest day",
+    ],
+    datePublished: "2026-07-01",
+    dateModified: "2026-07-01",
+    author: "Milan",
+    readingMinutes: 5,
+    category: "Soreness & Recovery",
+    blocks: [
+      {
+        type: "p",
+        text: "Every pitcher asks it at some point: **should I throw today, or does my arm need a day off?** Push too hard and you risk an injury; rest too much and you fall behind. The trick is having a simple, honest check you run *before* you pick up a ball — not after your arm's already barking.",
+      },
+      {
+        type: "p",
+        text: "Here's a quick self-check, plus what a real recovery day should actually look like.",
+      },
+      { type: "h2", text: "The 30-second self-check" },
+      {
+        type: "p",
+        text: "Answer these honestly. The more 'yes' answers, the more your arm is asking for rest:",
+      },
+      {
+        type: "ol",
+        items: [
+          "Is there soreness left over from your last outing that hasn't faded?",
+          "Is any of the ache in the **joint** — inner elbow or front of the shoulder — rather than the muscle?",
+          "Did your velocity or command drop noticeably last time out?",
+          "Have you thrown hard multiple days in a row without a real rest day?",
+          "Does the arm feel 'heavy,' late, or draggy when you warm up?",
+        ],
+      },
+      { type: "h2", text: "Green light, yellow light, red light" },
+      {
+        type: "table",
+        caption: "A simple way to read your answers.",
+        head: ["Signal", "What it means", "What to do"],
+        rows: [
+          ["Green", "No lingering soreness, arm feels fresh, mechanics normal", "Throw as planned"],
+          ["Yellow", "Mild leftover soreness or a heavy-feeling arm, no joint pain", "Light day: reduced volume, easy catch, or active recovery"],
+          ["Red", "Joint pain, pain at rest, lingering soreness, or sharp pain", "Don't throw — rest, and see a pro if it doesn't clear"],
+        ],
+      },
+      { type: "h2", text: "What a rest day actually looks like" },
+      {
+        type: "p",
+        text: "'Rest' doesn't have to mean doing nothing — for most tired arms, **active recovery** beats a total shutdown. A good recovery day can include:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Light band work and shoulder/scap exercises",
+          "Easy mobility and a proper cooldown after your last outing",
+          "Sleep and hydration — the most underrated recovery tools there are",
+          "Gentle catch at low intent, only if there's no pain",
+        ],
+      },
+      {
+        type: "callout",
+        variant: "info",
+        title: "Rest isn't falling behind",
+        text: "One well-timed rest day protects weeks of throwing. Skipping it to 'stay sharp' is how a sharp arm becomes a hurt one.",
+      },
+      { type: "h2", text: "When a day off isn't enough" },
+      {
+        type: "p",
+        text: "A day or two of rest handles normal fatigue. But some signals mean you're past 'tired' and into 'get it looked at.'",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Stop and see a pro if…",
+        text: "You have sharp pain, joint pain (especially the inner elbow), pain at rest, numbness or tingling, swelling, or soreness that a few rest days don't fix. Fatigue management is not a substitute for medical care.",
+      },
+      { type: "h2", text: "Stop guessing — track it" },
+      {
+        type: "p",
+        text: "The self-check works best when it isn't just memory. If you log how your arm feels and how much you throw each day, the yellow and red flags show up as a **trend**, not a guess — and you'll rest when you actually need to, not too early or too late.",
+      },
+      {
+        type: "cta",
+        text: "ArmTrack runs that check for you: log your throwing and soreness in 60 seconds, and it turns the trend into a daily readiness score — ready, caution, or rest. Free for players and coaches.",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Not medical advice",
+        text: "This is general information to help you make smarter throwing decisions, not a diagnosis. For pain that is sharp, lingering, or concerning, see a physician or athletic trainer.",
+      },
+    ],
+    faq: [
+      {
+        q: "How do I know if my pitching arm needs rest?",
+        a: "Watch for leftover soreness from your last outing, joint ache (inner elbow or front of the shoulder), a drop in velocity or command, throwing hard several days in a row, or an arm that feels heavy warming up. The more of these are true, the more your arm needs a day off.",
+      },
+      {
+        q: "How many rest days does a pitcher need?",
+        a: "It depends on workload. Youth guidelines (MLB Pitch Smart) tie rest to pitch count — up to 4 days after a heavy outing for ages 14 and under. Beyond the count, add a rest day any time soreness lingers or the arm feels fatigued.",
+      },
+      {
+        q: "Is it okay to throw with a sore arm?",
+        a: "Mild muscle soreness that fades can often be managed with a lighter day or active recovery. But you should not throw through joint pain, sharp pain, or soreness that lingers several days — rest and, if it persists, get it evaluated.",
+      },
+      {
+        q: "What should a pitcher do on a rest day?",
+        a: "Active recovery usually beats total rest: light band and scap work, mobility, a good cooldown, sleep, and hydration, plus gentle low-intent catch only if there's no pain.",
+      },
+    ],
+  },
+  {
     slug: "youth-pitch-count-guidelines-by-age",
     title: "Youth Pitch Count Guidelines by Age (2026 Chart)",
     description:
