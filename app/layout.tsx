@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Chakra_Petch } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/BottomNav";
-import InstallBanner from "@/components/InstallBanner";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import NativeSplash from "@/components/NativeSplash";
 import ScrollReset from "@/components/ScrollReset";
@@ -108,7 +107,6 @@ export default function RootLayout({
           {children}
         </div>
         <BottomNav />
-        <InstallBanner />
         <ServiceWorkerRegister />
         <NativeSplash />
         <ScrollReset />
