@@ -11,6 +11,7 @@ import { LogSkeleton } from "@/components/Skeleton";
 import { computeStreak } from "@/lib/readiness";
 import { todayString as getTodayString } from "@/lib/dates";
 import { maybeRequestReview } from "@/lib/review";
+import { scheduleArmLogReminder } from "@/lib/notifications";
 import { Flame, Check, WifiOff } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -414,6 +415,10 @@ export default function LogPage() {
       notifySuccess();
       setSubmitting(false);
       setCelebrationStreak(freshStreak);
+
+      // Today is logged — re-arm reminders so tonight's nag is skipped and
+      // tomorrow's copy reflects the new streak.
+      scheduleArmLogReminder(freshStreak, true).catch(() => {});
 
       // After a few logged sessions, ask for an App Store review (once, native).
       maybeRequestReview(freshLogs?.length ?? 0);

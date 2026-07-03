@@ -414,8 +414,11 @@ export default function DashboardPage() {
       if (allDates) {
         const stats = buildPublicStats(allDates.map((l) => l.date));
         setStreak(stats.currentStreak);
-        // Re-arm the daily reminder so its copy reflects the live streak.
-        scheduleArmLogReminder(stats.currentStreak).catch(() => {});
+        // Re-arm the daily reminders so the copy reflects the live streak and
+        // an already-logged day never fires a nag.
+        scheduleArmLogReminder(stats.currentStreak, stats.lastLogDate === getTodayString()).catch(
+          () => {}
+        );
         // The denormalized public-profile stats (total_logs, current_streak, …)
         // are maintained by a database trigger on arm_logs — clients can't
         // write them, so streaks can't be faked.
