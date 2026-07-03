@@ -5,23 +5,22 @@ import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { daysAgoString, todayString as getTodayString } from "@/lib/dates";
-import { useMounted } from "@/lib/useMounted";
+// Loaded on demand so Recharts stays out of the route's initial bundle.
+const TrendChart = dynamic(() => import("@/components/TrendChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[200px] items-center justify-center">
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
+    </div>
+  ),
+});
 import {
   ArmLog,
   computeLogScore,
   getReadinessState,
   calculateEstimatedReadiness,
 } from "@/lib/readiness";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
 import { ArrowLeft, Shield, Send, MessageSquare, WifiOff } from "lucide-react";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
@@ -101,36 +100,6 @@ const fadeUp = {
 };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
-
-function CustomTooltip({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: Array<{ name: string; value: number; color: string }>;
-  label?: string;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div
-      className="rounded-xl px-4 py-3 text-xs"
-      style={{ backgroundColor: "#181818", border: "1px solid #2a2a2a" }}
-    >
-      <p className="mb-2 font-semibold text-gray-400">{label}</p>
-      {payload.map((p) => (
-        <p key={p.name} className="flex items-center gap-2" style={{ color: p.color }}>
-          <span
-            className="inline-block h-2 w-2 rounded-full"
-            style={{ backgroundColor: p.color }}
-          />
-          <span className="text-gray-300">{p.name}:</span>
-          <span className="font-bold">{p.value}</span>
-        </p>
-      ))}
-    </div>
-  );
-}
 
 function ReadOnlyLogRow({ log, index }: { log: ArmLog; index: number }) {
   const [open, setOpen] = useState(false);
@@ -293,7 +262,6 @@ export default function PlayerDetailClient() {
   const [loadError, setLoadError] = useState(false);
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [logs, setLogs] = useState<ArmLog[]>([]);
-  const chartMounted = useMounted();
   const [coachId, setCoachId] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [activeRec, setActiveRec] = useState<CoachRec | null>(null);
@@ -581,19 +549,8 @@ export default function PlayerDetailClient() {
         <motion.div custom={1} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <div className="rounded-2xl p-5" style={{ backgroundColor: "#111111", border: "1px solid #222222", boxShadow: "0 0 24px rgba(59,130,246,0.07)" }}>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
-            {chartMounted && chartData.length >= 2 ? (
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" vertical={false} />
-                  <XAxis dataKey="date" tick={{ fill: "#4b5563", fontSize: 11 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                  <YAxis domain={[0, 10]} ticks={[0, 2, 4, 6, 8, 10]} tick={{ fill: "#4b5563", fontSize: 11 }} tickLine={false} axisLine={false} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "#6b7280", paddingTop: "12px" }} />
-                  <Line type="monotone" dataKey="Pain" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#ef4444" }} />
-                  <Line type="monotone" dataKey="Soreness" stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#f59e0b" }} />
-                  <Line type="monotone" dataKey="Stiffness" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#3b82f6" }} />
-                </LineChart>
-              </ResponsiveContainer>
+            {chartData.length >= 2 ? (
+              <TrendChart data={chartData} height={200} />
             ) : (
               <div className="flex flex-col items-center justify-center py-10 gap-2 text-center">
                 <p className="text-sm font-semibold text-white">Not enough data</p>

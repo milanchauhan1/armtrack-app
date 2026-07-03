@@ -8,16 +8,7 @@ import { supabase } from "@/lib/supabase";
 import { DashboardSkeleton } from "@/components/Skeleton";
 import DashboardTour from "@/components/DashboardTour";
 import { scheduleArmLogReminder } from "@/lib/notifications";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import dynamic from "next/dynamic";
 import { CheckCircle, Shield, MessageSquare, Flame, Activity, TrendingUp, ClipboardList, Check, WifiOff, Compass, User } from "lucide-react";
 import {
   ArmLog,
@@ -33,7 +24,16 @@ import {
 import { buildPublicStats } from "@/lib/profile";
 import { buildWeeklyRecap, shouldShowRecap } from "@/lib/weekly";
 import { todayString as getTodayString, daysAgoString } from "@/lib/dates";
-import { useMounted } from "@/lib/useMounted";
+
+// Loaded on demand so Recharts stays out of the dashboard's initial bundle.
+const TrendChart = dynamic(() => import("@/components/TrendChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-[220px] items-center justify-center">
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
+    </div>
+  ),
+});
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -143,33 +143,6 @@ function RecapStat({
       <span className="text-xl font-black tabular-nums text-white">{value}</span>
       <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{label}</span>
       {deltaEl ?? <span className="text-[10px] text-gray-700">—</span>}
-    </div>
-  );
-}
-
-function CustomTooltip({
-  active,
-  payload,
-  label,
-}: {
-  active?: boolean;
-  payload?: Array<{ name: string; value: number; color: string }>;
-  label?: string;
-}) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div
-      className="rounded-xl px-4 py-3 text-xs"
-      style={{ backgroundColor: "#181818", border: "1px solid #2a2a2a" }}
-    >
-      <p className="mb-2 font-semibold text-gray-400">{label}</p>
-      {payload.map((p) => (
-        <p key={p.name} className="flex items-center gap-2" style={{ color: p.color }}>
-          <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: p.color }} />
-          <span className="text-gray-300">{p.name}:</span>
-          <span className="font-bold">{p.value}</span>
-        </p>
-      ))}
     </div>
   );
 }
@@ -306,7 +279,6 @@ export default function DashboardPage() {
   const [logs7, setLogs7] = useState<ArmLog[]>([]);
   const [streak, setStreak] = useState(0);
   const [loggedToday, setLoggedToday] = useState(false);
-  const chartMounted = useMounted();
   const [isAnon, setIsAnon] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [coachRec, setCoachRec] = useState<string | null>(null);
@@ -844,36 +816,9 @@ export default function DashboardPage() {
         <motion.div data-tour="trend" custom={7} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
-            {chartMounted && chartData.length >= 2 ? (
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={chartData} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fill: "#4b5563", fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis
-                    domain={[0, 10]}
-                    ticks={[0, 2, 4, 6, 8, 10]}
-                    tick={{ fill: "#4b5563", fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend
-                    iconType="circle"
-                    iconSize={8}
-                    wrapperStyle={{ fontSize: 12, color: "#6b7280", paddingTop: "12px" }}
-                  />
-                  <Line type="monotone" dataKey="Pain" stroke="#ef4444" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#ef4444" }} />
-                  <Line type="monotone" dataKey="Soreness" stroke="#f59e0b" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#f59e0b" }} />
-                  <Line type="monotone" dataKey="Stiffness" stroke="#3b82f6" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: "#3b82f6" }} />
-                </LineChart>
-              </ResponsiveContainer>
-            ) : chartData.length < 2 ? (
+            {chartData.length >= 2 ? (
+              <TrendChart data={chartData} />
+            ) : (
               <div className="flex flex-col items-center justify-center py-12 gap-3 text-center">
                 <div
                   className="flex h-14 w-14 items-center justify-center rounded-2xl"
@@ -883,10 +828,6 @@ export default function DashboardPage() {
                 </div>
                 <p className="text-sm font-semibold text-white">Log more sessions to see your trends</p>
                 <p className="text-xs text-gray-500">You need at least 2 logs to generate a chart.</p>
-              </div>
-            ) : (
-              <div className="h-[220px] flex items-center justify-center">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/20 border-t-blue-500" />
               </div>
             )}
           </Card>
