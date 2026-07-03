@@ -31,6 +31,7 @@ import {
   READINESS_STALE_DAYS,
 } from "@/lib/readiness";
 import { buildPublicStats } from "@/lib/profile";
+import { buildWeeklyRecap, shouldShowRecap } from "@/lib/weekly";
 import { todayString as getTodayString, daysAgoString } from "@/lib/dates";
 import { useMounted } from "@/lib/useMounted";
 
@@ -107,6 +108,41 @@ function ScoreBadge({ label, value }: { label: string; value: number }) {
         {value}
       </span>
       <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{label}</span>
+    </div>
+  );
+}
+
+function RecapStat({
+  label,
+  value,
+  delta,
+  deltaGoodWhenDown,
+}: {
+  label: string;
+  value: string;
+  delta: number | null;
+  /** Pain/soreness improve when they drop; throws are neutral. */
+  deltaGoodWhenDown?: boolean;
+}) {
+  let deltaEl: React.ReactNode = null;
+  if (delta !== null && delta !== 0) {
+    const up = delta > 0;
+    const color =
+      deltaGoodWhenDown === undefined ? "#6b7280" : up === !deltaGoodWhenDown ? "#22c55e" : "#ef4444";
+    deltaEl = (
+      <span className="text-[10px] font-bold tabular-nums" style={{ color }}>
+        {up ? "▲" : "▼"} {Math.abs(delta)}
+      </span>
+    );
+  }
+  return (
+    <div
+      className="flex flex-col items-center gap-0.5 rounded-xl py-3 px-1"
+      style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e" }}
+    >
+      <span className="text-xl font-black tabular-nums text-white">{value}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-500">{label}</span>
+      {deltaEl ?? <span className="text-[10px] text-gray-700">—</span>}
     </div>
   );
 }
@@ -451,6 +487,9 @@ export default function DashboardPage() {
     Stiffness: l.stiffness_level,
   }));
 
+  const recap = buildWeeklyRecap(logs14);
+  const showRecap = shouldShowRecap(recap);
+
   return (
     <div className="min-h-screen bg-black pb-20">
       <DashboardTour />
@@ -763,8 +802,43 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
+        {/* ── Your Week ────────────────────────────────────────────────────────── */}
+        {showRecap && (
+          <motion.div custom={6} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+            <Card>
+              <div className="mb-1 flex items-center justify-between">
+                <p className="text-sm font-bold text-white">Your Week</p>
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-600">
+                  vs previous 7 days
+                </span>
+              </div>
+              <p className="mb-4 text-xs leading-relaxed text-gray-400">{recap.headline}</p>
+              <div className="grid grid-cols-4 gap-2">
+                <RecapStat label="Logs" value={`${recap.week.logsCount}/7`} delta={null} />
+                <RecapStat
+                  label="Throws"
+                  value={String(recap.week.totalThrows)}
+                  delta={recap.throwsDelta}
+                />
+                <RecapStat
+                  label="Avg Pain"
+                  value={recap.week.avgPain !== null ? String(recap.week.avgPain) : "—"}
+                  delta={recap.painDelta}
+                  deltaGoodWhenDown
+                />
+                <RecapStat
+                  label="Avg Sore"
+                  value={recap.week.avgSoreness !== null ? String(recap.week.avgSoreness) : "—"}
+                  delta={recap.sorenessDelta}
+                  deltaGoodWhenDown
+                />
+              </div>
+            </Card>
+          </motion.div>
+        )}
+
         {/* ── 14-Day Trend Chart ───────────────────────────────────────────────── */}
-        <motion.div data-tour="trend" custom={6} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+        <motion.div data-tour="trend" custom={7} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
             {chartMounted && chartData.length >= 2 ? (
@@ -818,7 +892,7 @@ export default function DashboardPage() {
         {/* ── Recent Logs ──────────────────────────────────────────────────────── */}
         <motion.div
           id="history"
-          custom={7}
+          custom={8}
           variants={fadeUp}
           initial="hidden"
           animate="show"
