@@ -149,7 +149,6 @@ function TapCard({
   subtitle,
   selected,
   onClick,
-  padY: _padY,
 }: TapCardProps) {
   return (
     <motion.button

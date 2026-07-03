@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { daysAgoString, todayString as getTodayString } from "@/lib/dates";
+import { useMounted } from "@/lib/useMounted";
 import {
   ArmLog,
   computeLogScore,
@@ -292,7 +293,7 @@ export default function PlayerDetailClient() {
   const [loadError, setLoadError] = useState(false);
   const [profile, setProfile] = useState<PlayerProfile | null>(null);
   const [logs, setLogs] = useState<ArmLog[]>([]);
-  const [chartMounted, setChartMounted] = useState(false);
+  const chartMounted = useMounted();
   const [coachId, setCoachId] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [activeRec, setActiveRec] = useState<CoachRec | null>(null);
@@ -305,10 +306,6 @@ export default function PlayerDetailClient() {
   const [msgText, setMsgText] = useState("");
   const [sendingMsg, setSendingMsg] = useState(false);
   const [msgError, setMsgError] = useState(false);
-
-  useEffect(() => {
-    setChartMounted(true);
-  }, []);
 
   useEffect(() => {
     async function load() {

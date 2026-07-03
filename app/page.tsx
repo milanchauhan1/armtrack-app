@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Capacitor } from "@capacitor/core";
@@ -77,14 +77,19 @@ const JSON_LD = {
 
 export default function LandingPage() {
   const router = useRouter();
-  const [nativeRedirecting, setNativeRedirecting] = useState(false);
+  // Marketing page is web-only — on native, render the black splash from the
+  // very first client render (no effect, no flash) while we redirect below.
+  const nativeRedirecting = useSyncExternalStore(
+    () => () => {},
+    () => Capacitor.isNativePlatform(),
+    () => false
+  );
 
-  // Marketing page is web-only. Native users have already installed — first-time
-  // users go straight to onboarding (no login wall; an anonymous account is
-  // created when they tap "Get started"). Signed-in users skip to the dashboard.
+  // Native users have already installed — first-time users go straight to
+  // onboarding (no login wall; an anonymous account is created when they tap
+  // "Get started"). Signed-in users skip to the dashboard.
   useEffect(() => {
     const native = Capacitor.isNativePlatform();
-    if (native) setNativeRedirecting(true);
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) router.replace("/dashboard");
       else if (native) router.replace("/onboarding");

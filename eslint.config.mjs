@@ -12,7 +12,17 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated/native artifacts — not source code:
+    "ios/**",
+    "public/sw.js",
   ]),
+  {
+    // Node build scripts run under plain node — require() is fine there.
+    files: ["scripts/**/*.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

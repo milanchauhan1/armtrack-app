@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function NotFound() {
   return (
     <div
@@ -22,7 +24,7 @@ export default function NotFound() {
       <p style={{ fontSize: 16, color: "#888888", marginBottom: 36 }}>
         This page doesn&apos;t exist or was moved.
       </p>
-      <a
+      <Link
         href="/"
         style={{
           background: "#3B82F6",
@@ -36,7 +38,7 @@ export default function NotFound() {
         }}
       >
         Back to ArmTrack
-      </a>
+      </Link>
     </div>
   );
 }

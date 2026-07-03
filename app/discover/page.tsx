@@ -25,13 +25,15 @@ export default function DiscoverPage() {
     if (timer.current) clearTimeout(timer.current);
     const term = q.trim();
     if (term.length < 2) {
-      setResults([]);
-      setSearched(false);
-      setSearching(false);
+      timer.current = setTimeout(() => {
+        setResults([]);
+        setSearched(false);
+        setSearching(false);
+      }, 0);
       return;
     }
-    setSearching(true);
     timer.current = setTimeout(async () => {
+      setSearching(true);
       // Searches the public_profiles view → only public, claimed profiles surface.
       const { data } = await supabase
         .from("public_profiles")

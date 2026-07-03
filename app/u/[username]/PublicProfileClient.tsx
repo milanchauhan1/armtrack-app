@@ -44,13 +44,14 @@ export default function PublicProfileClient() {
   const [followingCount, setFollowingCount] = useState(0);
 
   useEffect(() => {
-    const handle = handleFromPath();
-    if (!handle || handle === "_") {
-      setStatus("notfound");
-      return;
-    }
-
     (async () => {
+      const handle = handleFromPath();
+      if (!handle || handle === "_") {
+        await Promise.resolve(); // keep state updates out of the sync effect body
+        setStatus("notfound");
+        return;
+      }
+
       // Reads from the public_profiles view, which exposes ONLY safe columns
       // (never injury_history / pain_zones) and only non-private rows.
       const { data: prof } = await supabase
@@ -58,7 +59,8 @@ export default function PublicProfileClient() {
         .select(
           "id, username, first_name, position, level, throws, team_name, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s, total_logs, current_streak, last_log_date, first_log_date"
         )
-        .ilike("username", handle)
+        // Escape ilike wildcards — _ is legal in usernames and % can appear in URLs.
+        .ilike("username", handle.replaceAll("\\", "\\\\").replaceAll("%", "\\%").replaceAll("_", "\\_"))
         .maybeSingle();
 
       if (!prof || !prof.username) {

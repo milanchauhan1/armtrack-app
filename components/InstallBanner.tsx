@@ -351,21 +351,27 @@ export default function InstallBanner() {
     // Don't interrupt the marketing landing page with an install prompt.
     if (pathname === '/') return;
 
-    // iOS: show guide on first visit
+    // iOS: show guide on first visit (deferred — no sync setState in the effect body)
+    let iosTimer: ReturnType<typeof setTimeout> | null = null;
     if (isIOS() && !isIOSInstallShown()) {
-      setShowIOS(true);
+      iosTimer = setTimeout(() => setShowIOS(true), 0);
     }
 
     // Android/Chrome: listen for native install prompt
+    let handler: ((e: Event) => void) | null = null;
     if (!isAndroidDismissed()) {
-      const handler = (e: Event) => {
+      handler = (e: Event) => {
         e.preventDefault();
         setDeferredPrompt(e as BeforeInstallPromptEvent);
         setShowAndroid(true);
       };
       window.addEventListener('beforeinstallprompt', handler);
-      return () => window.removeEventListener('beforeinstallprompt', handler);
     }
+
+    return () => {
+      if (iosTimer) clearTimeout(iosTimer);
+      if (handler) window.removeEventListener('beforeinstallprompt', handler);
+    };
   }, [pathname]);
 
   function dismissIOS() {

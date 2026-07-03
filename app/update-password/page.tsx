@@ -50,7 +50,7 @@ export default function UpdatePasswordPage() {
             Set a new password
           </h1>
           <p className="mb-8 text-sm text-gray-400">
-            Choose something strong you'll remember.
+            Choose something strong you&apos;ll remember.
           </p>
 
           <form onSubmit={handleUpdate} className="flex flex-col gap-4">

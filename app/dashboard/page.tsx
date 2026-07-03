@@ -32,6 +32,7 @@ import {
 } from "@/lib/readiness";
 import { buildPublicStats } from "@/lib/profile";
 import { todayString as getTodayString, daysAgoString } from "@/lib/dates";
+import { useMounted } from "@/lib/useMounted";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -269,7 +270,7 @@ export default function DashboardPage() {
   const [logs7, setLogs7] = useState<ArmLog[]>([]);
   const [streak, setStreak] = useState(0);
   const [loggedToday, setLoggedToday] = useState(false);
-  const [chartMounted, setChartMounted] = useState(false);
+  const chartMounted = useMounted();
   const [isAnon, setIsAnon] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [coachRec, setCoachRec] = useState<string | null>(null);
@@ -280,13 +281,16 @@ export default function DashboardPage() {
   } | null>(null);
 
   useEffect(() => {
-    setChartMounted(true);
     const msg = sessionStorage.getItem("toast");
-    if (msg) {
-      setToast(msg);
-      sessionStorage.removeItem("toast");
-      setTimeout(() => setToast(null), 4000);
-    }
+    if (!msg) return;
+    sessionStorage.removeItem("toast");
+    // Deferred so the effect body itself doesn't set state synchronously.
+    const show = setTimeout(() => setToast(msg), 0);
+    const hide = setTimeout(() => setToast(null), 4000);
+    return () => {
+      clearTimeout(show);
+      clearTimeout(hide);
+    };
   }, []);
 
   useEffect(() => {

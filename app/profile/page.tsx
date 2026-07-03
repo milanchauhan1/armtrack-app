@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Share2, LogOut } from "lucide-react";
+import { ArrowLeft, Share2, LogOut, WifiOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { validateUsername } from "@/lib/profile";
 
@@ -18,6 +18,7 @@ const VIS_OPTIONS: { value: Visibility; label: string; hint: string }[] = [
 export default function ProfilePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
 
   const [username, setUsername] = useState("");
@@ -36,51 +37,67 @@ export default function ProfilePage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-  const checkTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Load auth + current profile
+  // Load auth + current profile. On a failed load, show the retry screen
+  // instead of a blank form — saving a blank form would wipe the profile.
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data: { user } }) => {
-      if (!user) {
-        router.replace("/login");
-        return;
-      }
-      setUserId(user.id);
-      const { data } = await supabase
-        .from("profiles")
-        .select("username, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s")
-        .eq("id", user.id)
-        .single();
-      if (data) {
-        setUsername(data.username ?? "");
-        setBio(data.bio ?? "");
-        setVisibility((data.visibility as Visibility) ?? "public");
-        setVelo(data.pr_velocity_mph != null ? String(data.pr_velocity_mph) : "");
-        setPop(data.pr_pop_time_s != null ? String(data.pr_pop_time_s) : "");
-        setSixty(data.pr_sixty_time_s != null ? String(data.pr_sixty_time_s) : "");
-        if (data.username) setUsernameOk(true);
-      }
-      setLoading(false);
-    });
+    supabase.auth
+      .getUser()
+      .then(async ({ data: { user } }) => {
+        if (!user) {
+          router.replace("/login");
+          return;
+        }
+        setUserId(user.id);
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("username, bio, visibility, pr_velocity_mph, pr_pop_time_s, pr_sixty_time_s")
+          .eq("id", user.id)
+          .single();
+        if (error) {
+          setLoadError(true);
+          setLoading(false);
+          return;
+        }
+        if (data) {
+          setUsername(data.username ?? "");
+          setBio(data.bio ?? "");
+          setVisibility((data.visibility as Visibility) ?? "public");
+          setVelo(data.pr_velocity_mph != null ? String(data.pr_velocity_mph) : "");
+          setPop(data.pr_pop_time_s != null ? String(data.pr_pop_time_s) : "");
+          setSixty(data.pr_sixty_time_s != null ? String(data.pr_sixty_time_s) : "");
+          if (data.username) setUsernameOk(true);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoadError(true);
+        setLoading(false);
+      });
   }, [router]);
 
-  // Debounced username validation + availability
+  // Debounced username validation + availability. State updates run inside
+  // timers (cancelled by the effect cleanup on every keystroke), never in the
+  // sync effect body.
   useEffect(() => {
-    setSaved(false);
     if (!userId) return;
-    if (checkTimer.current) clearTimeout(checkTimer.current);
 
     const v = validateUsername(username);
     if (!v.ok) {
-      setUsernameOk(false);
-      setUsernameError(username.length === 0 ? null : v.error);
-      setChecking(false);
-      return;
+      const t = setTimeout(() => {
+        setUsernameOk(false);
+        setUsernameError(username.length === 0 ? null : v.error);
+        setChecking(false);
+      }, 0);
+      return () => clearTimeout(t);
     }
-    setChecking(true);
-    setUsernameError(null);
-    setUsernameOk(false);
-    checkTimer.current = setTimeout(async () => {
+
+    const reset = setTimeout(() => {
+      setChecking(true);
+      setUsernameError(null);
+      setUsernameOk(false);
+    }, 0);
+    const check = setTimeout(async () => {
       const { data: taken } = await supabase
         .from("profiles")
         .select("id")
@@ -99,7 +116,8 @@ export default function ProfilePage() {
       }
     }, 350);
     return () => {
-      if (checkTimer.current) clearTimeout(checkTimer.current);
+      clearTimeout(reset);
+      clearTimeout(check);
     };
   }, [username, userId]);
 
@@ -181,6 +199,30 @@ export default function ProfilePage() {
     router.replace("/");
   }
 
+  if (loadError) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} className="text-gray-400" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Couldn&apos;t load your profile</p>
+          <p className="mt-1 text-sm text-gray-400">Check your connection and try again.</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black">
@@ -216,7 +258,10 @@ export default function ProfilePage() {
                 <span className="shrink-0 text-sm text-gray-500">armtrack.app/u/</span>
                 <input
                   value={username}
-                  onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+                  onChange={(e) => {
+                    setSaved(false);
+                    setUsername(e.target.value.replace(/\s/g, ""));
+                  }}
                   placeholder="yourname"
                   autoCapitalize="none"
                   spellCheck={false}

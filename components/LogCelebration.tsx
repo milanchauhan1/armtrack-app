@@ -154,7 +154,7 @@ export default function LogCelebration({
   const streakColor = isMilestone ? "#F59E0B" : "#ffffff";
 
   // Stable particle set — won't re-generate on re-render
-  const particles = useMemo<Particle[]>(makeParticles, []);
+  const particles = useMemo<Particle[]>(() => makeParticles(), []);
 
   useEffect(() => {
     const t = setTimeout(onComplete, 3500);

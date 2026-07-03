@@ -23,7 +23,8 @@ export default function JoinPage() {
     // Read code from URL
     const params = new URLSearchParams(window.location.search);
     const urlCode = params.get("code");
-    if (urlCode) setCode(urlCode.toUpperCase().trim());
+    // Deferred so the effect body itself doesn't set state synchronously.
+    const prefill = urlCode ? setTimeout(() => setCode(urlCode.toUpperCase().trim()), 0) : null;
 
     // Check session
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -38,6 +39,10 @@ export default function JoinPage() {
       }
       setAuthChecking(false);
     });
+
+    return () => {
+      if (prefill) clearTimeout(prefill);
+    };
   }, []);
 
   async function handleJoin() {
