@@ -18,10 +18,15 @@
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 8px;
+  /* 28px touch target, but the gradient only paints the slim 8px content box —
+     an 8px-tall input is thinner than the 20px thumb, so touch drags miss it. */
+  height: 28px;
+  padding: 10px 0;
+  background-clip: content-box;
   border-radius: 99px;
   outline: none;
   cursor: pointer;
+  touch-action: none;
 }
 .at-slider::-webkit-slider-thumb {
   -webkit-appearance: none;

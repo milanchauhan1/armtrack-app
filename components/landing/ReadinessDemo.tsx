@@ -96,7 +96,9 @@ export default function ReadinessDemo() {
               value={v}
               aria-label={`${label} level, ${v} out of 10`}
               onChange={(e) => setVals((s) => ({ ...s, [key]: Number(e.target.value) }))}
-              style={{ background: `linear-gradient(to right, ${c} ${v * 10}%, #EAECF0 ${v * 10}%)` }}
+              // backgroundImage (not the background shorthand) so it doesn't
+              // reset the background-clip that keeps the painted track slim
+              style={{ backgroundImage: `linear-gradient(to right, ${c} ${v * 10}%, #EAECF0 ${v * 10}%)` }}
             />
           </div>
         );
