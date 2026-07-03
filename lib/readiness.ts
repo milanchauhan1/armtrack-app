@@ -1,3 +1,5 @@
+import { todayString, shiftDay } from "./dates";
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface ArmLog {
@@ -110,9 +112,11 @@ export function getPrimaryRecommendation(score: number, position: string | null)
 // ── Contextual insights ───────────────────────────────────────────────────────
 
 function daysSince(dateStr: string): number {
-  const today = new Date();
+  // Anchor both sides at local noon so the answer is a whole number of days
+  // regardless of the current time of day (and DST shifts wash out in the round).
+  const today = new Date(todayString() + "T12:00:00");
   const d = new Date(dateStr + "T12:00:00");
-  return Math.floor((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.round((today.getTime() - d.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 /**
@@ -178,19 +182,6 @@ export function getReadinessExplanation(): string {
 }
 
 // ── Streak ──────────────────────────────────────────────────────────────────
-
-/** Today's date as a local-time YYYY-MM-DD string (timezone-safe). */
-function todayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-/** Shift a YYYY-MM-DD string by n days, anchored at noon to dodge DST edges. */
-function shiftDay(dateStr: string, n: number): string {
-  const d = new Date(dateStr + "T12:00:00");
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
 
 /**
  * Consecutive-day logging streak ending today (or yesterday if not yet logged

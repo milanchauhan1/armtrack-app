@@ -1,4 +1,5 @@
 import { computeStreak } from "./readiness";
+import { todayString as localToday, shiftDay as localShift } from "./dates";
 
 // ── Reserved usernames ──────────────────────────────────────────────────────
 // Handles that would collide with real routes or are otherwise off-limits.
@@ -76,17 +77,6 @@ export function buildPublicStats(logDates: string[]): PublicStats {
     lastLogDate: sorted[sorted.length - 1],
     firstLogDate: sorted[0],
   };
-}
-
-function localToday(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function localShift(dateStr: string, n: number): string {
-  const d = new Date(dateStr + "T12:00:00");
-  d.setDate(d.getDate() + n);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 /**

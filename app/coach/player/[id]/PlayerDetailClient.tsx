@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import { daysAgoString, todayString as getTodayString } from "@/lib/dates";
 import {
   ArmLog,
   computeLogScore,
@@ -49,11 +50,6 @@ interface CoachMsg {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-
-function getTodayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
 function formatDateShort(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");
@@ -349,9 +345,7 @@ export default function PlayerDetailClient() {
         .eq("id", id)
         .single();
 
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
-      const cutoff = fourteenDaysAgo.toISOString().split("T")[0];
+      const cutoff = daysAgoString(13);
 
       const { data: logsData } = await supabase
         .from("arm_logs")

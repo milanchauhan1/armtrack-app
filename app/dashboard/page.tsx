@@ -31,6 +31,7 @@ import {
   READINESS_STALE_DAYS,
 } from "@/lib/readiness";
 import { buildPublicStats } from "@/lib/profile";
+import { todayString as getTodayString, daysAgoString } from "@/lib/dates";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -43,11 +44,6 @@ interface Profile {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-function getTodayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
 function getGreeting(): string {
   const h = new Date().getHours();
@@ -320,9 +316,7 @@ export default function DashboardPage() {
       setProfile(prof);
 
       const nowIso = new Date().toISOString();
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
-      const cutoff = fourteenDaysAgo.toISOString().split("T")[0];
+      const cutoff = daysAgoString(13);
 
       // Everything below only depends on the profile, not on each other — run
       // them in parallel so the dashboard waits on one round-trip, not five.
@@ -382,18 +376,9 @@ export default function DashboardPage() {
         setStreak(stats.currentStreak);
         // Re-arm the daily reminder so its copy reflects the live streak.
         scheduleArmLogReminder(stats.currentStreak).catch(() => {});
-        // Refresh the denormalized, public-safe stats on the profile row so the
-        // public profile can show them without ever reading raw arm_logs.
-        supabase
-          .from("profiles")
-          .update({
-            total_logs: stats.totalLogs,
-            current_streak: stats.currentStreak,
-            last_log_date: stats.lastLogDate,
-            first_log_date: stats.firstLogDate,
-          })
-          .eq("id", user.id)
-          .then(() => {}, () => {});
+        // The denormalized public-profile stats (total_logs, current_streak, …)
+        // are maintained by a database trigger on arm_logs — clients can't
+        // write them, so streaks can't be faked.
       }
 
       const logs = (recent14Res.data ?? []) as ArmLog[];

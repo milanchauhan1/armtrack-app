@@ -7,20 +7,10 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { HistorySkeleton } from "@/components/Skeleton";
 import { ArmLog, computeLogScore, computeStreak, getReadinessState } from "@/lib/readiness";
+import { todayString as getTodayString, shiftDay } from "@/lib/dates";
 import { Flame, Calendar, Activity, WifiOff } from "lucide-react";
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
-
-function getTodayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function shiftDay(dateStr: string, n: number): string {
-  const d = new Date(dateStr + "T12:00:00");
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
 
 function dotColor(score: number): string {
   if (score >= 7) return "#22C55E";

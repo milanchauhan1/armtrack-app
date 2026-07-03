@@ -9,6 +9,7 @@ import { tapLight, tapMedium, notifySuccess, notifyError } from "@/lib/haptics";
 import { playBlip } from "@/lib/sounds";
 import { LogSkeleton } from "@/components/Skeleton";
 import { computeStreak } from "@/lib/readiness";
+import { todayString as getTodayString } from "@/lib/dates";
 import { maybeRequestReview } from "@/lib/review";
 import { Flame, Check, WifiOff } from "lucide-react";
 
@@ -43,11 +44,6 @@ interface PrevLog {
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-
-function getTodayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
 
 function formatDate(d: Date): string {
   return d.toLocaleDateString("en-US", {

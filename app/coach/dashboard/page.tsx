@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bell, ChevronDown, X, Check, WifiOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { ArmLog, calculateEstimatedReadiness, computeStreak, getReadinessState } from "@/lib/readiness";
+import { todayString as getTodayString, shiftDay } from "@/lib/dates";
 import CoachBottomNav from "@/app/coach/components/CoachBottomNav";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -43,16 +44,6 @@ interface PlayerEntry {
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
-function getTodayString(): string {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function shiftDay(dateStr: string, n: number): string {
-  const d = new Date(dateStr + "T12:00:00");
-  d.setDate(d.getDate() + n);
-  return d.toISOString().split("T")[0];
-}
 
 
 function daysSince(dateStr: string): number {
