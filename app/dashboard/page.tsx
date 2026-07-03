@@ -6,6 +6,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
 import { DashboardSkeleton } from "@/components/Skeleton";
+import DashboardTour from "@/components/DashboardTour";
 import { scheduleArmLogReminder } from "@/lib/notifications";
 import {
   LineChart,
@@ -463,6 +464,8 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-black pb-20">
+      <DashboardTour />
+
       {/* Toast */}
       <AnimatePresence>
         {toast && (
@@ -562,7 +565,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ── Arm Health Status ────────────────────────────────────────────────── */}
-        <motion.div custom={1} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+        <motion.div data-tour="readiness" custom={1} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             {recentLog && meta ? (
               <div className="flex flex-col sm:flex-row sm:items-center gap-5">
@@ -730,7 +733,7 @@ export default function DashboardPage() {
         )}
 
         {/* ── Quick Actions ─────────────────────────────────────────────────────── */}
-        <motion.div custom={5} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
+        <motion.div data-tour="log" custom={5} variants={fadeUp} initial="hidden" animate="show" className="mb-6">
           <div className="grid grid-cols-2 gap-3">
             {profile?.role === "coach" ? (
               <Link
@@ -772,7 +775,7 @@ export default function DashboardPage() {
         </motion.div>
 
         {/* ── 14-Day Trend Chart ───────────────────────────────────────────────── */}
-        <motion.div custom={6} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
+        <motion.div data-tour="trend" custom={6} variants={fadeUp} initial="hidden" animate="show" className="mb-4">
           <Card>
             <p className="text-sm font-bold text-white mb-4">14-Day Trend</p>
             {chartMounted && chartData.length >= 2 ? (

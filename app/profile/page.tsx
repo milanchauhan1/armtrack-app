@@ -84,7 +84,9 @@ export default function ProfilePage() {
       const { data: taken } = await supabase
         .from("profiles")
         .select("id")
-        .ilike("username", v.value)
+        // _ is an ilike wildcard and is legal in usernames — escape it so
+        // "m_lan" doesn't match "milan"
+        .ilike("username", v.value.replaceAll("_", "\\_"))
         .neq("id", userId)
         .maybeSingle();
       setChecking(false);
@@ -211,17 +213,17 @@ export default function ProfilePage() {
             {/* Username */}
             <Field label="Username">
               <div className="flex items-center gap-2 rounded-xl px-3" style={{ backgroundColor: "#1a1a1a", border: `1px solid ${usernameError ? "#7f1d1d" : "#2a2a2a"}` }}>
-                <span className="text-sm text-gray-500">armtrack.app/u/</span>
+                <span className="shrink-0 text-sm text-gray-500">armtrack.app/u/</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
                   placeholder="yourname"
                   autoCapitalize="none"
                   spellCheck={false}
-                  className="flex-1 bg-transparent py-3 text-sm text-white placeholder-gray-600 outline-none"
+                  className="min-w-0 flex-1 bg-transparent py-3 text-sm text-white placeholder-gray-600 outline-none"
                 />
-                {checking && <span className="text-xs text-gray-500">checking…</span>}
-                {!checking && usernameOk && username && <span className="text-xs text-green-500">available</span>}
+                {checking && <span className="shrink-0 whitespace-nowrap text-xs text-gray-500">checking…</span>}
+                {!checking && usernameOk && username && <span className="shrink-0 whitespace-nowrap text-xs text-green-500">available</span>}
               </div>
               {usernameError && <p className="mt-1.5 text-xs text-red-400">{usernameError}</p>}
             </Field>
