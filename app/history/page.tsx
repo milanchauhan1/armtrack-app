@@ -28,6 +28,35 @@ function getDayLetter(dateStr: string): string {
   return ["S", "M", "T", "W", "T", "F", "S"][new Date(dateStr + "T12:00:00").getDay()];
 }
 
+const HEATMAP_WEEKS = 16;
+
+/**
+ * Column-per-week grid for the consistency heatmap: `weeks` columns of 7 days
+ * (Sun→Sat), the last column being the week containing `today`.
+ */
+function buildHeatmapWeeks(today: string, weeks = HEATMAP_WEEKS): string[][] {
+  const dow = new Date(today + "T12:00:00").getDay(); // 0 = Sunday
+  let cursor = shiftDay(today, -(dow + (weeks - 1) * 7));
+  const cols: string[][] = [];
+  for (let w = 0; w < weeks; w++) {
+    const col: string[] = [];
+    for (let d = 0; d < 7; d++) {
+      col.push(cursor);
+      cursor = shiftDay(cursor, 1);
+    }
+    cols.push(col);
+  }
+  return cols;
+}
+
+/** Short month label for columns whose first day starts a new month. */
+function monthLabel(col: string[], prevCol: string[] | undefined): string {
+  const m = new Date(col[0] + "T12:00:00").getMonth();
+  const prevM = prevCol ? new Date(prevCol[0] + "T12:00:00").getMonth() : -1;
+  if (m === prevM) return "";
+  return new Date(col[0] + "T12:00:00").toLocaleDateString("en-US", { month: "short" });
+}
+
 function formatDateFull(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00");
   return d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
@@ -308,6 +337,16 @@ export default function HistoryPage() {
     ? logs.filter((l) => l.date === selectedDate)
     : logs;
 
+  // Consistency heatmap (last 16 weeks)
+  const heatmapWeeks = buildHeatmapWeeks(today);
+  const heatmapStart = heatmapWeeks[0][0];
+  const loggedInWindow = logs.filter((l) => l.date >= heatmapStart && l.date <= today).length;
+  const daysInWindow =
+    Math.round(
+      (new Date(today + "T12:00:00").getTime() - new Date(heatmapStart + "T12:00:00").getTime()) /
+        86400000
+    ) + 1;
+
   // ── Loading ───────────────────────────────────────────────────────────────────
 
   if (loadError) {
@@ -518,8 +557,81 @@ export default function HistoryPage() {
           </motion.div>
         )}
 
+        {/* ── Consistency Heatmap ─────────────────────────────────────────────── */}
+        {logs.length > 0 && (
+          <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show">
+            <div
+              className="rounded-2xl p-4"
+              style={{ backgroundColor: "#0d0d0d", border: "1px solid #1e1e1e" }}
+            >
+              <div className="mb-3 flex items-center justify-between px-1">
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                  Consistency
+                </p>
+                <p className="text-[10px] font-semibold text-gray-600">
+                  {loggedInWindow} of {daysInWindow} days logged
+                </p>
+              </div>
+
+              <div className="flex justify-between gap-[3px]">
+                {heatmapWeeks.map((col, w) => (
+                  <div key={col[0]} className="flex min-w-0 flex-1 flex-col gap-[3px]">
+                    <span className="h-3 text-[8px] leading-3 text-gray-600">
+                      {monthLabel(col, heatmapWeeks[w - 1])}
+                    </span>
+                    {col.map((day) => {
+                      const isFuture = day > today;
+                      const log = logByDate.get(day);
+                      const score = log ? computeLogScore(log) : null;
+                      return (
+                        <button
+                          key={day}
+                          aria-label={day + (log ? " — logged" : "")}
+                          disabled={isFuture || !log}
+                          onClick={() => setSelectedDate(selectedDate === day ? null : day)}
+                          className="aspect-square w-full rounded-[3px]"
+                          style={{
+                            backgroundColor: isFuture
+                              ? "transparent"
+                              : score !== null
+                              ? dotColor(score)
+                              : "#1c1c1c",
+                            opacity: isFuture ? 0 : 1,
+                            outline:
+                              selectedDate === day ? "1.5px solid rgba(59,130,246,0.9)" : "none",
+                            cursor: log ? "pointer" : "default",
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 flex items-center justify-end gap-3 px-1">
+                <span className="flex items-center gap-1 text-[9px] text-gray-600">
+                  <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: "#1c1c1c" }} />
+                  Missed
+                </span>
+                <span className="flex items-center gap-1 text-[9px] text-gray-600">
+                  <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: "#22C55E" }} />
+                  Healthy
+                </span>
+                <span className="flex items-center gap-1 text-[9px] text-gray-600">
+                  <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: "#F59E0B" }} />
+                  Caution
+                </span>
+                <span className="flex items-center gap-1 text-[9px] text-gray-600">
+                  <span className="h-2 w-2 rounded-[2px]" style={{ backgroundColor: "#EF4444" }} />
+                  Rough
+                </span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* ── Log List ────────────────────────────────────────────────────────── */}
-        <motion.div custom={3} variants={fadeUp} initial="hidden" animate="show">
+        <motion.div custom={4} variants={fadeUp} initial="hidden" animate="show">
 
           {/* Section header */}
           <div className="flex items-center justify-between mb-3">

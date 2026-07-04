@@ -9,14 +9,14 @@ import {
   daysSinceLatestLog,
   READINESS_STALE_DAYS,
 } from "./readiness";
+import { daysAgoString } from "./dates";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-/** ISO date string `offset` days before today. */
+/** Local date string `offset` days before today — must match the lib's
+ *  local-timezone dates or these tests fail between 7pm and midnight CT. */
 function daysAgo(offset: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - offset);
-  return d.toISOString().split("T")[0];
+  return daysAgoString(offset);
 }
 
 function log(partial: Partial<ArmLog> & { date: string }): ArmLog {

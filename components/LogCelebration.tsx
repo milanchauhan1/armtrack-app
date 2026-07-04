@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Flame } from "lucide-react";
+import { Flame, Share2 } from "lucide-react";
 import { playWhoosh, playImpact, playSuccess } from "@/lib/sounds";
 import { tapMedium } from "@/lib/haptics";
 
@@ -152,12 +152,36 @@ export default function LogCelebration({
 
   const isMilestone = MILESTONES.has(streakCount);
   const streakColor = isMilestone ? "#F59E0B" : "#ffffff";
+  const [shareMsg, setShareMsg] = useState<string | null>(null);
+
+  async function handleShare() {
+    tapMedium();
+    const text = `🔥 ${streakCount}-day arm care streak on ArmTrack. Protect the arm. Extend the career.`;
+    const url = "https://armtrack.app";
+    if (navigator.share) {
+      try {
+        await navigator.share({ text, url });
+        return;
+      } catch {
+        /* cancelled or unsupported — fall through to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      setShareMsg("Copied — paste it anywhere!");
+      setTimeout(() => setShareMsg(null), 2500);
+    } catch {
+      setShareMsg(url);
+    }
+  }
 
   // Stable particle set — won't re-generate on re-render
   const particles = useMemo<Particle[]>(() => makeParticles(), []);
 
   useEffect(() => {
-    const t = setTimeout(onComplete, 3500);
+    // Milestones hold the screen for the share/continue buttons; regular days
+    // auto-advance back to the dashboard.
+    const t = isMilestone ? null : setTimeout(onComplete, 3500);
     // Sound + haptic cues synced to the animation timeline
     const sWhoosh = setTimeout(() => playWhoosh(), 600);
     const sImpact = setTimeout(() => {
@@ -166,12 +190,12 @@ export default function LogCelebration({
     }, 1000);
     const sChime = setTimeout(() => playSuccess(), 1320);
     return () => {
-      clearTimeout(t);
+      if (t) clearTimeout(t);
       clearTimeout(sWhoosh);
       clearTimeout(sImpact);
       clearTimeout(sChime);
     };
-  }, [onComplete]);
+  }, [onComplete, isMilestone]);
 
   // ── Ball arc layout math ─────────────────────────────────────────────────
   // Pitcher SVG: 92×120px, placed at top:0 in a 220px-tall relative container.
@@ -196,14 +220,17 @@ export default function LogCelebration({
       className="fixed inset-0 z-50 flex flex-col items-center overflow-hidden"
       style={{ backgroundColor: "#000000" }}
     >
-      {/* Fade-to-black overlay — activates at 3.2s */}
-      <motion.div
-        className="absolute inset-0 bg-black pointer-events-none"
-        style={{ zIndex: 10 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3.2, duration: 0.3 }}
-      />
+      {/* Fade-to-black overlay — activates at 3.2s (skipped on milestones,
+          which hold for the share buttons) */}
+      {!isMilestone && (
+        <motion.div
+          className="absolute inset-0 bg-black pointer-events-none"
+          style={{ zIndex: 10 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 3.2, duration: 0.3 }}
+        />
+      )}
 
       {/* Content column */}
       <div
@@ -391,6 +418,30 @@ export default function LogCelebration({
         >
           {getStreakMessage(streakCount)}
         </motion.p>
+
+        {/* ── Milestone share ────────────────────────────────────────────── */}
+        {isMilestone && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 2.2, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="mt-8 flex w-full max-w-xs flex-col gap-2.5 px-8"
+          >
+            <button
+              onClick={handleShare}
+              className="flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+              style={{ backgroundColor: "#3B82F6", boxShadow: "0 4px 20px rgba(59,130,246,0.35)" }}
+            >
+              <Share2 size={15} /> {shareMsg ?? "Share the streak"}
+            </button>
+            <button
+              onClick={onComplete}
+              className="rounded-xl py-3 text-sm font-semibold text-gray-400 transition-colors hover:text-white"
+            >
+              Continue
+            </button>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
