@@ -41,6 +41,8 @@ const JSON_LD = {
       name: "ArmTrack",
       applicationCategory: "HealthApplication",
       operatingSystem: "iOS, Web",
+      installUrl: "https://apps.apple.com/us/app/armtrack/id6780317335",
+      downloadUrl: "https://apps.apple.com/us/app/armtrack/id6780317335",
       description:
         "Free arm-health app for baseball and softball. Players log pain, soreness, stiffness, and throwing workload in about 60 seconds a day to get a readiness score and throwing recommendation. Coaches see their whole roster's readiness on one screen.",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },

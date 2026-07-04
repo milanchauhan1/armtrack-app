@@ -698,6 +698,325 @@ export const POSTS: Post[] = [
       },
     ],
   },
+  {
+    slug: "rest-days-after-pitching-by-pitch-count",
+    title: "How Many Rest Days After Pitching? Rest Rules by Pitch Count (2026)",
+    description:
+      "How many days of rest a pitcher needs after an outing, by pitch count and age — the MLB Pitch Smart required-rest chart, why the rules exist, and what counts as real rest.",
+    excerpt:
+      "Threw 60 pitches Saturday — when can you pitch again? The required rest days by pitch count and age, in one chart, plus what actually counts as rest.",
+    keywords: [
+      "rest days after pitching",
+      "pitching rest rules",
+      "pitch count rest days",
+      "how many days rest between pitching",
+      "pitch smart rest rules",
+      "little league rest day rules",
+      "days of rest by pitch count",
+    ],
+    datePublished: "2026-07-03",
+    dateModified: "2026-07-03",
+    author: "Milan",
+    readingMinutes: 5,
+    category: "Workload & Rules",
+    blocks: [
+      {
+        type: "p",
+        text: "**How many rest days a pitcher needs after an outing depends on two things: how many pitches they threw and how old they are.** The more pitches in an outing, the more calendar days of rest before pitching again — that's the core of the MLB/USA Baseball **Pitch Smart** guidelines that most leagues base their rules on.",
+      },
+      {
+        type: "p",
+        text: "Here's the required-rest chart, why the rules work this way, and — just as important — what actually counts as rest.",
+      },
+      { type: "h2", text: "Required rest days by pitch count" },
+      {
+        type: "table",
+        caption:
+          "Based on the MLB/USA Baseball Pitch Smart guidelines. Your league's rules may differ slightly — league rules always win.",
+        head: ["Pitches thrown (ages 7–14)", "Pitches thrown (ages 15–18)", "Required rest"],
+        rows: [
+          ["1–20", "1–30", "0 days"],
+          ["21–35", "31–45", "1 day"],
+          ["36–50", "46–60", "2 days"],
+          ["51–65", "61–75", "3 days"],
+          ["66+", "76+", "4 days"],
+        ],
+      },
+      {
+        type: "p",
+        text: "So a 12-year-old who throws 55 pitches on Saturday shouldn't pitch again until **Wednesday** (three full calendar days of rest). A 16-year-old who throws 80 needs four days. For the daily maximums by age, see our [youth pitch count chart](/blog/youth-pitch-count-guidelines-by-age/).",
+      },
+      {
+        type: "callout",
+        variant: "info",
+        title: "Calendar days, not games",
+        text: "Rest days are **calendar days after the outing**. Pitching Saturday with '3 days rest' required means Sunday, Monday, and Tuesday off — eligible again Wednesday.",
+      },
+      { type: "h2", text: "Why rest days scale with pitch count" },
+      {
+        type: "p",
+        text: "Throwing hard creates micro-damage in the muscles and connective tissue of the arm — that's normal, and the arm rebuilds stronger **during rest**. The more pitches thrown, the more recovery the tissue needs. Pitching again on an under-recovered arm stacks stress on tissue that isn't done rebuilding, which is exactly the pattern behind most youth overuse injuries.",
+      },
+      {
+        type: "p",
+        text: "That's also why the biggest danger zone is the **tournament weekend**: multiple games in a few days, pitchers 'saving' innings by catching between outings, and rest rules quietly bent to win a Sunday bracket.",
+      },
+      { type: "h2", text: "What counts as rest (and what doesn't)" },
+      {
+        type: "ul",
+        items: [
+          "**Rest = no competitive pitching.** Light catch or easy throwing on rest days is generally fine once soreness has faded — check your league's rules.",
+          "**Catching is not rest.** A day behind the plate can mean over a hundred hard throws. Many leagues restrict pitching and catching in the same day for exactly this reason.",
+          "**A different team doesn't reset the clock.** Rest rules follow the player, not the roster. Playing for a travel team and a rec team at once is how workload quietly doubles.",
+          "**Showcases and bullpens count too.** The tissue doesn't care whether the pitches were in a game.",
+        ],
+      },
+      { type: "h2", text: "Rest days only work if you track the pitches" },
+      {
+        type: "p",
+        text: "The chart is simple. The hard part is knowing the real number — across games, bullpens, two teams, and a tournament weekend. If nobody's counting, nobody's resting, and by the time soreness shows up the workload spike already happened.",
+      },
+      {
+        type: "cta",
+        text: "ArmTrack logs throws and how the arm feels in 60 seconds a day, so the workload — and the rest it requires — is never a guess. Free for players and coaches.",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Not medical advice",
+        text: "Rest guidelines reduce risk — they don't eliminate it, and they can't evaluate pain. Sharp pain, joint pain, or soreness that doesn't fade with rest means stop throwing and see a physician or athletic trainer.",
+      },
+    ],
+    faq: [
+      {
+        q: "How many days of rest does a pitcher need after 50 pitches?",
+        a: "Under Pitch Smart guidelines, a 7–14-year-old who throws 36–50 pitches needs 2 calendar days of rest; 51 or more pushes it to 3. A 15–18-year-old who throws 46–60 pitches needs 2 days. Always check your specific league's rules.",
+      },
+      {
+        q: "Can a pitcher catch on a rest day?",
+        a: "It's a bad idea, and many leagues restrict it. Catching involves a high volume of hard throws, so a 'rest day' spent catching isn't rest for the throwing arm.",
+      },
+      {
+        q: "Do bullpens and showcases count toward rest requirements?",
+        a: "League rules usually only govern game pitches, but the arm doesn't distinguish — high-effort bullpen or showcase throwing creates the same workload. Build rest around total throwing, not just game pitch counts.",
+      },
+      {
+        q: "What happens if a pitcher doesn't get enough rest?",
+        a: "Repeatedly pitching on under-recovered tissue is a leading pattern behind youth overuse injuries of the elbow and shoulder. One short-rest outing isn't doom, but making it a habit is how seasons end early.",
+      },
+    ],
+  },
+  {
+    slug: "elbow-pain-when-throwing-baseball",
+    title: "Elbow Pain When Throwing a Baseball: A Parent's Guide",
+    description:
+      "What elbow pain when throwing usually means in young baseball players — inner vs. outer elbow, Little League elbow explained in plain English, and when to stop throwing and see a doctor.",
+    excerpt:
+      "Elbow pain is the signal to respect most in a young thrower. What inner-elbow pain usually means, what 'Little League elbow' actually is, and exactly when to stop and get it checked.",
+    keywords: [
+      "elbow pain when throwing baseball",
+      "little league elbow",
+      "inner elbow pain pitching",
+      "baseball elbow pain kid",
+      "elbow hurts after pitching",
+      "medial elbow pain thrower",
+      "when to see doctor elbow pain baseball",
+    ],
+    datePublished: "2026-07-03",
+    dateModified: "2026-07-03",
+    author: "Milan",
+    readingMinutes: 6,
+    category: "Soreness & Recovery",
+    blocks: [
+      {
+        type: "p",
+        text: "**Elbow pain when throwing is the complaint to take most seriously in a young baseball player.** Shoulders get sore in the muscle; the elbow is where throwing stress concentrates on growth plates and ligaments — the structures behind the injuries every parent has heard of, from 'Little League elbow' to Tommy John surgery.",
+      },
+      {
+        type: "p",
+        text: "This is a plain-English guide for parents: what elbow pain in a thrower usually means, which locations matter most, and when to stop throwing and get it checked. It is general information, not a diagnosis.",
+      },
+      { type: "h2", text: "Where it hurts matters" },
+      {
+        type: "table",
+        caption: "A rough map, not a diagnosis — location narrows the possibilities, a professional confirms them.",
+        head: ["Location", "What it often involves in young throwers"],
+        rows: [
+          [
+            "Inside (medial) — the bump nearest the body",
+            "The most common and most important spot: growth-plate stress ('Little League elbow') in younger players, UCL stress in older ones",
+          ],
+          [
+            "Outside (lateral)",
+            "Less common but taken very seriously — compression injuries of the outer elbow warrant prompt evaluation",
+          ],
+          ["Back (posterior) — the point of the elbow", "Stress from forcefully straightening the arm at release"],
+          ["General, all-over ache after throwing", "Often fatigue and workload — the signal to manage rest before it localizes"],
+        ],
+      },
+      { type: "h2", text: "What 'Little League elbow' actually is" },
+      {
+        type: "p",
+        text: "In players roughly 8–14, the inner elbow contains a **growth plate** — a soft area of developing bone that's weaker than the ligament attached to it. Repetitive hard throwing pulls on that growth plate, and with too much volume and too little rest it gets irritated or, in worse cases, pulled apart. That's Little League elbow: not one bad throw, but **accumulated workload on a structure that isn't done growing.**",
+      },
+      {
+        type: "p",
+        text: "The encouraging part: caught early, it typically calms down with rest. Ignored, it can mean months off — which is why the response to inner-elbow pain is always the boring one: stop throwing and get it looked at.",
+      },
+      { type: "h2", text: "Red flags: stop throwing and see a doctor" },
+      {
+        type: "ul",
+        items: [
+          "**Pain on the inner elbow** during or after throwing — even a dull ache that keeps returning",
+          "**Sharp pain on a single throw**, or a pop",
+          "**Pain at rest** or pain that wakes them up",
+          "**Swelling, or loss of full straightening/bending** compared to the other arm",
+          "**Numbness or tingling** into the forearm or fingers",
+          "**Soreness that hasn't improved after several days of complete rest**",
+        ],
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "The rule for parents",
+        text: "Muscle soreness gets a rest day. **Elbow pain gets a stop and a check.** No game, tournament, or roster spot is worth throwing through a growth-plate injury.",
+      },
+      { type: "h2", text: "Why it almost never comes out of nowhere" },
+      {
+        type: "p",
+        text: "Elbow injuries in young throwers are overwhelmingly **overuse** injuries. The weeks before the pain usually contain the story: a workload spike, a tournament weekend, short rest, pitching for two teams, or a velocity program layered on a full season. The players who avoid the bad version are the ones whose parents and coaches see that pattern building **before** the elbow starts talking. Two places to start: [pitch count limits by age](/blog/youth-pitch-count-guidelines-by-age/) and [required rest days by pitch count](/blog/rest-days-after-pitching-by-pitch-count/).",
+      },
+      {
+        type: "cta",
+        text: "ArmTrack gives your player a 60-second daily log — throws, pain, soreness, recovery — and shows the trend, so a bad week is visible before it becomes a bad season. Free for players.",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Not medical advice",
+        text: "This guide can't tell you whether your child's elbow pain is serious — only an examination can. For any elbow pain in a young thrower, the safe sequence is: stop throwing, rest, and see a physician, ideally one who works with throwing athletes.",
+      },
+    ],
+    faq: [
+      {
+        q: "Is elbow pain normal after pitching?",
+        a: "No — elbow pain is not 'normal soreness.' General muscle soreness after throwing is common, but pain localized to the elbow, especially the inner elbow, is a signal to stop throwing and get evaluated rather than something to push through.",
+      },
+      {
+        q: "What is Little League elbow?",
+        a: "An overuse injury of the growth plate on the inner elbow in young throwers (roughly ages 8–14), caused by repetitive throwing stress. Caught early it usually resolves with rest; ignored, it can require months away from throwing.",
+      },
+      {
+        q: "When should my kid see a doctor for throwing elbow pain?",
+        a: "Promptly for: inner-elbow pain that recurs with throwing, sharp pain or a pop, swelling, loss of motion, numbness or tingling, pain at rest, or soreness that doesn't improve after several days of complete rest.",
+      },
+      {
+        q: "Can my kid keep playing other positions with elbow pain?",
+        a: "That's a question for the evaluating physician — but until they've been seen, the safe answer is no throwing at all, from any position. Fielding throws and catching load the same structures.",
+      },
+    ],
+  },
+  {
+    slug: "pitching-recovery-routine",
+    title: "What to Do After Pitching: A Simple Recovery Routine",
+    description:
+      "A practical post-pitching recovery routine for youth and high school pitchers: the first hour, the next day, icing (what the evidence actually says), and how to know when the arm is ready again.",
+    excerpt:
+      "Recovery is where the arm actually gets stronger. A no-nonsense routine for after you pitch — the first hour, the day after, the truth about ice, and how to tell when you're ready to throw again.",
+    keywords: [
+      "pitching recovery routine",
+      "what to do after pitching",
+      "recovery after pitching",
+      "should pitchers ice after pitching",
+      "arm care routine after throwing",
+      "day after pitching routine",
+      "pitcher recovery day",
+    ],
+    datePublished: "2026-07-03",
+    dateModified: "2026-07-03",
+    author: "Milan",
+    readingMinutes: 6,
+    category: "Soreness & Recovery",
+    blocks: [
+      {
+        type: "p",
+        text: "**Recovery after pitching isn't the boring part between outings — it's when the arm actually adapts.** Throwing hard breaks tissue down; rest and recovery build it back. Pitchers who treat the day after like it matters get more out of every bullpen and stay available all season.",
+      },
+      {
+        type: "p",
+        text: "Here's a simple, realistic routine — no gadgets required — for the first hour, the next day, and the days until you're back on the mound.",
+      },
+      { type: "h2", text: "The first hour after your outing" },
+      {
+        type: "ol",
+        items: [
+          "**Cool down by throwing easy, not stopping cold.** A few minutes of light catch at 50% lets the arm down gently.",
+          "**Light stretching while you're warm.** Easy shoulder, forearm, and trunk stretches — gentle, never forced.",
+          "**Eat and drink like it was a workout.** Because it was: fluids plus a real meal with protein and carbs supports the rebuild.",
+          "**Note your numbers.** Pitches thrown, how the arm felt, anything that ached. Memory is terrible by Wednesday; write it down now.",
+        ],
+      },
+      { type: "h2", text: "Should you ice?" },
+      {
+        type: "p",
+        text: "The honest answer: **ice is optional.** The old ice-everything-immediately doctrine has faded — evidence that icing speeds tissue recovery is weak, and some recovery science suggests blunting inflammation may slightly slow adaptation. But ice does help some pitchers feel more comfortable, and comfort has value.",
+      },
+      {
+        type: "callout",
+        variant: "info",
+        title: "A sane icing policy",
+        text: "If ice makes your arm feel better, 15–20 minutes on the sore area is reasonable. If you don't miss it, don't force it. **Ice is never a treatment for real pain** — pain that needs ice every day needs a professional instead.",
+      },
+      { type: "h2", text: "The day after" },
+      {
+        type: "ul",
+        items: [
+          "**Move, don't melt into the couch.** Easy activity — a jog, a bike, bodyweight work — promotes blood flow that helps the arm recover.",
+          "**Light arm care.** Band work and gentle range-of-motion, at recovery effort, not training effort.",
+          "**Check in honestly.** Where is the soreness? Muscle soreness in the back of the shoulder is expected; anything in the **inner elbow** is [a different conversation](/blog/elbow-pain-when-throwing-baseball/).",
+          "**No competitive throwing.** Rest days are calendar days — here's [how many you need by pitch count](/blog/rest-days-after-pitching-by-pitch-count/).",
+        ],
+      },
+      { type: "h2", text: "Building back to the mound" },
+      {
+        type: "p",
+        text: "Across your rest days, throwing should climb the ladder gradually: nothing → easy catch → light long toss → a light bullpen → game-ready. Soreness should be **fading at every step.** If it plateaus or comes back as you ramp up, that's the arm saying the rebuild isn't done — give it another day rather than testing it in a game.",
+      },
+      { type: "h2", text: "How to know it's working" },
+      {
+        type: "p",
+        text: "Good recovery shows up as a pattern: soreness that fades on schedule, a readiness that comes back before your next outing, and no slow creep of 'a little worse each week.' The only way to see that pattern is to **track it daily** — soreness, stiffness, throws, and what you did to recover.",
+      },
+      {
+        type: "cta",
+        text: "ArmTrack turns recovery into data: log how the arm feels and what recovery you did in 60 seconds, and watch your readiness climb back before your next start. Free for players.",
+      },
+      {
+        type: "callout",
+        variant: "warn",
+        title: "Not medical advice",
+        text: "This routine is for normal post-throwing soreness. Sharp pain, joint pain (especially the inner elbow), swelling, numbness, or soreness that doesn't fade with rest means stop throwing and see a physician or athletic trainer.",
+      },
+    ],
+    faq: [
+      {
+        q: "What should a pitcher do immediately after pitching?",
+        a: "Cool down with a few minutes of easy catch, stretch gently while warm, rehydrate and eat a real meal, and record the outing — pitches thrown and how the arm felt — while it's fresh.",
+      },
+      {
+        q: "Should pitchers ice their arm after pitching?",
+        a: "Ice is optional. Evidence that it speeds recovery is weak, but it can ease discomfort — 15–20 minutes is reasonable if it helps. Ice should never be used to manage real or recurring pain; that needs medical evaluation.",
+      },
+      {
+        q: "What should a pitcher do the day after pitching?",
+        a: "Easy general activity for blood flow, light band and range-of-motion work, an honest soreness check, and no competitive throwing. Rest requirements scale with pitch count.",
+      },
+      {
+        q: "How do I know when my arm is ready to pitch again?",
+        a: "You've met your required rest days, soreness has fully faded, and easy throwing feels normal at each step of the ramp back up. Lingering or returning soreness during the ramp means take another day.",
+      },
+    ],
+  },
 ];
 
 // ── Helpers ────────────────────────────────────────────────────────────────────

@@ -60,6 +60,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // iOS Smart App Banner — Safari shows an "open in App Store" strip on every
+  // page, so SEO visitors on iPhones discover the app exists.
+  itunes: {
+    appId: "6780317335",
+  },
   // Open Graph / Twitter images are supplied by app/opengraph-image.tsx
   // (a branded 1200×630 card generated at build time).
   openGraph: {
