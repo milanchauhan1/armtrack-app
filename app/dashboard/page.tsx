@@ -23,6 +23,7 @@ import {
 } from "@/lib/readiness";
 import { buildPublicStats } from "@/lib/profile";
 import { buildWeeklyRecap, shouldShowRecap } from "@/lib/weekly";
+import { syncPendingLog } from "@/lib/offlineQueue";
 import { todayString as getTodayString, daysAgoString } from "@/lib/dates";
 
 // Loaded on demand so Recharts stays out of the dashboard's initial bundle.
@@ -326,6 +327,13 @@ export default function DashboardPage() {
       }
 
       setProfile(prof);
+
+      // Push any log saved offline BEFORE fetching, so it's included below.
+      const syncResult = await syncPendingLog(user.id).catch(() => "failed" as const);
+      if (syncResult === "synced") {
+        setToast("Offline log synced ✓");
+        setTimeout(() => setToast(null), 4000);
+      }
 
       const nowIso = new Date().toISOString();
       const cutoff = daysAgoString(13);

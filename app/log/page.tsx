@@ -12,6 +12,7 @@ import { computeStreak } from "@/lib/readiness";
 import { todayString as getTodayString } from "@/lib/dates";
 import { maybeRequestReview } from "@/lib/review";
 import { scheduleArmLogReminder } from "@/lib/notifications";
+import { isNetworkError, stashPendingLog } from "@/lib/offlineQueue";
 import { Flame, Check, WifiOff } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -270,6 +271,7 @@ export default function LogPage() {
   const [form, setForm] = useState<LogForm>(DEFAULT_FORM);
   const [submitting, setSubmitting] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [offlineSaved, setOfflineSaved] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [celebrationStreak, setCelebrationStreak] = useState<number | null>(null);
 
@@ -397,6 +399,15 @@ export default function LogPage() {
     } else {
       const { error } = await supabase.from("arm_logs").insert(payload);
       if (error) {
+        // Connectivity failure (ballpark WiFi): keep the log on the phone and
+        // sync it on the next app open instead of losing the entry.
+        if (isNetworkError(error.message) && userId) {
+          stashPendingLog({ ...payload, user_id: userId });
+          notifySuccess();
+          setSubmitting(false);
+          setOfflineSaved(true);
+          return;
+        }
         notifyError();
         setSaveError("Couldn't save your log. Check your connection and try again.");
         setSubmitting(false);
@@ -464,6 +475,35 @@ export default function LogPage() {
         firstName={profile?.first_name ?? ""}
         onComplete={() => router.replace("/dashboard")}
       />
+    );
+  }
+
+  // ── Saved offline ──────────────────────────────────────────────────────────
+
+  if (offlineSaved) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black px-6 text-center">
+        <div
+          className="flex h-14 w-14 items-center justify-center rounded-2xl"
+          style={{ backgroundColor: "#141414", border: "1px solid #222222" }}
+        >
+          <WifiOff size={26} strokeWidth={1.75} className="text-blue-500" />
+        </div>
+        <div>
+          <p className="text-base font-bold text-white">Log saved on your phone</p>
+          <p className="mt-1 text-sm leading-relaxed text-gray-400">
+            No connection right now. Your log is safe and will sync automatically
+            next time you open ArmTrack.
+          </p>
+        </div>
+        <button
+          onClick={() => router.replace("/dashboard")}
+          className="rounded-xl px-6 py-2.5 text-sm font-bold text-white transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#3B82F6" }}
+        >
+          Done
+        </button>
+      </div>
     );
   }
 
