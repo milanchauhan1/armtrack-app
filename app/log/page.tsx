@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
@@ -107,22 +107,8 @@ function ArmSlider({
   value: number;
   onChange: (v: number) => void;
 }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const dragging = useRef(false);
   const color = sliderColor(value);
   const pct = (value / 10) * 100;
-
-  const setFromClientX = (clientX: number) => {
-    const track = trackRef.current;
-    if (!track) return;
-    const rect = track.getBoundingClientRect();
-    const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-    const v = Math.round(ratio * 10);
-    if (v !== value) {
-      tapLight();
-      onChange(v);
-    }
-  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -134,66 +120,21 @@ function ArmSlider({
         </span>
         <span className="text-xs text-gray-600">10 — Severe</span>
       </div>
-      {/* Custom pointer-driven slider: the native range input in the iOS webview
-          only drags when the touch starts exactly on the thumb. Pointer capture
-          lets the athlete press anywhere on the track and drag freely. */}
-      <div
-        ref={trackRef}
-        role="slider"
-        aria-valuemin={0}
-        aria-valuemax={10}
-        aria-valuenow={value}
-        tabIndex={0}
-        className="relative w-full cursor-pointer py-2.5 -my-2.5 outline-none"
-        style={{ touchAction: "none" }}
-        onPointerDown={(e) => {
-          dragging.current = true;
-          // Capture keeps move events flowing even when the finger wanders off
-          // the track mid-drag. Not all engines grant it, so don't rely on it.
-          try {
-            e.currentTarget.setPointerCapture(e.pointerId);
-          } catch {
-            /* non-fatal */
-          }
-          setFromClientX(e.clientX);
+      <input
+        type="range"
+        min={0}
+        max={10}
+        step={1}
+        value={value}
+        onChange={(e) => {
+          tapLight();
+          onChange(Number(e.target.value));
         }}
-        onPointerMove={(e) => {
-          if (dragging.current) setFromClientX(e.clientX);
+        className="arm-slider w-full"
+        style={{
+          background: `linear-gradient(to right, ${color} ${pct}%, #252525 ${pct}%)`,
         }}
-        onPointerUp={() => {
-          dragging.current = false;
-        }}
-        onPointerCancel={() => {
-          dragging.current = false;
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowRight" || e.key === "ArrowUp") {
-            e.preventDefault();
-            onChange(Math.min(10, value + 1));
-          } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
-            e.preventDefault();
-            onChange(Math.max(0, value - 1));
-          }
-        }}
-      >
-        <div
-          className="h-6 rounded-full"
-          style={{ background: `linear-gradient(to right, ${color} ${pct}%, #252525 ${pct}%)` }}
-        />
-        <div
-          className="pointer-events-none absolute top-1/2"
-          style={{
-            left: `${pct}%`,
-            transform: `translate(-${pct}%, -50%)`,
-            width: 26,
-            height: 26,
-            borderRadius: "50%",
-            background: "#ffffff",
-            border: "3px solid #000000",
-            boxShadow: "0 1px 8px rgba(0, 0, 0, 0.6)",
-          }}
-        />
-      </div>
+      />
       <motion.p
         key={value}
         initial={{ opacity: 0, y: -4 }}

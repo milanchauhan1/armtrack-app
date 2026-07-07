@@ -164,6 +164,48 @@ html {
   .lp-nav-login { display: none !important; }
 }
 
+/* ── Range slider (log pain/soreness/stiffness) ────────────────────────────── */
+
+.arm-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 24px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  /* Tall enough to grab the 26px thumb; touch-action:none keeps the page from
+     stealing the drag gesture. */
+  touch-action: none;
+}
+
+.arm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.arm-slider::-webkit-slider-thumb:active {
+  transform: scale(1.28);
+  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2), 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+
+.arm-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  border: 3px solid #000000;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+}
+
 /* ── Skeleton shimmer ──────────────────────────────────────────────────────── */
 
 .armtrack-shimmer {
