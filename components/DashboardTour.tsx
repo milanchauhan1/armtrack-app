@@ -5,7 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 
 const TOUR_KEY = "armtrack_tour_v1";
 const SPOT_PAD = 8;
-const TOOLTIP_H = 190; // rough tooltip height used to decide above/below placement
+const TOOLTIP_H = 230; // approx tooltip height (title + body + buttons) used for placement
+// Reserve room for the fixed bottom tab bar (~52px) plus the iOS home-indicator
+// safe area, so the tooltip's action button never lands under the nav (unclickable).
+const NAV_SAFE = 96;
 
 interface TourStep {
   target: string;
@@ -90,7 +93,11 @@ export default function DashboardTour() {
   if (step === null) return null;
 
   const isLast = step === STEPS.length - 1;
-  const placeBelow = rect ? rect.bottom + SPOT_PAD + TOOLTIP_H < window.innerHeight : true;
+  // Only place the tooltip below the target when it fits above the bottom nav;
+  // otherwise flip it above so "Next"/"Let's go" is always reachable. (Fixes the
+  // last step, where the tall trend graph pushed the button under the tab bar.)
+  const usableBottom = window.innerHeight - NAV_SAFE;
+  const placeBelow = rect ? rect.bottom + SPOT_PAD + TOOLTIP_H < usableBottom : true;
 
   return (
     <AnimatePresence>
@@ -130,7 +137,9 @@ export default function DashboardTour() {
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="absolute left-4 right-4 mx-auto max-w-sm rounded-2xl p-5"
             style={{
-              top: placeBelow ? rect.bottom + SPOT_PAD + 12 : undefined,
+              top: placeBelow
+                ? Math.min(rect.bottom + SPOT_PAD + 12, usableBottom - TOOLTIP_H)
+                : undefined,
               bottom: placeBelow ? undefined : window.innerHeight - rect.top + SPOT_PAD + 12,
               backgroundColor: "#111111",
               border: "1px solid #2a2a2a",

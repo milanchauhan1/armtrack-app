@@ -52,6 +52,9 @@ export default function BottomNav() {
       {tabs.map(({ href, icon: Icon, label }) => {
         const isActive = pathname === href;
         const isLog = href === "/log";
+        // Highlight whichever page the user is currently on; every other
+        // (tappable) tab stays white so it reads as "go here".
+        const color = isActive ? "#3B82F6" : "#FFFFFF";
 
         return (
           <Link
@@ -61,29 +64,27 @@ export default function BottomNav() {
             className="flex flex-col items-center justify-center flex-1 relative"
             style={{ WebkitTapHighlightColor: "transparent" }}
           >
-            {/* Active pill indicator — top edge, not shown on Log tab */}
-            {!isLog && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: 32,
-                  height: 3,
-                  backgroundColor: "#3B82F6",
-                  borderRadius: "0 0 4px 4px",
-                  opacity: isActive ? 1 : 0,
-                  transition: "opacity 150ms ease",
-                }}
-              />
-            )}
+            {/* Active pill indicator — top edge, on whichever tab is current */}
+            <span
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: 32,
+                height: 3,
+                backgroundColor: "#3B82F6",
+                borderRadius: "0 0 4px 4px",
+                opacity: isActive ? 1 : 0,
+                transition: "opacity 150ms ease",
+              }}
+            />
 
             <Icon
               size={isLog ? 25 : 20}
-              strokeWidth={isActive || isLog ? 2.2 : 1.8}
+              strokeWidth={isActive ? 2.2 : 1.8}
               style={{
-                color: isLog || isActive ? "#3B82F6" : "#888888",
+                color,
                 transition: "color 150ms ease",
               }}
             />
@@ -95,7 +96,7 @@ export default function BottomNav() {
                   fontWeight: 600,
                   marginTop: 4,
                   lineHeight: 1,
-                  color: isActive ? "#3B82F6" : "#888888",
+                  color,
                   transition: "color 150ms ease",
                   letterSpacing: "0.02em",
                 }}
