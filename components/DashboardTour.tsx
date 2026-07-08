@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-
+import { useCallback, useEffect, useRef, useState } from "react";
 const TOUR_KEY = "armtrack_tour_v1";
 const SPOT_PAD = 8;
 const TOOLTIP_H = 230; // approx tooltip height (title + body + buttons) used for placement
@@ -32,11 +30,20 @@ const STEPS: TourStep[] = [
     title: "Spot patterns early",
     body: "Your 14-day trend shows if pain or soreness is creeping up, so you can back off before it becomes a problem.",
   },
+  {
+    target: "profile",
+    title: "Claim your profile",
+    body: "Grab your username here — you get a public page with your streak, stats, and PRs to share with coaches and teammates.",
+  },
 ];
 
 export default function DashboardTour() {
   const [step, setStep] = useState<number | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
+  // True once a step has actually been displayed. The "seen it" flag must
+  // only ever be written after this — otherwise a slow load can silently
+  // cascade through the steps, burn the flag, and the tour never shows again.
+  const shownRef = useRef(false);
 
   // Start once, after the dashboard's entrance animations settle.
   useEffect(() => {
@@ -55,7 +62,7 @@ export default function DashboardTour() {
     setStep((s) => {
       if (s === null) return null;
       if (s + 1 >= STEPS.length) {
-        localStorage.setItem(TOUR_KEY, "1");
+        if (shownRef.current) localStorage.setItem(TOUR_KEY, "1");
         return null;
       }
       return s + 1;
@@ -65,30 +72,50 @@ export default function DashboardTour() {
   const measure = useCallback(() => {
     if (step === null) return;
     const el = document.querySelector(`[data-tour="${STEPS[step].target}"]`);
-    if (!el) {
-      next();
-      return;
+    // Element momentarily missing mid-step (re-render): keep the last rect
+    // rather than skipping ahead.
+    if (!el) return;
+    if (!shownRef.current) {
+      shownRef.current = true;
+      // The tour is on screen — mark it seen immediately so it only ever
+      // plays once, even if the user navigates away mid-tour.
+      localStorage.setItem(TOUR_KEY, "1");
     }
     setRect(el.getBoundingClientRect());
-  }, [step, next]);
+  }, [step]);
 
   useEffect(() => {
     if (step === null) return;
-    const el = document.querySelector(`[data-tour="${STEPS[step].target}"]`);
-    if (!el) {
-      const skip = setTimeout(next, 0);
-      return () => clearTimeout(skip);
-    }
-    el.scrollIntoView({ block: "center", behavior: "smooth" });
-    const t = setTimeout(measure, 400);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let tries = 0;
+
+    // The dashboard loads its data asynchronously — on a slow connection the
+    // target may not exist yet. Retry for ~2.5s before giving up; on give-up,
+    // hide WITHOUT writing the flag so the tour re-attempts on the next visit.
+    const attempt = () => {
+      const el = document.querySelector(`[data-tour="${STEPS[step].target}"]`);
+      if (!el) {
+        tries += 1;
+        if (tries < 10) {
+          timer = setTimeout(attempt, 250);
+        } else {
+          setStep(null);
+        }
+        return;
+      }
+      el.scrollIntoView({ block: "center", behavior: "smooth" });
+      timer = setTimeout(measure, 400);
+    };
+    attempt();
+
     window.addEventListener("resize", measure);
     window.addEventListener("scroll", measure, true);
     return () => {
-      clearTimeout(t);
+      if (timer) clearTimeout(timer);
       window.removeEventListener("resize", measure);
       window.removeEventListener("scroll", measure, true);
     };
-  }, [step, measure, next]);
+  }, [step, measure]);
 
   if (step === null) return null;
 
@@ -100,17 +127,15 @@ export default function DashboardTour() {
   const placeBelow = rect ? rect.bottom + SPOT_PAD + TOOLTIP_H < usableBottom : true;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key="tour"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100]"
-        style={{ touchAction: "none" }}
-        role="dialog"
-        aria-label="Dashboard tour"
-      >
+    // Plain div, no mount fade: the dimming layer must never depend on an
+    // animation tween completing (throttled frames can strand it half-visible
+    // with page content bleeding through the tooltip).
+    <div
+      className="fixed inset-0 z-[100]"
+      style={{ touchAction: "none" }}
+      role="dialog"
+      aria-label="Dashboard tour"
+    >
         {/* Spotlight — the giant shadow darkens everything except the target */}
         {rect && (
           <div
@@ -128,13 +153,11 @@ export default function DashboardTour() {
           />
         )}
 
-        {/* Tooltip */}
+        {/* Tooltip — plain div with a solid background; its legibility must
+            never depend on a JS animation tween finishing. */}
         {rect && (
-          <motion.div
+          <div
             key={step}
-            initial={{ opacity: 0, y: placeBelow ? 8 : -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             className="absolute left-4 right-4 mx-auto max-w-sm rounded-2xl p-5"
             style={{
               top: placeBelow
@@ -182,9 +205,8 @@ export default function DashboardTour() {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </motion.div>
-    </AnimatePresence>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/lib/supabase";
@@ -107,8 +107,80 @@ function ArmSlider({
   value: number;
   onChange: (v: number) => void;
 }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  // Handlers are attached natively (see effect below) and must never see
+  // stale props — these refs are re-synced after every render.
+  const valueRef = useRef(value);
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    valueRef.current = value;
+    onChangeRef.current = onChange;
+  });
+
   const color = sliderColor(value);
   const pct = (value / 10) * 100;
+
+  // Netflix-scrubber behavior: tap anywhere on the bar to jump, or grab
+  // anywhere and drag. Touch handlers are attached natively with
+  // { passive: false } — the only way preventDefault() reliably stops iOS
+  // from hijacking the gesture for scrolling. (React's synthetic pointer
+  // events silently failed inside the iOS WKWebView — v1.0.4 regression.)
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    let dragging = false;
+
+    const setFromX = (clientX: number) => {
+      const rect = track.getBoundingClientRect();
+      const ratio = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+      const v = Math.round(ratio * 10);
+      if (v !== valueRef.current) {
+        tapLight();
+        onChangeRef.current(v);
+      }
+    };
+
+    const touchStart = (e: TouchEvent) => {
+      dragging = true;
+      setFromX(e.touches[0].clientX);
+      e.preventDefault();
+    };
+    const touchMove = (e: TouchEvent) => {
+      if (!dragging) return;
+      setFromX(e.touches[0].clientX);
+      e.preventDefault();
+    };
+    const touchEnd = () => {
+      dragging = false;
+    };
+
+    const mouseMove = (e: MouseEvent) => setFromX(e.clientX);
+    const mouseUp = () => {
+      window.removeEventListener("mousemove", mouseMove);
+      window.removeEventListener("mouseup", mouseUp);
+    };
+    const mouseDown = (e: MouseEvent) => {
+      e.preventDefault();
+      setFromX(e.clientX);
+      window.addEventListener("mousemove", mouseMove);
+      window.addEventListener("mouseup", mouseUp);
+    };
+
+    track.addEventListener("touchstart", touchStart, { passive: false });
+    track.addEventListener("touchmove", touchMove, { passive: false });
+    track.addEventListener("touchend", touchEnd);
+    track.addEventListener("touchcancel", touchEnd);
+    track.addEventListener("mousedown", mouseDown);
+    return () => {
+      track.removeEventListener("touchstart", touchStart);
+      track.removeEventListener("touchmove", touchMove);
+      track.removeEventListener("touchend", touchEnd);
+      track.removeEventListener("touchcancel", touchEnd);
+      track.removeEventListener("mousedown", mouseDown);
+      window.removeEventListener("mousemove", mouseMove);
+      window.removeEventListener("mouseup", mouseUp);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col gap-3">
@@ -120,21 +192,51 @@ function ArmSlider({
         </span>
         <span className="text-xs text-gray-600">10 — Severe</span>
       </div>
-      <input
-        type="range"
-        min={0}
-        max={10}
-        step={1}
-        value={value}
-        onChange={(e) => {
-          tapLight();
-          onChange(Number(e.target.value));
-        }}
-        className="arm-slider w-full"
+      <div
+        ref={trackRef}
+        role="slider"
+        aria-valuemin={0}
+        aria-valuemax={10}
+        aria-valuenow={value}
+        tabIndex={0}
+        className="relative flex w-full items-center outline-none"
         style={{
-          background: `linear-gradient(to right, ${color} ${pct}%, #252525 ${pct}%)`,
+          height: 44, // full-width touch target; the visible bar stays slim
+          touchAction: "none",
+          WebkitTapHighlightColor: "transparent",
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          WebkitTouchCallout: "none",
+          cursor: "pointer",
+        } as React.CSSProperties}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+            e.preventDefault();
+            onChange(Math.min(10, value + 1));
+          } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+            e.preventDefault();
+            onChange(Math.max(0, value - 1));
+          }
         }}
-      />
+      >
+        <div
+          className="h-6 w-full rounded-full"
+          style={{ background: `linear-gradient(to right, ${color} ${pct}%, #252525 ${pct}%)` }}
+        />
+        <div
+          className="pointer-events-none absolute top-1/2"
+          style={{
+            left: `${pct}%`,
+            transform: `translate(-${pct}%, -50%)`,
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            background: "#ffffff",
+            border: "3px solid #000000",
+            boxShadow: "0 1px 8px rgba(0, 0, 0, 0.6)",
+          }}
+        />
+      </div>
       <motion.p
         key={value}
         initial={{ opacity: 0, y: -4 }}

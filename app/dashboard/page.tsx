@@ -520,6 +520,7 @@ export default function DashboardPage() {
           <Link
             href="/profile"
             aria-label="Profile"
+            data-tour="profile"
             className="flex h-9 items-center gap-1.5 rounded-lg border border-white/10 px-2.5 text-sm font-semibold text-white/70 transition-all duration-150 hover:border-white/25 hover:bg-white/5 hover:text-white sm:px-3.5"
           >
             <User size={17} strokeWidth={2} />

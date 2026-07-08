@@ -50,7 +50,9 @@ export default function BottomNav() {
       }}
     >
       {tabs.map(({ href, icon: Icon, label }) => {
-        const isActive = pathname === href;
+        // Compare against the normalized path — the built app uses trailing
+        // slashes ("/log/"), so raw pathname never equals the tab href.
+        const isActive = normalizedPath === href;
         const isLog = href === "/log";
         // Highlight whichever page the user is currently on; every other
         // (tappable) tab stays white so it reads as "go here".
